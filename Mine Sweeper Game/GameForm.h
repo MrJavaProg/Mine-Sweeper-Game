@@ -34,37 +34,36 @@ namespace MineSweeperGame {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::ToolStrip^  toolStrip1;
+	private: System::Windows::Forms::ToolStripDropDownButton^  MenuTCDDB;
+	private: System::Windows::Forms::ToolStripMenuItem^  OptionsTSMI;
+
+	private: System::Windows::Forms::ToolStripMenuItem^  RecordsTSMI;
 	protected:
-	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
-	private: System::Windows::Forms::ToolStripMenuItem^  optionsToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  recordsToolStripMenuItem;
+
+	protected:
+
+
+
+	private: System::Windows::Forms::ToolStrip^  ToolsTS;
+
+
+
 	private: System::Windows::Forms::FlowLayoutPanel^  OptionsMenuFLP;
 	private: System::Windows::Forms::Button^  PresetsB;
 	private: System::Windows::Forms::Button^  ControlB;
 	private: System::Windows::Forms::Button^  CloseOptionsB;
 	private: System::Windows::Forms::Panel^  PresetsP;
 	private: System::Windows::Forms::Panel^  panel1;
+	private: System::Windows::Forms::Label^  Preset3L;
+	private: System::Windows::Forms::Label^  Preset2L;
+	private: System::Windows::Forms::Label^  Preset1L;
+	private: System::Windows::Forms::MaskedTextBox^  GMinesMTB;
+	private: System::Windows::Forms::MaskedTextBox^  GHeightMTB;
 	private: System::Windows::Forms::MaskedTextBox^  GWidthMTB;
-
-
-
-
-
-
-
-
 	private: System::Windows::Forms::FlowLayoutPanel^  DefaultPresetsFLP;
 	private: System::Windows::Forms::RadioButton^  GPreset1RB;
 	private: System::Windows::Forms::RadioButton^  GPreset2RB;
 	private: System::Windows::Forms::RadioButton^  GPreset3RB;
-	private: System::Windows::Forms::GroupBox^  OptionsGB;
-	private: System::Windows::Forms::MaskedTextBox^  GMinesMTB;
-
-	private: System::Windows::Forms::MaskedTextBox^  GHeightMTB;
-	private: System::Windows::Forms::Label^  Preset3L;
-	private: System::Windows::Forms::Label^  Preset2L;
-	private: System::Windows::Forms::Label^  Preset1L;
 	private: System::Windows::Forms::Panel^  ControlP;
 	private: System::Windows::Forms::FlowLayoutPanel^  flowLayoutPanel1;
 	private: System::Windows::Forms::Label^  label1;
@@ -73,6 +72,71 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::Button^  GCSetFlagB;
 	private: System::Windows::Forms::Label^  label3;
 	private: System::Windows::Forms::Button^  GCSetUndef;
+	private: System::Windows::Forms::GroupBox^  OptionsGB;
+	private: System::Windows::Forms::GroupBox^  RecordsGB;
+	private: System::Windows::Forms::TabControl^  tabControl1;
+	private: System::Windows::Forms::TabPage^  RPreset1TP;
+	private: System::Windows::Forms::TabPage^  RPreset2TP;
+	private: System::Windows::Forms::TabPage^  RPreset3TP;
+	private: System::Windows::Forms::Button^  CloseRecordsB;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	private: System::ComponentModel::IContainer^  components;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -96,7 +160,7 @@ namespace MineSweeperGame {
 		/// <summary>
 		/// Обязательная переменная конструктора.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -106,10 +170,10 @@ namespace MineSweeperGame {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(GameForm::typeid));
-			this->toolStrip1 = (gcnew System::Windows::Forms::ToolStrip());
-			this->toolStripDropDownButton1 = (gcnew System::Windows::Forms::ToolStripDropDownButton());
-			this->optionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->recordsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->ToolsTS = (gcnew System::Windows::Forms::ToolStrip());
+			this->MenuTCDDB = (gcnew System::Windows::Forms::ToolStripDropDownButton());
+			this->OptionsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->RecordsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->OptionsMenuFLP = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->PresetsB = (gcnew System::Windows::Forms::Button());
 			this->ControlB = (gcnew System::Windows::Forms::Button());
@@ -126,7 +190,6 @@ namespace MineSweeperGame {
 			this->GPreset1RB = (gcnew System::Windows::Forms::RadioButton());
 			this->GPreset2RB = (gcnew System::Windows::Forms::RadioButton());
 			this->GPreset3RB = (gcnew System::Windows::Forms::RadioButton());
-			this->OptionsGB = (gcnew System::Windows::Forms::GroupBox());
 			this->ControlP = (gcnew System::Windows::Forms::Panel());
 			this->flowLayoutPanel1 = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->label1 = (gcnew System::Windows::Forms::Label());
@@ -135,50 +198,61 @@ namespace MineSweeperGame {
 			this->GCSetFlagB = (gcnew System::Windows::Forms::Button());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->GCSetUndef = (gcnew System::Windows::Forms::Button());
-			this->toolStrip1->SuspendLayout();
+			this->OptionsGB = (gcnew System::Windows::Forms::GroupBox());
+			this->RecordsGB = (gcnew System::Windows::Forms::GroupBox());
+			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
+			this->RPreset1TP = (gcnew System::Windows::Forms::TabPage());
+			this->RPreset2TP = (gcnew System::Windows::Forms::TabPage());
+			this->RPreset3TP = (gcnew System::Windows::Forms::TabPage());
+			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
+			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
 			this->panel1->SuspendLayout();
 			this->DefaultPresetsFLP->SuspendLayout();
-			this->OptionsGB->SuspendLayout();
 			this->ControlP->SuspendLayout();
 			this->flowLayoutPanel1->SuspendLayout();
+			this->OptionsGB->SuspendLayout();
+			this->RecordsGB->SuspendLayout();
+			this->tabControl1->SuspendLayout();
 			this->SuspendLayout();
 			// 
-			// toolStrip1
+			// ToolsTS
 			// 
-			this->toolStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->toolStripDropDownButton1 });
-			this->toolStrip1->Location = System::Drawing::Point(0, 0);
-			this->toolStrip1->Name = L"toolStrip1";
-			this->toolStrip1->Size = System::Drawing::Size(475, 25);
-			this->toolStrip1->TabIndex = 1;
-			this->toolStrip1->Text = L"toolStrip1";
+			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->MenuTCDDB });
+			this->ToolsTS->Location = System::Drawing::Point(0, 0);
+			this->ToolsTS->Name = L"ToolsTS";
+			this->ToolsTS->Size = System::Drawing::Size(482, 25);
+			this->ToolsTS->TabIndex = 1;
+			this->ToolsTS->Text = L"toolStrip1";
 			// 
-			// toolStripDropDownButton1
+			// MenuTCDDB
 			// 
-			this->toolStripDropDownButton1->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
-			this->toolStripDropDownButton1->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
-				this->optionsToolStripMenuItem,
-					this->recordsToolStripMenuItem
+			this->MenuTCDDB->Alignment = System::Windows::Forms::ToolStripItemAlignment::Right;
+			this->MenuTCDDB->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->MenuTCDDB->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->OptionsTSMI,
+					this->RecordsTSMI
 			});
-			this->toolStripDropDownButton1->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"toolStripDropDownButton1.Image")));
-			this->toolStripDropDownButton1->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->toolStripDropDownButton1->Name = L"toolStripDropDownButton1";
-			this->toolStripDropDownButton1->Size = System::Drawing::Size(29, 22);
-			this->toolStripDropDownButton1->Text = L"toolStripDropDownButton1";
+			this->MenuTCDDB->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"MenuTCDDB.Image")));
+			this->MenuTCDDB->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->MenuTCDDB->Name = L"MenuTCDDB";
+			this->MenuTCDDB->Size = System::Drawing::Size(51, 22);
+			this->MenuTCDDB->Text = L"Menu";
 			// 
-			// optionsToolStripMenuItem
+			// OptionsTSMI
 			// 
-			this->optionsToolStripMenuItem->Name = L"optionsToolStripMenuItem";
-			this->optionsToolStripMenuItem->Size = System::Drawing::Size(116, 22);
-			this->optionsToolStripMenuItem->Text = L"Options";
-			this->optionsToolStripMenuItem->Click += gcnew System::EventHandler(this, &GameForm::optionsToolStripMenuItem_Click);
+			this->OptionsTSMI->Name = L"OptionsTSMI";
+			this->OptionsTSMI->Size = System::Drawing::Size(152, 22);
+			this->OptionsTSMI->Text = L"Options";
+			this->OptionsTSMI->Click += gcnew System::EventHandler(this, &GameForm::optionsToolStripMenuItem_Click);
 			// 
-			// recordsToolStripMenuItem
+			// RecordsTSMI
 			// 
-			this->recordsToolStripMenuItem->Name = L"recordsToolStripMenuItem";
-			this->recordsToolStripMenuItem->Size = System::Drawing::Size(116, 22);
-			this->recordsToolStripMenuItem->Text = L"Records";
+			this->RecordsTSMI->Name = L"RecordsTSMI";
+			this->RecordsTSMI->Size = System::Drawing::Size(152, 22);
+			this->RecordsTSMI->Text = L"Records";
+			this->RecordsTSMI->Click += gcnew System::EventHandler(this, &GameForm::recordsToolStripMenuItem_Click);
 			// 
 			// OptionsMenuFLP
 			// 
@@ -353,18 +427,6 @@ namespace MineSweeperGame {
 			this->GPreset3RB->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			this->GPreset3RB->UseVisualStyleBackColor = true;
 			// 
-			// OptionsGB
-			// 
-			this->OptionsGB->Controls->Add(this->ControlP);
-			this->OptionsGB->Controls->Add(this->PresetsP);
-			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
-			this->OptionsGB->Location = System::Drawing::Point(0, 28);
-			this->OptionsGB->Name = L"OptionsGB";
-			this->OptionsGB->Size = System::Drawing::Size(475, 366);
-			this->OptionsGB->TabIndex = 0;
-			this->OptionsGB->TabStop = false;
-			this->OptionsGB->Text = L"Options";
-			// 
 			// ControlP
 			// 
 			this->ControlP->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
@@ -389,6 +451,7 @@ namespace MineSweeperGame {
 			// 
 			// label1
 			// 
+			this->label1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->label1->Location = System::Drawing::Point(3, 0);
@@ -400,6 +463,7 @@ namespace MineSweeperGame {
 			// 
 			// GCOpenCellB
 			// 
+			this->GCOpenCellB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->GCOpenCellB->Location = System::Drawing::Point(112, 3);
 			this->GCOpenCellB->Name = L"GCOpenCellB";
 			this->GCOpenCellB->Size = System::Drawing::Size(147, 50);
@@ -408,6 +472,7 @@ namespace MineSweeperGame {
 			// 
 			// label2
 			// 
+			this->label2->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->label2->Location = System::Drawing::Point(3, 56);
@@ -419,6 +484,7 @@ namespace MineSweeperGame {
 			// 
 			// GCSetFlagB
 			// 
+			this->GCSetFlagB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->GCSetFlagB->Location = System::Drawing::Point(112, 59);
 			this->GCSetFlagB->Name = L"GCSetFlagB";
 			this->GCSetFlagB->Size = System::Drawing::Size(147, 50);
@@ -427,6 +493,7 @@ namespace MineSweeperGame {
 			// 
 			// label3
 			// 
+			this->label3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->label3->Location = System::Drawing::Point(3, 112);
@@ -438,44 +505,128 @@ namespace MineSweeperGame {
 			// 
 			// GCSetUndef
 			// 
+			this->GCSetUndef->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->GCSetUndef->Location = System::Drawing::Point(112, 115);
 			this->GCSetUndef->Name = L"GCSetUndef";
 			this->GCSetUndef->Size = System::Drawing::Size(147, 50);
 			this->GCSetUndef->TabIndex = 5;
 			this->GCSetUndef->UseVisualStyleBackColor = true;
 			// 
+			// OptionsGB
+			// 
+			this->OptionsGB->Controls->Add(this->ControlP);
+			this->OptionsGB->Controls->Add(this->PresetsP);
+			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
+			this->OptionsGB->Location = System::Drawing::Point(0, 28);
+			this->OptionsGB->Name = L"OptionsGB";
+			this->OptionsGB->Size = System::Drawing::Size(482, 366);
+			this->OptionsGB->TabIndex = 0;
+			this->OptionsGB->TabStop = false;
+			this->OptionsGB->Text = L"Options";
+			this->OptionsGB->Visible = false;
+			// 
+			// RecordsGB
+			// 
+			this->RecordsGB->Controls->Add(this->tabControl1);
+			this->RecordsGB->Controls->Add(this->CloseRecordsB);
+			this->RecordsGB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->RecordsGB->Location = System::Drawing::Point(1, 29);
+			this->RecordsGB->Name = L"RecordsGB";
+			this->RecordsGB->Size = System::Drawing::Size(480, 366);
+			this->RecordsGB->TabIndex = 5;
+			this->RecordsGB->TabStop = false;
+			this->RecordsGB->Text = L"Records";
+			this->RecordsGB->Visible = false;
+			// 
+			// tabControl1
+			// 
+			this->tabControl1->Controls->Add(this->RPreset1TP);
+			this->tabControl1->Controls->Add(this->RPreset2TP);
+			this->tabControl1->Controls->Add(this->RPreset3TP);
+			this->tabControl1->Location = System::Drawing::Point(3, 16);
+			this->tabControl1->Name = L"tabControl1";
+			this->tabControl1->SelectedIndex = 0;
+			this->tabControl1->Size = System::Drawing::Size(476, 292);
+			this->tabControl1->TabIndex = 4;
+			// 
+			// RPreset1TP
+			// 
+			this->RPreset1TP->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->RPreset1TP->Location = System::Drawing::Point(4, 22);
+			this->RPreset1TP->Name = L"RPreset1TP";
+			this->RPreset1TP->Padding = System::Windows::Forms::Padding(3);
+			this->RPreset1TP->Size = System::Drawing::Size(468, 266);
+			this->RPreset1TP->TabIndex = 0;
+			this->RPreset1TP->Text = L"9x9, 10 m";
+			this->RPreset1TP->UseVisualStyleBackColor = true;
+			// 
+			// RPreset2TP
+			// 
+			this->RPreset2TP->Location = System::Drawing::Point(4, 22);
+			this->RPreset2TP->Name = L"RPreset2TP";
+			this->RPreset2TP->Padding = System::Windows::Forms::Padding(3);
+			this->RPreset2TP->Size = System::Drawing::Size(468, 266);
+			this->RPreset2TP->TabIndex = 1;
+			this->RPreset2TP->Text = L"16x16, 40 m";
+			this->RPreset2TP->UseVisualStyleBackColor = true;
+			// 
+			// RPreset3TP
+			// 
+			this->RPreset3TP->Location = System::Drawing::Point(4, 22);
+			this->RPreset3TP->Name = L"RPreset3TP";
+			this->RPreset3TP->Size = System::Drawing::Size(468, 266);
+			this->RPreset3TP->TabIndex = 2;
+			this->RPreset3TP->Text = L"20x24, 99 m";
+			this->RPreset3TP->UseVisualStyleBackColor = true;
+			// 
+			// CloseRecordsB
+			// 
+			this->CloseRecordsB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->CloseRecordsB->Location = System::Drawing::Point(173, 324);
+			this->CloseRecordsB->Name = L"CloseRecordsB";
+			this->CloseRecordsB->Size = System::Drawing::Size(135, 23);
+			this->CloseRecordsB->TabIndex = 3;
+			this->CloseRecordsB->Text = L"Close records";
+			this->CloseRecordsB->UseVisualStyleBackColor = true;
+			this->CloseRecordsB->Click += gcnew System::EventHandler(this, &GameForm::CloseRecordsB_Click_1);
+			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(475, 394);
-			this->Controls->Add(this->toolStrip1);
+			this->ClientSize = System::Drawing::Size(482, 401);
+			this->Controls->Add(this->RecordsGB);
+			this->Controls->Add(this->ToolsTS);
 			this->Controls->Add(this->OptionsGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
 			this->Shown += gcnew System::EventHandler(this, &GameForm::GameForm_Shown);
-			this->toolStrip1->ResumeLayout(false);
-			this->toolStrip1->PerformLayout();
+			this->ToolsTS->ResumeLayout(false);
+			this->ToolsTS->PerformLayout();
 			this->OptionsMenuFLP->ResumeLayout(false);
 			this->PresetsP->ResumeLayout(false);
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
 			this->DefaultPresetsFLP->ResumeLayout(false);
-			this->OptionsGB->ResumeLayout(false);
 			this->ControlP->ResumeLayout(false);
 			this->flowLayoutPanel1->ResumeLayout(false);
+			this->OptionsGB->ResumeLayout(false);
+			this->RecordsGB->ResumeLayout(false);
+			this->tabControl1->ResumeLayout(false);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
 	private: System::Void GameForm_Shown(System::Object^  sender, System::EventArgs^  e) {
-		OptionsGB->Visible = false;
+		//OptionsGB->Visible = false;
+		//Rec
 	}
 private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 	OptionsGB->Visible = true;
 	ControlP->Visible = false;
 	PresetsP->Visible = true;
+	RecordsGB->Visible = false;
 }
 private: System::Void CloseOptionsB_Click(System::Object^  sender, System::EventArgs^  e) {
 	OptionsGB->Visible = false;
@@ -487,6 +638,14 @@ private: System::Void ControlB_Click(System::Object^  sender, System::EventArgs^
 private: System::Void PresetsB_Click(System::Object^  sender, System::EventArgs^  e) {
 	PresetsP->Visible = true;
 	ControlP->Visible = false;
+}
+private: System::Void recordsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	RecordsGB->Visible = true;
+	OptionsGB->Visible = false;
+}
+
+private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::EventArgs^  e) {
+	RecordsGB->Visible = false;
 }
 };
 }
