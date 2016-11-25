@@ -1,4 +1,10 @@
 #pragma once
+#include "Cell.h"
+
+void createField(array< Cell^>^ field, int %width, int %height);
+int width = 4,
+	height = 5;
+
 
 namespace MineSweeperGame {
 
@@ -79,82 +85,8 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::TabPage^  RPreset2TP;
 	private: System::Windows::Forms::TabPage^  RPreset3TP;
 	private: System::Windows::Forms::Button^  CloseRecordsB;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	private: System::Windows::Forms::ToolStripButton^  StartTSB;
 	private: System::ComponentModel::IContainer^  components;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	private:
 		/// <summary>
@@ -205,6 +137,7 @@ namespace MineSweeperGame {
 			this->RPreset2TP = (gcnew System::Windows::Forms::TabPage());
 			this->RPreset3TP = (gcnew System::Windows::Forms::TabPage());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
+			this->StartTSB = (gcnew System::Windows::Forms::ToolStripButton());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -219,7 +152,7 @@ namespace MineSweeperGame {
 			// 
 			// ToolsTS
 			// 
-			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->MenuTCDDB });
+			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->MenuTCDDB, this->StartTSB });
 			this->ToolsTS->Location = System::Drawing::Point(0, 0);
 			this->ToolsTS->Name = L"ToolsTS";
 			this->ToolsTS->Size = System::Drawing::Size(482, 25);
@@ -590,6 +523,16 @@ namespace MineSweeperGame {
 			this->CloseRecordsB->UseVisualStyleBackColor = true;
 			this->CloseRecordsB->Click += gcnew System::EventHandler(this, &GameForm::CloseRecordsB_Click_1);
 			// 
+			// StartTSB
+			// 
+			this->StartTSB->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Text;
+			this->StartTSB->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"StartTSB.Image")));
+			this->StartTSB->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->StartTSB->Name = L"StartTSB";
+			this->StartTSB->Size = System::Drawing::Size(35, 22);
+			this->StartTSB->Text = L"Start";
+			this->StartTSB->Click += gcnew System::EventHandler(this, &GameForm::StartTSB_Click);
+			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -618,6 +561,7 @@ namespace MineSweeperGame {
 
 		}
 #pragma endregion
+
 	private: System::Void GameForm_Shown(System::Object^  sender, System::EventArgs^  e) {
 		//OptionsGB->Visible = false;
 		//Rec
@@ -646,6 +590,14 @@ private: System::Void recordsToolStripMenuItem_Click(System::Object^  sender, Sy
 
 private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::EventArgs^  e) {
 	RecordsGB->Visible = false;
+	
+}
+
+private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
+	array< Cell ^> ^ field;
+	createField(field, Width, height);
 }
 };
+
+
 }

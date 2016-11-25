@@ -135,9 +135,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameForm.cpp" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="Cell.h" />
+    <ClInclude Include="CellDrawing.h" />
     <ClInclude Include="GameForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -147,6 +146,11 @@
       <DependentUpon>GameForm.h</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="CellDrawing.cpp" />
+    <ClCompile Include="GameForm.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
