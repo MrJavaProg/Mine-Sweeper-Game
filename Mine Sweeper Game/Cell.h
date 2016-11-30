@@ -1,18 +1,15 @@
 #pragma once
 #include "CellDrawing.h"
 
-ref class Cell : public CellDrawing
+class Cell : CellDrawing
 {
-private:	
 	int    state;
-	
-public:
-	~Cell();
-	Cell(float xStart, float yStart, int state);
-	
-	//int getState();
 
-	//void setState(int state);
-	
+public:
+	Cell();
+	~Cell();
+	Cell(float xStart, float yStart);
+	int getState();
+	void setState(int state);
 };
 

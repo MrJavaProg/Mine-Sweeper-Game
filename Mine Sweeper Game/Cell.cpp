@@ -1,15 +1,29 @@
 #include "Cell.h"
 
 
-Cell::Cell(float xStart, float yStart, int state)
+
+Cell::Cell()
 {
-	this->state = state;
+}
+
+
+Cell::~Cell()
+{
+}
+
+Cell::Cell(float xStart, float yStart)
+{
+	this->state = 0;
 	setXStart(xStart);
 	setYStart(yStart);
 }
 
-
-
-Cell::~Cell() 
+int Cell::getState()
 {
+	return state;
+}
+
+void Cell::setState(int state)
+{
+	this->state = state;
 }
