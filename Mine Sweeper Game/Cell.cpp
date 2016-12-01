@@ -4,18 +4,12 @@
 
 Cell::Cell()
 {
+	state = 0;
 }
 
 
 Cell::~Cell()
 {
-}
-
-Cell::Cell(float xStart, float yStart)
-{
-	this->state = 0;
-	setXStart(xStart);
-	setYStart(yStart);
 }
 
 int Cell::getState()
@@ -27,3 +21,9 @@ void Cell::setState(int state)
 {
 	this->state = state;
 }
+
+
+/*static float Cell::getEdge()
+{
+	return getEdge();
+}*/

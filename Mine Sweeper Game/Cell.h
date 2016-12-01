@@ -1,15 +1,16 @@
 #pragma once
 #include "CellDrawing.h"
 
-class Cell : CellDrawing
+class Cell : public CellDrawing
 {
 	int    state;
 
 public:
+	//static float CellDrawing::edge;
 	Cell();
 	~Cell();
-	Cell(float xStart, float yStart);
 	int getState();
 	void setState(int state);
+	//static float getEdge();
 };
 

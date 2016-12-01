@@ -1,16 +1,21 @@
 #pragma once
 #include "Cell.h"
 
+extern Cell **field;
 
 //void createField(array< Cell^>^ field, int %width, int %height);
- int width = 4,
-	 height = 5,
-	 mines,
-	 quantity_of_mines,
-	 quantity_of_cells_width,
-	 quantity_of_cells_height;
 
-//
+ void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
+ void openCell(Cell **field, int x, int y, System::Windows::Forms::Form ^f, bool &started);
+ extern int	width = 0,
+		height = 0,
+		mines = 0,
+		quantity_of_mines = 0,
+		 quantity_of_cells_width = 0,
+		quantity_of_cells_height = 0;
+
+ extern bool started;
+
 namespace MineSweeperGame {
 
 	using namespace System;
@@ -365,6 +370,7 @@ namespace MineSweeperGame {
 			this->GPreset1RB->Text = L"Cells - 81, mines - 10";
 			this->GPreset1RB->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			this->GPreset1RB->UseVisualStyleBackColor = true;
+			this->GPreset1RB->CheckedChanged += gcnew System::EventHandler(this, &GameForm::GPreset1RB_CheckedChanged);
 			// 
 			// GPreset2RB
 			// 
@@ -373,9 +379,10 @@ namespace MineSweeperGame {
 			this->GPreset2RB->Size = System::Drawing::Size(216, 34);
 			this->GPreset2RB->TabIndex = 1;
 			this->GPreset2RB->TabStop = true;
-			this->GPreset2RB->Text = L"Cells - 81, mines - 10";
+			this->GPreset2RB->Text = L"Cells - 256, mines - 40";
 			this->GPreset2RB->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			this->GPreset2RB->UseVisualStyleBackColor = true;
+			this->GPreset2RB->CheckedChanged += gcnew System::EventHandler(this, &GameForm::GPreset2RB_CheckedChanged);
 			// 
 			// GPreset3RB
 			// 
@@ -384,9 +391,10 @@ namespace MineSweeperGame {
 			this->GPreset3RB->Size = System::Drawing::Size(216, 34);
 			this->GPreset3RB->TabIndex = 2;
 			this->GPreset3RB->TabStop = true;
-			this->GPreset3RB->Text = L"Cells - 81, mines - 10";
+			this->GPreset3RB->Text = L"Cells - 480, mines - 99";
 			this->GPreset3RB->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			this->GPreset3RB->UseVisualStyleBackColor = true;
+			this->GPreset3RB->CheckedChanged += gcnew System::EventHandler(this, &GameForm::GPreset3RB_CheckedChanged);
 			// 
 			// ControlP
 			// 
@@ -475,9 +483,9 @@ namespace MineSweeperGame {
 			// 
 			// OptionsGB
 			// 
-			this->OptionsGB->Controls->Add(this->ControlP);
 			this->OptionsGB->Controls->Add(this->PresetsP);
 			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
+			this->OptionsGB->Controls->Add(this->ControlP);
 			this->OptionsGB->Location = System::Drawing::Point(0, 28);
 			this->OptionsGB->Name = L"OptionsGB";
 			this->OptionsGB->Size = System::Drawing::Size(784, 535);
@@ -561,7 +569,7 @@ namespace MineSweeperGame {
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
 			this->Shown += gcnew System::EventHandler(this, &GameForm::GameForm_Shown);
-			this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &GameForm::GameForm_Paint);
+			this->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GameForm_MouseClick);
 			this->ToolsTS->ResumeLayout(false);
 			this->ToolsTS->PerformLayout();
 			this->OptionsMenuFLP->ResumeLayout(false);
@@ -613,19 +621,52 @@ private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::Eve
 }
 
 private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-//	array< Cell ^> ^ field;
-	//createField(field, Width, height);
-	/*Cell cell(10, 60),
-		c(10, 60, 1);
-	c.drawEmptyCell(this);
-	cell.drawFlaggedCell(this);*/
+	//Cell **field;
+	bool started = false;
+	
+	if (quantity_of_cells_width == 0 && quantity_of_cells_height == 0 && quantity_of_mines == 0) {
+		width = 9;
+		height = 9;
+		mines = 10;
+	}
+	else {
+		width = quantity_of_cells_width;
+		height = quantity_of_cells_height;
+		mines = quantity_of_mines;
+	}
+	Cell **field = new Cell*[width];
+	
+	for (int i = 0; i < width; i++) {
+		field[i] = new Cell[height];
+	}
+
+	createField(field, width, height, this, started);
+	
+	//spawnMines(field, width, height, mines);
 }
-private: System::Void GameForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
+
+/*private: System::Void GameForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
 	
 	System::Drawing::Graphics ^g = e->Graphics;
-	//g->DrawRectangle(gcnew System::Drawing::Pen(Color::Black, 3), 20, 100, 100, 50);
+}*/
 
-	
+private: System::Void GPreset1RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+	quantity_of_cells_width = 9;
+	quantity_of_cells_height = 9;
+	quantity_of_mines = 10;
+}
+private: System::Void GPreset2RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+	quantity_of_cells_width = 16;
+	quantity_of_cells_height = 16;
+	quantity_of_mines = 40;
+}
+private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+	quantity_of_cells_width = 24;
+	quantity_of_cells_height = 20;
+	quantity_of_mines = 99;
+}
+private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	openCell(field, e->X, e->Y, this, started);
 }
 };
 

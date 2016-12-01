@@ -33,13 +33,6 @@ float CellDrawing::getYEnd()
 	return yEnd;
 }
 
-
-/*float CellDrawing::getEdge()
-{
-return edge;
-;
-}*/
-
 void CellDrawing::setNearbyMines(int nearbyMines)
 {
 	this->nearbyMines = nearbyMines;
@@ -63,6 +56,11 @@ void CellDrawing::setXEnd(float xEnd)
 void CellDrawing::setYEnd(float yEnd)
 {
 	this->yEnd = yEnd;
+}
+
+void CellDrawing::addNearbyMines()
+{
+	nearbyMines++;
 }
 
 /*void CellDrawing::setEdge(float edge)

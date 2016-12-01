@@ -6,8 +6,10 @@ class CellDrawing
 		xEnd,
 		yEnd;
 	int nearbyMines;
-//	static float edge = 25;
+
+public:
 	static float edge;
+	
 
 public:
 	CellDrawing();
@@ -16,7 +18,7 @@ public:
 	float getYStart();
 	float getXEnd();
 	float getYEnd();
-	static float getEdge(float edge);
+	//static float getEdge();
 
 	void drawEmptyCell(System::Windows::Forms::Form ^form);
 	void drawOpenedCell(System::Windows::Forms::Form ^form);
@@ -24,11 +26,12 @@ public:
 	void drawFlaggedCell(System::Windows::Forms::Form ^form);
 	void drawExplodedCell(System::Windows::Forms::Form ^form);
 
-protected:
 	void setNearbyMines(int nearbyMines);
 	void setXStart(float xStart);
 	void setYStart(float yStart);
 	void setXEnd(float xEnd);
 	void setYEnd(float yEnd);
+
+	void addNearbyMines();
 };
 
