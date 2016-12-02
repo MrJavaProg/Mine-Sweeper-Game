@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "GameForm.h"
 #include <Windows.h>
 
@@ -6,25 +8,17 @@ using namespace MineSweeperGame;
 using namespace System;
 
 enum state {empty = 0, mined = 1, opened = 2, flagged = 3, undefined = 4};
-
-extern int width,
-		   height,
-		   mines,
-		   quantity_of_mines,
-		   quantity_of_cells_width,
-	       quantity_of_cells_height;
-
-
+extern Cell **field;
 void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started) {
 	float xStart,
 		  yStart;
-	yStart = (f->Height / 2) - (height / 2)*CellDrawing::edge; 
-	xStart = (f->Width / 2) - (width/2)*CellDrawing::edge;
+	yStart = (f->Height / 2) - (height / 2)*Cell::edge; 
+	xStart = (f->Width / 2) - (width/2)*Cell::edge;
 		
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			field[i][j].setXStart(xStart+i*CellDrawing::edge);
-			field[i][j].setYStart(yStart + j*CellDrawing::edge);
+			field[i][j].setXStart(xStart+i*Cell::edge);
+			field[i][j].setYStart(yStart + j*Cell::edge);
 			field[i][j].drawEmptyCell(f);
 		}
 	}

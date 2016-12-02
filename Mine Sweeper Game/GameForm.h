@@ -1,20 +1,21 @@
 #pragma once
 #include "Cell.h"
 
+
 extern Cell **field;
+static bool started;
 
-//void createField(array< Cell^>^ field, int %width, int %height);
+//bool started;
 
- void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
- void openCell(Cell **field, int x, int y, System::Windows::Forms::Form ^f, bool &started);
- extern int	width = 0,
-		height = 0,
-		mines = 0,
-		quantity_of_mines = 0,
-		 quantity_of_cells_width = 0,
-		quantity_of_cells_height = 0;
+void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
+void openCell(Cell **field, int x, int y, System::Windows::Forms::Form ^f, bool &started);
+static int	width,
+	        height,
+            mines,
+		    quantity_of_mines,
+			quantity_of_cells_width,
+			quantity_of_cells_height;
 
- extern bool started;
 
 namespace MineSweeperGame {
 
@@ -24,6 +25,7 @@ namespace MineSweeperGame {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+
 
 	/// <summary>
 	/// Сводка для GameForm
@@ -589,8 +591,7 @@ namespace MineSweeperGame {
 #pragma endregion
 
 	private: System::Void GameForm_Shown(System::Object^  sender, System::EventArgs^  e) {
-		//OptionsGB->Visible = false;
-		//Rec
+		started = false;
 		
 	}
 private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -621,9 +622,14 @@ private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::Eve
 }
 
 private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-	//Cell **field;
-	bool started = false;
+	int	width,
+		height,
+		mines,
+		quantity_of_mines = 0,
+		quantity_of_cells_width = 0,
+		quantity_of_cells_height = 0;
 	
+
 	if (quantity_of_cells_width == 0 && quantity_of_cells_height == 0 && quantity_of_mines == 0) {
 		width = 9;
 		height = 9;
@@ -634,12 +640,15 @@ private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^
 		height = quantity_of_cells_height;
 		mines = quantity_of_mines;
 	}
+	 //**field = new Cell*[width];
+	
 	Cell **field = new Cell*[width];
 	
-	for (int i = 0; i < width; i++) {
-		field[i] = new Cell[height];
+	for (int i = 0; i < height; i++) {
+		field[i] = new Cell[32];
 	}
-
+	
+	
 	createField(field, width, height, this, started);
 	
 	//spawnMines(field, width, height, mines);
