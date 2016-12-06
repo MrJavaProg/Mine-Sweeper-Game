@@ -44,8 +44,8 @@ void openCell(Cell **field, int &width, int &height, int x, int y, System::Windo
 
 	if (started == true) {
 		if (x > xStart && x<xEnd && y>yStart && y < yEnd) {
-			curPosX = (int)(x / xStart); //- (int)x%(int)xStart;
-			curPosY = (int)(y / yStart); //-(int)y % (int)yStart;
+			curPosX = (int)((x - xStart) / Cell::edge);
+			curPosY = (int)((y - yStart) / Cell::edge);
 			field[curPosX][curPosY].drawOpenedCell(f);
 		}
 		
