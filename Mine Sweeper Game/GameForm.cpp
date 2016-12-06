@@ -8,7 +8,14 @@ using namespace MineSweeperGame;
 using namespace System;
 
 enum state {empty = 0, mined = 1, opened = 2, flagged = 3, undefined = 4};
-extern Cell **field;
+Cell **field;
+int	width,
+	height,
+	mines,
+	quantity_of_mines = 0,
+	quantity_of_cells_width = 0,
+	quantity_of_cells_height = 0;
+
 void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started) {
 	float xStart,
 		  yStart;
@@ -19,13 +26,15 @@ void createField(Cell **field, int &width, int &height, System::Windows::Forms::
 		for (int j = 0; j < height; j++) {
 			field[i][j].setXStart(xStart+i*Cell::edge);
 			field[i][j].setYStart(yStart + j*Cell::edge);
+			field[i][j].setXEnd(field[i][j].getXStart() + Cell::edge);
+			field[i][j].setYEnd(field[i][j].getYStart() + Cell::edge);
 			field[i][j].drawEmptyCell(f);
 		}
 	}
 	started = true;
 }
 
-void openCell(Cell **field, int x, int y, System::Windows::Forms::Form ^f, bool &started) {
+void openCell(Cell **field, int &width, int &height, int x, int y, System::Windows::Forms::Form ^f, bool &started) {
 	float xStart = field[0][0].getXStart(),
 		 xEnd = field[width - 1][height - 1].getXEnd(),
 		 yStart = field[0][0].getYStart(),
