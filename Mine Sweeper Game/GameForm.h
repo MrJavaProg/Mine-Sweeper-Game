@@ -8,8 +8,8 @@ static bool started;
 //bool started;
 
 void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
-void openCell(Cell **field, int x, int y, System::Windows::Forms::Form ^f, bool &started);
-static int	width,
+void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
+extern int	width,
 	        height,
             mines,
 		    quantity_of_mines,
@@ -72,12 +72,6 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::Button^  CloseOptionsB;
 	private: System::Windows::Forms::Panel^  PresetsP;
 
-
-
-
-
-
-
 	private: System::Windows::Forms::FlowLayoutPanel^  DefaultPresetsFLP;
 	private: System::Windows::Forms::RadioButton^  GPreset1RB;
 	private: System::Windows::Forms::RadioButton^  GPreset2RB;
@@ -91,11 +85,6 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::Label^  label3;
 	private: System::Windows::Forms::Button^  GCSetUndef;
 	private: System::Windows::Forms::GroupBox^  OptionsGB;
-
-
-
-
-
 
 	private: System::Windows::Forms::ToolStripButton^  StartTSB;
 	private: System::Windows::Forms::GroupBox^  RecordsGB;
@@ -622,12 +611,6 @@ private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::Eve
 }
 
 private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-	int	width,
-		height,
-		mines,
-		quantity_of_mines = 0,
-		quantity_of_cells_width = 0,
-		quantity_of_cells_height = 0;
 	
 
 	if (quantity_of_cells_width == 0 && quantity_of_cells_height == 0 && quantity_of_mines == 0) {
@@ -642,7 +625,7 @@ private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^
 	}
 	 //**field = new Cell*[width];
 	
-	Cell **field = new Cell*[width];
+	field = new Cell*[width];
 	
 	for (int i = 0; i < height; i++) {
 		field[i] = new Cell[32];
@@ -675,7 +658,7 @@ private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System:
 	quantity_of_mines = 99;
 }
 private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-	openCell(field, e->X, e->Y, this, started);
+	openCell(field, e->X, e->Y, width, height, this, started);
 }
 };
 
