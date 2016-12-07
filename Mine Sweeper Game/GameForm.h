@@ -4,16 +4,15 @@
 
 extern Cell **field;
 static bool started;
-//static System::Windows::Forms::MouseEventArgs mouseClick;
 
 //bool started;
 
 void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
-void openCell(Cell **field, int &width, int &height, int x, int y, System::Windows::Forms::Form ^f, bool &started);
-extern int	width,
-		    height,
-			mines,
-			quantity_of_mines,
+void openCell(Cell **field, int x, int y, System::Windows::Forms::Form ^f, bool &started);
+static int	width,
+	        height,
+            mines,
+		    quantity_of_mines,
 			quantity_of_cells_width,
 			quantity_of_cells_height;
 
@@ -623,6 +622,14 @@ private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::Eve
 }
 
 private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
+	int	width,
+		height,
+		mines,
+		quantity_of_mines = 0,
+		quantity_of_cells_width = 0,
+		quantity_of_cells_height = 0;
+	
+
 	if (quantity_of_cells_width == 0 && quantity_of_cells_height == 0 && quantity_of_mines == 0) {
 		width = 9;
 		height = 9;
@@ -634,24 +641,15 @@ private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^
 		mines = quantity_of_mines;
 	}
 	 //**field = new Cell*[width];
-	//Cell cell = Cell();
-	//Cell cell = Cell();
-	//array <Cell^>^ field = gcnew array<Cell^>[width][height];
 	
-	//Cell &&field = new Cell*[width];
-//	field[0] = &cell;
-	//*field[0] = &Cell();
-	field = new Cell*[width];
-	for (int i = 0; i < width; i++) {
-		field[i] = new Cell[height];
+	Cell **field = new Cell*[width];
+	
+	for (int i = 0; i < height; i++) {
+		field[i] = new Cell[32];
 	}
-	//field[0][0] = &Cell();
 	
-	//перенести openCell сюда. Игра будет происходить здеся
+	
 	createField(field, width, height, this, started);
-	//System::Windows::Forms::MouseEventArgs ^e = gcnew System::Windows::Forms::MouseEventArgs;
-		//int x;
-		
 	
 	//spawnMines(field, width, height, mines);
 }
@@ -677,12 +675,7 @@ private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System:
 	quantity_of_mines = 99;
 }
 private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-	//Cell **field;
-	openCell(field, width, height, e->X, e->Y, this, started);
-	//int x = e->X;
-	//int y = e->Y
-
-
+	openCell(field, e->X, e->Y, this, started);
 }
 };
 
