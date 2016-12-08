@@ -8,7 +8,7 @@ static bool started;
 //bool started;
 
 void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
-void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes);
+void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes);
 extern int	width,
 	        height,
             mines,
@@ -680,7 +680,6 @@ private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^
 	
 	createField(field, width, height, this, started);
 	
-	//spawnMines(field, width, height, mines);
 }
 
 /*private: System::Void GameForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
@@ -913,7 +912,7 @@ private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windo
 		mb = 3;
 	}
 
-	openCell(field, e->X, e->Y, width, height, this, started, mb, lifes);
+	openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes);
 }
 };
 

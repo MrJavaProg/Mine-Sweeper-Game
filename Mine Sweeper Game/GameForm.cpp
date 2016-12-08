@@ -19,7 +19,7 @@ int	width,
 	mb_flag = 2,
 	mb_undefined = 3,
 	lifes = 0;
-bool minePass = false;
+bool wasFirstClick = false;
 
 
 
@@ -39,9 +39,23 @@ void createField(Cell **field, int &width, int &height, System::Windows::Forms::
 		}
 	}
 	started = true;
+	wasFirstClick = false;
 }
 
-void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes) {
+void spawnMines(Cell **field, int &width, int &height, int mines, int &curPosX, int &curPosY) {
+	int x,
+		y;
+	while (mines != 0) {
+		x = rand() % (width - 1) + 0;
+		y = rand() % (height - 1) + 0;
+		if (x != curPosX && y != curPosY && field[x][y].getState()!=state::mined) {
+			field[x][y].setState(state::mined);
+			mines--;
+		}
+	}
+}
+
+void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes) {
 	float xStart = field[0][0].getXStart(),
 		 xEnd = field[width - 1][height - 1].getXEnd(),
 		 yStart = field[0][0].getYStart(),
@@ -55,11 +69,16 @@ void openCell(Cell **field, int x, int y, int &width, int &height, System::Windo
 			curPosY = (int)((y - yStart) / Cell::edge);
 
 			if (mb==mb_open && field[curPosX][curPosY].getState()!=state::opened) {
+				if (wasFirstClick == false) {
+					spawnMines(field, width, height, mines, curPosX, curPosY);
+					wasFirstClick = true;
+				}
+
 				if (field[curPosX][curPosY].getState() == state::empty) {
 					field[curPosX][curPosY].drawOpenedCell(f);
 					field[curPosX][curPosY].setState(state::opened);
 				}
-				if (field[curPosX][curPosY].getState() == state::mined) {
+				else {
 					field[curPosX][curPosY].drawExplodedCell(f);
 					if (lifes == 0) {
 						started = false;
@@ -71,6 +90,10 @@ void openCell(Cell **field, int x, int y, int &width, int &height, System::Windo
 			}
 
 			if (mb==mb_flag && field[curPosX][curPosY].getState()!=state::opened) {
+				if (wasFirstClick == false) {
+					spawnMines(field, width, height, mines, curPosX, curPosY);
+					wasFirstClick = true;
+				}
 				if (field[curPosX][curPosY].getState() == state::flagged) {
 					field[curPosX][curPosY].drawEmptyCell(f);
 					field[curPosX][curPosY].setState(state::empty);
@@ -82,6 +105,10 @@ void openCell(Cell **field, int x, int y, int &width, int &height, System::Windo
 			}
 			
 			if (mb == mb_undefined && field[curPosX][curPosY].getState()!=state::opened && field[curPosX][curPosY].getState()!=state::flagged) {
+				if (wasFirstClick == false) {
+					spawnMines(field, width, height, mines, curPosX, curPosY);
+					wasFirstClick = true;
+				}
 				if (field[curPosX][curPosY].getState() == state::undefined) {
 					field[curPosX][curPosY].drawEmptyCell(f);
 					field[curPosX][curPosY].setState(state::undefined);
@@ -90,11 +117,10 @@ void openCell(Cell **field, int x, int y, int &width, int &height, System::Windo
 					field[curPosX][curPosY].drawFlaggedCell(f);
 					field[curPosX][curPosY].setState(state::undefined);
 				}
-			}
-				
-		}
-		
+			}	
+		}	
 	}
+	
 }
 
 
