@@ -8,7 +8,7 @@ static bool started;
 //bool started;
 
 void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
-void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started, int &mb);
+void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes);
 extern int	width,
 	        height,
             mines,
@@ -17,7 +17,8 @@ extern int	width,
 			quantity_of_cells_height,
 		    mb_open,
 			mb_flag,
-			mb_undefined;
+			mb_undefined,
+			lifes;
 
 
 namespace MineSweeperGame {
@@ -912,7 +913,7 @@ private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windo
 		mb = 3;
 	}
 
-	openCell(field, e->X, e->Y, width, height, this, started, mb);
+	openCell(field, e->X, e->Y, width, height, this, started, mb, lifes);
 }
 };
 

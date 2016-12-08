@@ -41,15 +41,13 @@ void createField(Cell **field, int &width, int &height, System::Windows::Forms::
 	started = true;
 }
 
-void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started, int &mb) {
+void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes) {
 	float xStart = field[0][0].getXStart(),
 		 xEnd = field[width - 1][height - 1].getXEnd(),
 		 yStart = field[0][0].getYStart(),
 		 yEnd = field[width - 1][height - 1].getYEnd();
 	int curPosX,
 		curPosY;
-
-	field[0][0].setState(state::mined);
 
 	if (started == true) {
 		if (x > xStart && x<xEnd && y>yStart && y < yEnd) {
@@ -63,8 +61,11 @@ void openCell(Cell **field, int x, int y, int &width, int &height, System::Windo
 				}
 				if (field[curPosX][curPosY].getState() == state::mined) {
 					field[curPosX][curPosY].drawExplodedCell(f);
-					if (lifes = 0) {
+					if (lifes == 0) {
 						started = false;
+					}
+					else {
+						lifes--;
 					}
 				}
 			}
