@@ -6,6 +6,7 @@ using namespace System::Drawing;
 Cell::Cell()
 {
 	state = 0;
+	nearbyMines = 0;
 }
 
 
@@ -96,7 +97,7 @@ void Cell::drawOpenedCell(System::Windows::Forms::Form ^form)
 void Cell::drawUndefinedCell(System::Windows::Forms::Form ^ form)
 {
 	Graphics ^g = form->CreateGraphics();
-
+	drawEmptyCell(form);
 	g->DrawString("?", gcnew Font(FontFamily::GenericSansSerif, 18, FontStyle::Bold), gcnew SolidBrush(Color::FromArgb(84, 4, 4)), xStart, yStart - 4);
 }
 
@@ -110,7 +111,7 @@ void Cell::drawFlaggedCell(System::Windows::Forms::Form ^ form)
 		PointF(xStart + 3, yStart + 3),
 		PointF(xStart + edge - 3, yStart + 7),
 		PointF(xStart + 3, yStart + 13) };
-
+	drawEmptyCell(form);
 	g->DrawPolygon(pen, flag);
 	g->FillPolygon(gcnew SolidBrush(Color::Red), flag);
 }

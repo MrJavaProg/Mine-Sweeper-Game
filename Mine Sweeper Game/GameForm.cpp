@@ -14,7 +14,13 @@ int	width,
 	mines,
 	quantity_of_mines = 0,
 	quantity_of_cells_width = 0,
-	quantity_of_cells_height = 0;
+	quantity_of_cells_height = 0,
+	mb_open = 1,
+	mb_flag = 2,
+	mb_undefined = 3,
+	lifes = 0;
+bool minePass = false;
+
 
 
 void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started) {
@@ -35,7 +41,7 @@ void createField(Cell **field, int &width, int &height, System::Windows::Forms::
 	started = true;
 }
 
-void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started) {
+void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started, int &mb) {
 	float xStart = field[0][0].getXStart(),
 		 xEnd = field[width - 1][height - 1].getXEnd(),
 		 yStart = field[0][0].getYStart(),
@@ -43,11 +49,48 @@ void openCell(Cell **field, int x, int y, int &width, int &height, System::Windo
 	int curPosX,
 		curPosY;
 
+	field[0][0].setState(state::mined);
+
 	if (started == true) {
 		if (x > xStart && x<xEnd && y>yStart && y < yEnd) {
 			curPosX = (int)((x - xStart) / Cell::edge);
 			curPosY = (int)((y - yStart) / Cell::edge);
-			field[curPosX][curPosY].drawOpenedCell(f);
+
+			if (mb==mb_open && field[curPosX][curPosY].getState()!=state::opened) {
+				if (field[curPosX][curPosY].getState() == state::empty) {
+					field[curPosX][curPosY].drawOpenedCell(f);
+					field[curPosX][curPosY].setState(state::opened);
+				}
+				if (field[curPosX][curPosY].getState() == state::mined) {
+					field[curPosX][curPosY].drawExplodedCell(f);
+					if (lifes = 0) {
+						started = false;
+					}
+				}
+			}
+
+			if (mb==mb_flag && field[curPosX][curPosY].getState()!=state::opened) {
+				if (field[curPosX][curPosY].getState() == state::flagged) {
+					field[curPosX][curPosY].drawEmptyCell(f);
+					field[curPosX][curPosY].setState(state::empty);
+				}
+				else {
+					field[curPosX][curPosY].drawFlaggedCell(f);
+					field[curPosX][curPosY].setState(state::flagged);
+				}
+			}
+			
+			if (mb == mb_undefined && field[curPosX][curPosY].getState()!=state::opened && field[curPosX][curPosY].getState()!=state::flagged) {
+				if (field[curPosX][curPosY].getState() == state::undefined) {
+					field[curPosX][curPosY].drawEmptyCell(f);
+					field[curPosX][curPosY].setState(state::undefined);
+				}
+				else {
+					field[curPosX][curPosY].drawFlaggedCell(f);
+					field[curPosX][curPosY].setState(state::undefined);
+				}
+			}
+				
 		}
 		
 	}

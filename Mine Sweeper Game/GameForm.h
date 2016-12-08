@@ -8,13 +8,16 @@ static bool started;
 //bool started;
 
 void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
-void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
+void openCell(Cell **field, int x, int y, int &width, int &height, System::Windows::Forms::Form ^f, bool &started, int &mb);
 extern int	width,
 	        height,
             mines,
 		    quantity_of_mines,
 			quantity_of_cells_width,
-			quantity_of_cells_height;
+			quantity_of_cells_height,
+		    mb_open,
+			mb_flag,
+			mb_undefined;
 
 
 namespace MineSweeperGame {
@@ -25,7 +28,6 @@ namespace MineSweeperGame {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
-
 
 	/// <summary>
 	/// Сводка для GameForm
@@ -429,6 +431,7 @@ namespace MineSweeperGame {
 			this->GCOpenCellB->Size = System::Drawing::Size(147, 50);
 			this->GCOpenCellB->TabIndex = 3;
 			this->GCOpenCellB->UseVisualStyleBackColor = true;
+			this->GCOpenCellB->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GCOpenCellB_MouseDown);
 			// 
 			// label2
 			// 
@@ -450,6 +453,7 @@ namespace MineSweeperGame {
 			this->GCSetFlagB->Size = System::Drawing::Size(147, 50);
 			this->GCSetFlagB->TabIndex = 4;
 			this->GCSetFlagB->UseVisualStyleBackColor = true;
+			this->GCSetFlagB->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GCSetFlagB_MouseDown);
 			// 
 			// label3
 			// 
@@ -471,12 +475,13 @@ namespace MineSweeperGame {
 			this->GCSetUndef->Size = System::Drawing::Size(147, 50);
 			this->GCSetUndef->TabIndex = 5;
 			this->GCSetUndef->UseVisualStyleBackColor = true;
+			this->GCSetUndef->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GCSetUndef_MouseDown);
 			// 
 			// OptionsGB
 			// 
-			this->OptionsGB->Controls->Add(this->PresetsP);
 			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
 			this->OptionsGB->Controls->Add(this->ControlP);
+			this->OptionsGB->Controls->Add(this->PresetsP);
 			this->OptionsGB->Location = System::Drawing::Point(0, 28);
 			this->OptionsGB->Name = L"OptionsGB";
 			this->OptionsGB->Size = System::Drawing::Size(784, 535);
@@ -581,8 +586,49 @@ namespace MineSweeperGame {
 
 	private: System::Void GameForm_Shown(System::Object^  sender, System::EventArgs^  e) {
 		started = false;
-		
+		if (mb_open == 1) {
+			GCOpenCellB->Text = "Left mouse button";
+		}
+		else {
+			if (mb_open == 2) {
+				GCOpenCellB->Text = "Right mouse button";
+			}
+			else {
+				if (mb_open == 3) {
+					GCOpenCellB->Text = "Middle mouse button";
+				}
+			}
+		}
+
+		if (mb_flag == 1) {
+			GCSetFlagB->Text = "Left mouse button";
+		}
+		else {
+			if (mb_flag == 2) {
+				GCSetFlagB->Text = "Right mouse button";
+			}
+			else {
+				if (mb_flag == 3) {
+					GCSetFlagB->Text = "Middle mouse button";
+				}
+			}
+		}
+
+		if (mb_undefined == 1) {
+			GCSetUndef->Text = "Left mouse button";
+		}
+		else {
+			if (mb_undefined == 2) {
+				GCSetUndef->Text = "Right mouse button";
+			}
+			else {
+				if (mb_undefined == 3) {
+					GCSetUndef->Text = "Middle mouse button";
+				}
+			}
+		}
 	}
+
 private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 	OptionsGB->Visible = true;
 	ControlP->Visible = false;
@@ -604,7 +650,6 @@ private: System::Void recordsToolStripMenuItem_Click(System::Object^  sender, Sy
 	RecordsGB->Visible = true;
 	OptionsGB->Visible = false;
 }
-
 private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::EventArgs^  e) {
 	RecordsGB->Visible = false;
 	
@@ -657,8 +702,217 @@ private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System:
 	quantity_of_cells_height = 20;
 	quantity_of_mines = 99;
 }
+
+private: System::Void GCOpenCellB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	int tmp_mb_open = mb_open;
+	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+		mb_open = 1;
+	}
+	else {
+		if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+			mb_open = 2;
+		}
+		else {
+			if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+				mb_open = 3;
+			}
+		}
+	}
+
+	if (mb_open == mb_flag) {
+		mb_flag = tmp_mb_open;
+	}
+	if (mb_open == mb_undefined) {
+		mb_undefined = tmp_mb_open;
+	}
+
+	if (mb_open == 1) {
+		GCOpenCellB->Text = "Left mouse button";
+	}
+	else {
+		if (mb_open == 2) {
+			GCOpenCellB->Text = "Right mouse button";
+		}
+		else {
+			if (mb_open == 3) {
+				GCOpenCellB->Text = "Middle mouse button";
+			}
+		}
+	}
+
+	if (mb_flag == 1) {
+		GCSetFlagB->Text = "Left mouse button";
+	}
+	else {
+		if (mb_flag == 2) {
+			GCSetFlagB->Text = "Right mouse button";
+		}
+		else {
+			if (mb_flag == 3) {
+				GCSetFlagB->Text = "Middle mouse button";
+			}
+		}
+	}
+
+	if (mb_undefined == 1) {
+		GCSetUndef->Text = "Left mouse button";
+	}
+	else {
+		if (mb_undefined == 2) {
+			GCSetUndef->Text = "Right mouse button";
+		}
+		else {
+			if (mb_undefined == 3) {
+				GCSetUndef->Text = "Middle mouse button";
+			}
+		}
+	}
+}
+private: System::Void GCSetFlagB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	int tmp_mb_flag = mb_flag;
+	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+		mb_flag = 1;
+	}
+	else {
+		if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+			mb_flag = 2;
+		}
+		else {
+			if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+				mb_flag = 3;
+			}
+		}
+	}
+
+	if (mb_open == mb_flag) {
+		mb_open = tmp_mb_flag;
+	}
+	if (mb_flag == mb_undefined) {
+		mb_undefined = tmp_mb_flag;
+	}
+
+	if (mb_open == 1) {
+		GCOpenCellB->Text = "Left mouse button";
+	}
+	else {
+		if (mb_open == 2) {
+			GCOpenCellB->Text = "Right mouse button";
+		}
+		else {
+			if (mb_open == 3) {
+				GCOpenCellB->Text = "Middle mouse button";
+			}
+		}
+	}
+
+	if (mb_flag == 1) {
+		GCSetFlagB->Text = "Left mouse button";
+	}
+	else {
+		if (mb_flag == 2) {
+			GCSetFlagB->Text = "Right mouse button";
+		}
+		else {
+			if (mb_flag == 3) {
+				GCSetFlagB->Text = "Middle mouse button";
+			}
+		}
+	}
+
+	if (mb_undefined == 1) {
+		GCSetUndef->Text = "Left mouse button";
+	}
+	else {
+		if (mb_undefined == 2) {
+			GCSetUndef->Text = "Right mouse button";
+		}
+		else {
+			if (mb_undefined == 3) {
+				GCSetUndef->Text = "Middle mouse button";
+			}
+		}
+	}
+}
+private: System::Void GCSetUndef_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	int tmp_mb_undefined = mb_undefined;
+	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+		mb_undefined = 1;
+	}
+	else {
+		if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+			mb_undefined = 2;
+		}
+		else {
+			if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+				mb_undefined = 3;
+			}
+		}
+	}
+
+	if (mb_open == mb_undefined) {
+		mb_open = tmp_mb_undefined;
+	}
+	if (mb_flag == mb_undefined) {
+		mb_flag = tmp_mb_undefined;
+	}
+
+	if (mb_open == 1) {
+		GCOpenCellB->Text = "Left mouse button";
+	}
+	else {
+		if (mb_open == 2) {
+			GCOpenCellB->Text = "Right mouse button";
+		}
+		else {
+			if (mb_open == 3) {
+				GCOpenCellB->Text = "Middle mouse button";
+			}
+		}
+	}
+
+	if (mb_flag == 1) {
+		GCSetFlagB->Text = "Left mouse button";
+	}
+	else {
+		if (mb_flag == 2) {
+			GCSetFlagB->Text = "Right mouse button";
+		}
+		else {
+			if (mb_flag == 3) {
+				GCSetFlagB->Text = "Middle mouse button";
+			}
+		}
+	}
+
+	if (mb_undefined == 1) {
+		GCSetUndef->Text = "Left mouse button";
+	}
+	else {
+		if (mb_undefined == 2) {
+			GCSetUndef->Text = "Right mouse button";
+		}
+		else {
+			if (mb_undefined == 3) {
+				GCSetUndef->Text = "Middle mouse button";
+			}
+		}
+	}
+}
+
 private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-	openCell(field, e->X, e->Y, width, height, this, started);
+	int mb;
+
+	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+		mb = 1;
+	}
+	if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+		mb = 2;
+	}
+	if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+		mb = 3;
+	}
+
+	openCell(field, e->X, e->Y, width, height, this, started, mb);
 }
 };
 
