@@ -7,7 +7,7 @@ static bool started;
 
 //bool started;
 
-void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started);
+void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started);
 void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes);
 extern int	width,
 	        height,
@@ -103,6 +103,7 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::MaskedTextBox^  GMinesMTB;
 	private: System::Windows::Forms::MaskedTextBox^  GHeightMTB;
 	private: System::Windows::Forms::MaskedTextBox^  GWidthMTB;
+	private: System::Windows::Forms::ToolStripTextBox^  TSTBMinesCounter;
 	private: System::ComponentModel::IContainer^  components;
 
 	private:
@@ -124,6 +125,7 @@ namespace MineSweeperGame {
 			this->OptionsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->RecordsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->StartTSB = (gcnew System::Windows::Forms::ToolStripButton());
+			this->TSTBMinesCounter = (gcnew System::Windows::Forms::ToolStripTextBox());
 			this->OptionsMenuFLP = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->PresetsB = (gcnew System::Windows::Forms::Button());
 			this->ControlB = (gcnew System::Windows::Forms::Button());
@@ -169,7 +171,10 @@ namespace MineSweeperGame {
 			// 
 			// ToolsTS
 			// 
-			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->MenuTCDDB, this->StartTSB });
+			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+				this->MenuTCDDB, this->StartTSB,
+					this->TSTBMinesCounter
+			});
 			this->ToolsTS->Location = System::Drawing::Point(0, 0);
 			this->ToolsTS->Name = L"ToolsTS";
 			this->ToolsTS->Size = System::Drawing::Size(784, 25);
@@ -213,6 +218,12 @@ namespace MineSweeperGame {
 			this->StartTSB->Size = System::Drawing::Size(35, 22);
 			this->StartTSB->Text = L"Start";
 			this->StartTSB->Click += gcnew System::EventHandler(this, &GameForm::StartTSB_Click);
+			// 
+			// TSTBMinesCounter
+			// 
+			this->TSTBMinesCounter->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->TSTBMinesCounter->Name = L"TSTBMinesCounter";
+			this->TSTBMinesCounter->Size = System::Drawing::Size(70, 25);
 			// 
 			// OptionsMenuFLP
 			// 
@@ -678,7 +689,8 @@ private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^
 	}
 	
 	
-	createField(field, width, height, this, started);
+	createField(field, width, height, mines, this, started);
+	TSTBMinesCounter->Text = "Mines: " + mines.ToString();
 	
 }
 
@@ -913,6 +925,7 @@ private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windo
 	}
 
 	openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes);
+	TSTBMinesCounter->Text = "Mines: "+mines.ToString();
 }
 };
 

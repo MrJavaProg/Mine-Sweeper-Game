@@ -18,12 +18,12 @@ int	width,
 	mb_open = 1,
 	mb_flag = 2,
 	mb_undefined = 3,
-	lifes = 0;
+	lifes = 20;
 bool wasFirstClick = false;
 
 
 
-void createField(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f, bool &started) {
+void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started) {
 	float xStart,
 		  yStart;
 	yStart = (f->Height / 2) - (height / 2)*Cell::edge; 
@@ -40,6 +40,7 @@ void createField(Cell **field, int &width, int &height, System::Windows::Forms::
 	}
 	started = true;
 	wasFirstClick = false;
+	
 }
 
 void spawnMines(Cell **field, int &width, int &height, int mines, int &curPosX, int &curPosY) {
@@ -50,6 +51,30 @@ void spawnMines(Cell **field, int &width, int &height, int mines, int &curPosX, 
 		y = rand() % (height - 1) + 0;
 		if (x != curPosX && y != curPosY && field[x][y].getState()!=state::mined) {
 			field[x][y].setState(state::mined);
+			if (x - 1 >= 0) {
+				field[x - 1][y - 1].addNearbyMines();
+			}
+			if (y - 1 >= 0) {
+				field[x][y - 1].addNearbyMines();
+			}
+			if (x + 1 <= width && y - 1 >= 0) {
+				field[x + 1][y - 1].addNearbyMines();
+			}
+			if (x + 1 <= width) {
+				field[x + 1][y].addNearbyMines();
+			}
+			if (x + 1 <= width && y + 1 <= height) {
+				field[x + 1][y + 1].addNearbyMines();
+			}
+			if (y + 1 <= height) {
+				field[x][y + 1].addNearbyMines();
+			}
+			if (x - 1 >= 0 && y + 1 <= height) {
+				field[x - 1][y + 1].addNearbyMines();
+			}
+			if (x - 1 >= 0) {
+				field[x - 1][y].addNearbyMines();
+			}
 			mines--;
 		}
 	}
@@ -114,13 +139,12 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 					field[curPosX][curPosY].setState(state::undefined);
 				}
 				else {
-					field[curPosX][curPosY].drawFlaggedCell(f);
+					field[curPosX][curPosY].drawUndefinedCell(f);
 					field[curPosX][curPosY].setState(state::undefined);
 				}
 			}	
 		}	
 	}
-	
 }
 
 
