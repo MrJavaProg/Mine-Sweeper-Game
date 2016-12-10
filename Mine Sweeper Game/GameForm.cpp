@@ -20,7 +20,7 @@ int	width,
 	mb_undefined = 3,
 	lifes = 20;
 bool wasFirstClick = false;
-
+static int flags;
 
 
 void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started) {
@@ -40,7 +40,7 @@ void createField(Cell **field, int &width, int &height, int &mines, System::Wind
 	}
 	started = true;
 	wasFirstClick = false;
-	
+	flags = mines;
 }
 
 void spawnMines(Cell **field, int &width, int &height, int mines, int &curPosX, int &curPosY) {
@@ -105,7 +105,7 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 				}
 				else {
 					if (field[curPosX][curPosY].getState()==state::mined)
-					mines--;
+					flags--;
 					field[curPosX][curPosY].drawExplodedCell(f);
 					field[curPosX][curPosY].setExtraState(state::opened);
 					if (lifes == 0) {
@@ -125,10 +125,14 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 				if (field[curPosX][curPosY].getExtraState() == state::flagged) {
 					field[curPosX][curPosY].drawEmptyCell(f);
 					field[curPosX][curPosY].setExtraState(state::empty);
+					flags++;
 				}
 				else {
-					field[curPosX][curPosY].drawFlaggedCell(f);
-					field[curPosX][curPosY].setExtraState(state::flagged);
+					if (flags > 0) {
+						field[curPosX][curPosY].drawFlaggedCell(f);
+						field[curPosX][curPosY].setExtraState(state::flagged);
+						flags--;
+					}
 				}
 			}
 			
