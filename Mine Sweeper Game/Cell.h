@@ -9,7 +9,8 @@ class Cell
 		xEnd,
 		yEnd;
 	int nearbyMines,
-		state;
+		state,
+		extraState;
 
 public:
 	static float edge;
@@ -17,7 +18,7 @@ public:
 	Cell();
 	~Cell();
 	int getState();
-	void setState(int state);
+	int getExtraState();
 	float getXStart();
 	float getYStart();
 	float getXEnd();
@@ -35,6 +36,8 @@ public:
 	void setYStart(float yStart);
 	void setXEnd(float xEnd);
 	void setYEnd(float yEnd);
+	void setState(int state);
+	void setExtraState(int extraState);
 
 	void addNearbyMines();
 };

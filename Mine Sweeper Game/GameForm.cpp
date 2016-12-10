@@ -93,7 +93,7 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 			curPosX = (int)((x - xStart) / Cell::edge);
 			curPosY = (int)((y - yStart) / Cell::edge);
 
-			if (mb==mb_open && field[curPosX][curPosY].getState()!=state::opened) {
+			if (mb==mb_open && field[curPosX][curPosY].getExtraState()!=state::opened && field[curPosX][curPosY].getExtraState() != state::flagged && field[curPosX][curPosY].getExtraState() != state::undefined) {
 				if (wasFirstClick == false) {
 					spawnMines(field, width, height, mines, curPosX, curPosY);
 					wasFirstClick = true;
@@ -101,10 +101,13 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 
 				if (field[curPosX][curPosY].getState() == state::empty) {
 					field[curPosX][curPosY].drawOpenedCell(f);
-					field[curPosX][curPosY].setState(state::opened);
+					field[curPosX][curPosY].setExtraState(state::opened);
 				}
 				else {
+					if (field[curPosX][curPosY].getState()==state::mined)
+					mines--;
 					field[curPosX][curPosY].drawExplodedCell(f);
+					field[curPosX][curPosY].setExtraState(state::opened);
 					if (lifes == 0) {
 						started = false;
 					}
@@ -114,33 +117,33 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 				}
 			}
 
-			if (mb==mb_flag && field[curPosX][curPosY].getState()!=state::opened) {
+			if (mb==mb_flag && field[curPosX][curPosY].getExtraState()!=state::opened && field[curPosX][curPosY].getExtraState()!=state::undefined) {
 				if (wasFirstClick == false) {
 					spawnMines(field, width, height, mines, curPosX, curPosY);
 					wasFirstClick = true;
 				}
-				if (field[curPosX][curPosY].getState() == state::flagged) {
+				if (field[curPosX][curPosY].getExtraState() == state::flagged) {
 					field[curPosX][curPosY].drawEmptyCell(f);
-					field[curPosX][curPosY].setState(state::empty);
+					field[curPosX][curPosY].setExtraState(state::empty);
 				}
 				else {
 					field[curPosX][curPosY].drawFlaggedCell(f);
-					field[curPosX][curPosY].setState(state::flagged);
+					field[curPosX][curPosY].setExtraState(state::flagged);
 				}
 			}
 			
-			if (mb == mb_undefined && field[curPosX][curPosY].getState()!=state::opened && field[curPosX][curPosY].getState()!=state::flagged) {
+			if (mb == mb_undefined && field[curPosX][curPosY].getExtraState()!=state::opened && field[curPosX][curPosY].getExtraState()!=state::flagged) {
 				if (wasFirstClick == false) {
 					spawnMines(field, width, height, mines, curPosX, curPosY);
 					wasFirstClick = true;
 				}
-				if (field[curPosX][curPosY].getState() == state::undefined) {
+				if (field[curPosX][curPosY].getExtraState() == state::undefined) {
 					field[curPosX][curPosY].drawEmptyCell(f);
-					field[curPosX][curPosY].setState(state::undefined);
+					field[curPosX][curPosY].setExtraState(state::empty);
 				}
 				else {
 					field[curPosX][curPosY].drawUndefinedCell(f);
-					field[curPosX][curPosY].setState(state::undefined);
+					field[curPosX][curPosY].setExtraState(state::undefined);
 				}
 			}	
 		}	

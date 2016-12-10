@@ -7,6 +7,7 @@ Cell::Cell()
 {
 	state = 0;
 	nearbyMines = 0;
+	extraState = 0;
 }
 
 
@@ -19,9 +20,19 @@ int Cell::getState()
 	return state;
 }
 
+int Cell::getExtraState()
+{
+	return extraState;
+}
+
 void Cell::setState(int state)
 {
 	this->state = state;
+}
+
+void Cell::setExtraState(int extraState)
+{
+	this->extraState = extraState;
 }
 
 
