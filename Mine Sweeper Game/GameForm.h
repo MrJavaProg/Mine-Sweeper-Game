@@ -9,7 +9,10 @@ static bool started;
 
 void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started);
 void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes);
-extern int	width,
+void clearField(Cell **field, int &width, int &height);
+void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
+
+/*extern int	width,
 	        height,
             mines,
 		    quantity_of_mines,
@@ -18,8 +21,20 @@ extern int	width,
 		    mb_open,
 			mb_flag,
 			mb_undefined,
-			lifes;
-
+			lifes;*/
+static Cell **field;
+static int	width,
+	height,
+	mines,
+	quantity_of_mines = 0,
+	quantity_of_cells_width = 0,
+	quantity_of_cells_height = 0,
+	mb_open = 1,
+	mb_flag = 2,
+	mb_undefined = 3,
+	lifes = 0;
+static bool wasFirstClick = false;
+static int flags;
 
 namespace MineSweeperGame {
 
@@ -104,6 +119,7 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::MaskedTextBox^  GHeightMTB;
 	private: System::Windows::Forms::MaskedTextBox^  GWidthMTB;
 	private: System::Windows::Forms::ToolStripTextBox^  TSTBMinesCounter;
+	private: System::Windows::Forms::ToolStripLabel^  TSLInfo;
 	private: System::ComponentModel::IContainer^  components;
 
 	private:
@@ -157,6 +173,7 @@ namespace MineSweeperGame {
 			this->RPreset2TP = (gcnew System::Windows::Forms::TabPage());
 			this->RPreset3TP = (gcnew System::Windows::Forms::TabPage());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
+			this->TSLInfo = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -171,9 +188,9 @@ namespace MineSweeperGame {
 			// 
 			// ToolsTS
 			// 
-			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
 				this->MenuTCDDB, this->StartTSB,
-					this->TSTBMinesCounter
+					this->TSTBMinesCounter, this->TSLInfo
 			});
 			this->ToolsTS->Location = System::Drawing::Point(0, 0);
 			this->ToolsTS->Name = L"ToolsTS";
@@ -566,6 +583,11 @@ namespace MineSweeperGame {
 			this->CloseRecordsB->Text = L"Close records";
 			this->CloseRecordsB->UseVisualStyleBackColor = true;
 			// 
+			// TSLInfo
+			// 
+			this->TSLInfo->Name = L"TSLInfo";
+			this->TSLInfo->Size = System::Drawing::Size(0, 22);
+			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -668,7 +690,9 @@ private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::Eve
 }
 
 private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-	
+	if (width != 0 && height != 0) {
+		clearField(field, width, height);
+	}
 
 	if (quantity_of_cells_width == 0 && quantity_of_cells_height == 0 && quantity_of_mines == 0) {
 		width = 9;
@@ -680,7 +704,6 @@ private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^
 		height = quantity_of_cells_height;
 		mines = quantity_of_mines;
 	}
-	 //**field = new Cell*[width];
 	
 	field = new Cell*[width];
 	
@@ -925,7 +948,15 @@ private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windo
 	}
 
 	openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes);
-	TSTBMinesCounter->Text = "Mines: "+mines.ToString();
+	TSTBMinesCounter->Text = "Flags: "+flags.ToString();
+	if (started == false) {
+		showMines(field, width, height, this);
+		TSLInfo->Text = "You are looser!!! LOL";
+	}
+	if (mines == 0) {
+		started = false;
+		TSLInfo->Text = "Win!!!!";
+	}
 }
 };
 

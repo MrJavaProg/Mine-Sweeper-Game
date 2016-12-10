@@ -8,7 +8,7 @@ using namespace MineSweeperGame;
 using namespace System;
 
 enum state {empty = 0, mined = 1, opened = 2, flagged = 3, undefined = 4};
-Cell **field;
+/*Cell **field;
 int	width,
 	height,
 	mines,
@@ -18,9 +18,8 @@ int	width,
 	mb_open = 1,
 	mb_flag = 2,
 	mb_undefined = 3,
-	lifes = 20;
-bool wasFirstClick = false;
-static int flags;
+	lifes = 20;*/
+
 
 
 void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started) {
@@ -80,6 +79,16 @@ void spawnMines(Cell **field, int &width, int &height, int mines, int &curPosX, 
 	}
 }
 
+void showMines(Cell **field, int &width, int &height, Form ^f) {
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			if (field[i][j].getState() == state::mined) {
+				field[i][j].drawExplodedCell(f);
+			}
+		}
+	}
+}
+
 void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes) {
 	float xStart = field[0][0].getXStart(),
 		 xEnd = field[width - 1][height - 1].getXEnd(),
@@ -106,6 +115,7 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 				else {
 					if (field[curPosX][curPosY].getState()==state::mined)
 					flags--;
+					mines--;
 					field[curPosX][curPosY].drawExplodedCell(f);
 					field[curPosX][curPosY].setExtraState(state::opened);
 					if (lifes == 0) {
@@ -126,12 +136,18 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 					field[curPosX][curPosY].drawEmptyCell(f);
 					field[curPosX][curPosY].setExtraState(state::empty);
 					flags++;
+					if (field[curPosX][curPosY].getState() == state::mined) {
+						mines++;
+					}
 				}
 				else {
 					if (flags > 0) {
 						field[curPosX][curPosY].drawFlaggedCell(f);
 						field[curPosX][curPosY].setExtraState(state::flagged);
 						flags--;
+						if (field[curPosX][curPosY].getState() == state::mined) {
+							mines--;
+						}
 					}
 				}
 			}
@@ -154,6 +170,18 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 	}
 }
 
+void clearField(Cell **field, int &width, int &height) {
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			field[i][j].~Cell();
+		}
+	}
+
+	for (int i = 0; i < width; i++) {
+		delete [] field[i];
+	}
+	delete field;
+}
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
