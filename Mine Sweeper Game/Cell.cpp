@@ -102,7 +102,9 @@ void Cell::drawOpenedCell(System::Windows::Forms::Form ^form)
 
 	g->FillRectangle(gcnew SolidBrush(Color::FromArgb(255, 255, 255)), xStart, yStart, edge, edge);
 	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, edge, edge);
-	g->DrawString(nearbyMines.ToString(), gcnew Font(FontFamily::GenericSansSerif, 14, FontStyle::Bold), gcnew SolidBrush(Color::FromArgb(84, 4, 4)), xStart, yStart - 4);
+	if (nearbyMines != 0) {
+		g->DrawString(nearbyMines.ToString(), gcnew Font(FontFamily::GenericSansSerif, 14, FontStyle::Bold), gcnew SolidBrush(Color::FromArgb(84, 4, 4)), xStart, yStart - 4);
+	}
 }
 
 void Cell::drawUndefinedCell(System::Windows::Forms::Form ^ form)

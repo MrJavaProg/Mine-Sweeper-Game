@@ -8,7 +8,7 @@ static bool started;
 //bool started;
 
 void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started);
-void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes);
+void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells);
 void clearField(Cell **field, int &width, int &height);
 void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
 
@@ -32,7 +32,8 @@ static int	width,
 	mb_open = 1,
 	mb_flag = 2,
 	mb_undefined = 3,
-	lifes = 0;
+	lifes = 20,
+	closedCells;
 static bool wasFirstClick = false;
 static int flags;
 
@@ -96,11 +97,14 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::RadioButton^  GPreset3RB;
 	private: System::Windows::Forms::Panel^  ControlP;
 	private: System::Windows::Forms::FlowLayoutPanel^  flowLayoutPanel1;
-	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::Label^  GCSetOpenInfo;
+
 	private: System::Windows::Forms::Button^  GCOpenCellB;
-	private: System::Windows::Forms::Label^  label2;
+	private: System::Windows::Forms::Label^  GCSetFlagInfo;
+
 	private: System::Windows::Forms::Button^  GCSetFlagB;
-	private: System::Windows::Forms::Label^  label3;
+	private: System::Windows::Forms::Label^  GCSetUndefined;
+
 	private: System::Windows::Forms::Button^  GCSetUndef;
 	private: System::Windows::Forms::GroupBox^  OptionsGB;
 
@@ -112,14 +116,35 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::TabPage^  RPreset3TP;
 	private: System::Windows::Forms::Button^  CloseRecordsB;
 	private: System::Windows::Forms::Panel^  panel1;
-	private: System::Windows::Forms::Label^  Preset3L;
-	private: System::Windows::Forms::Label^  Preset2L;
-	private: System::Windows::Forms::Label^  Preset1L;
-	private: System::Windows::Forms::MaskedTextBox^  GMinesMTB;
-	private: System::Windows::Forms::MaskedTextBox^  GHeightMTB;
-	private: System::Windows::Forms::MaskedTextBox^  GWidthMTB;
+
+
+
+
+
+
 	private: System::Windows::Forms::ToolStripTextBox^  TSTBMinesCounter;
 	private: System::Windows::Forms::ToolStripLabel^  TSLInfo;
+
+
+
+
+
+
+	private: System::Windows::Forms::Label^  GWidthInfo;
+	private: System::Windows::Forms::TextBox^  GWidthTB;
+	private: System::Windows::Forms::Label^  GHeightInfo;
+	private: System::Windows::Forms::TextBox^  GHeightTB;
+	private: System::Windows::Forms::Label^  GameMinesInfo;
+	private: System::Windows::Forms::TextBox^  GMinesTB;
+	private: System::Windows::Forms::RadioButton^  GRandomRB;
+	private: System::Windows::Forms::TextBox^  GLifesTB;
+
+
+	private: System::Windows::Forms::CheckBox^  GWrongCB;
+
+
+	private: System::Windows::Forms::CheckBox^  GUnknownCB;
+
 	private: System::ComponentModel::IContainer^  components;
 
 	private:
@@ -142,29 +167,34 @@ namespace MineSweeperGame {
 			this->RecordsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->StartTSB = (gcnew System::Windows::Forms::ToolStripButton());
 			this->TSTBMinesCounter = (gcnew System::Windows::Forms::ToolStripTextBox());
+			this->TSLInfo = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->OptionsMenuFLP = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->PresetsB = (gcnew System::Windows::Forms::Button());
 			this->ControlB = (gcnew System::Windows::Forms::Button());
 			this->CloseOptionsB = (gcnew System::Windows::Forms::Button());
 			this->PresetsP = (gcnew System::Windows::Forms::Panel());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
-			this->Preset3L = (gcnew System::Windows::Forms::Label());
-			this->Preset2L = (gcnew System::Windows::Forms::Label());
-			this->Preset1L = (gcnew System::Windows::Forms::Label());
-			this->GMinesMTB = (gcnew System::Windows::Forms::MaskedTextBox());
-			this->GHeightMTB = (gcnew System::Windows::Forms::MaskedTextBox());
-			this->GWidthMTB = (gcnew System::Windows::Forms::MaskedTextBox());
+			this->GWrongCB = (gcnew System::Windows::Forms::CheckBox());
+			this->GUnknownCB = (gcnew System::Windows::Forms::CheckBox());
+			this->GLifesTB = (gcnew System::Windows::Forms::TextBox());
 			this->DefaultPresetsFLP = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->GPreset1RB = (gcnew System::Windows::Forms::RadioButton());
 			this->GPreset2RB = (gcnew System::Windows::Forms::RadioButton());
 			this->GPreset3RB = (gcnew System::Windows::Forms::RadioButton());
+			this->GWidthInfo = (gcnew System::Windows::Forms::Label());
+			this->GWidthTB = (gcnew System::Windows::Forms::TextBox());
+			this->GHeightInfo = (gcnew System::Windows::Forms::Label());
+			this->GHeightTB = (gcnew System::Windows::Forms::TextBox());
+			this->GameMinesInfo = (gcnew System::Windows::Forms::Label());
+			this->GMinesTB = (gcnew System::Windows::Forms::TextBox());
+			this->GRandomRB = (gcnew System::Windows::Forms::RadioButton());
 			this->ControlP = (gcnew System::Windows::Forms::Panel());
 			this->flowLayoutPanel1 = (gcnew System::Windows::Forms::FlowLayoutPanel());
-			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->GCSetOpenInfo = (gcnew System::Windows::Forms::Label());
 			this->GCOpenCellB = (gcnew System::Windows::Forms::Button());
-			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->GCSetFlagInfo = (gcnew System::Windows::Forms::Label());
 			this->GCSetFlagB = (gcnew System::Windows::Forms::Button());
-			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->GCSetUndefined = (gcnew System::Windows::Forms::Label());
 			this->GCSetUndef = (gcnew System::Windows::Forms::Button());
 			this->OptionsGB = (gcnew System::Windows::Forms::GroupBox());
 			this->RecordsGB = (gcnew System::Windows::Forms::GroupBox());
@@ -173,7 +203,6 @@ namespace MineSweeperGame {
 			this->RPreset2TP = (gcnew System::Windows::Forms::TabPage());
 			this->RPreset3TP = (gcnew System::Windows::Forms::TabPage());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
-			this->TSLInfo = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -242,6 +271,11 @@ namespace MineSweeperGame {
 			this->TSTBMinesCounter->Name = L"TSTBMinesCounter";
 			this->TSTBMinesCounter->Size = System::Drawing::Size(70, 25);
 			// 
+			// TSLInfo
+			// 
+			this->TSLInfo->Name = L"TSLInfo";
+			this->TSLInfo->Size = System::Drawing::Size(0, 22);
+			// 
 			// OptionsMenuFLP
 			// 
 			this->OptionsMenuFLP->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
@@ -300,76 +334,46 @@ namespace MineSweeperGame {
 			// panel1
 			// 
 			this->panel1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->panel1->Controls->Add(this->Preset3L);
-			this->panel1->Controls->Add(this->Preset2L);
-			this->panel1->Controls->Add(this->Preset1L);
-			this->panel1->Controls->Add(this->GMinesMTB);
-			this->panel1->Controls->Add(this->GHeightMTB);
-			this->panel1->Controls->Add(this->GWidthMTB);
-			this->panel1->Location = System::Drawing::Point(35, 188);
+			this->panel1->Controls->Add(this->GWrongCB);
+			this->panel1->Controls->Add(this->GUnknownCB);
+			this->panel1->Controls->Add(this->GLifesTB);
+			this->panel1->Location = System::Drawing::Point(35, 267);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(290, 181);
+			this->panel1->Size = System::Drawing::Size(290, 140);
 			this->panel1->TabIndex = 1;
 			// 
-			// Preset3L
+			// GWrongCB
 			// 
-			this->Preset3L->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->GWrongCB->AutoSize = true;
+			this->GWrongCB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->Preset3L->Location = System::Drawing::Point(27, 100);
-			this->Preset3L->Name = L"Preset3L";
-			this->Preset3L->Size = System::Drawing::Size(86, 31);
-			this->Preset3L->TabIndex = 8;
-			this->Preset3L->Text = L"Mines:";
+			this->GWrongCB->Location = System::Drawing::Point(3, 56);
+			this->GWrongCB->Name = L"GWrongCB";
+			this->GWrongCB->Size = System::Drawing::Size(177, 28);
+			this->GWrongCB->TabIndex = 30;
+			this->GWrongCB->Text = L"Right to be wrong";
+			this->GWrongCB->UseVisualStyleBackColor = true;
+			this->GWrongCB->CheckedChanged += gcnew System::EventHandler(this, &GameForm::GWrongCB_CheckedChanged_1);
 			// 
-			// Preset2L
+			// GUnknownCB
 			// 
-			this->Preset2L->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->GUnknownCB->AutoSize = true;
+			this->GUnknownCB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->Preset2L->Location = System::Drawing::Point(27, 66);
-			this->Preset2L->Name = L"Preset2L";
-			this->Preset2L->Size = System::Drawing::Size(86, 31);
-			this->Preset2L->TabIndex = 7;
-			this->Preset2L->Text = L"Height:";
+			this->GUnknownCB->Location = System::Drawing::Point(3, 18);
+			this->GUnknownCB->Name = L"GUnknownCB";
+			this->GUnknownCB->Size = System::Drawing::Size(254, 28);
+			this->GUnknownCB->TabIndex = 29;
+			this->GUnknownCB->Text = L"Unknown quantity of mines";
+			this->GUnknownCB->UseVisualStyleBackColor = true;
 			// 
-			// Preset1L
+			// GLifesTB
 			// 
-			this->Preset1L->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->Preset1L->Location = System::Drawing::Point(27, 29);
-			this->Preset1L->Name = L"Preset1L";
-			this->Preset1L->Size = System::Drawing::Size(86, 31);
-			this->Preset1L->TabIndex = 6;
-			this->Preset1L->Text = L"Width:";
-			// 
-			// GMinesMTB
-			// 
-			this->GMinesMTB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->GMinesMTB->Location = System::Drawing::Point(119, 100);
-			this->GMinesMTB->Mask = L"00";
-			this->GMinesMTB->Name = L"GMinesMTB";
-			this->GMinesMTB->Size = System::Drawing::Size(100, 31);
-			this->GMinesMTB->TabIndex = 5;
-			// 
-			// GHeightMTB
-			// 
-			this->GHeightMTB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->GHeightMTB->Location = System::Drawing::Point(119, 66);
-			this->GHeightMTB->Mask = L"00";
-			this->GHeightMTB->Name = L"GHeightMTB";
-			this->GHeightMTB->Size = System::Drawing::Size(100, 31);
-			this->GHeightMTB->TabIndex = 4;
-			// 
-			// GWidthMTB
-			// 
-			this->GWidthMTB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->GWidthMTB->Location = System::Drawing::Point(119, 29);
-			this->GWidthMTB->Mask = L"00";
-			this->GWidthMTB->Name = L"GWidthMTB";
-			this->GWidthMTB->Size = System::Drawing::Size(100, 31);
-			this->GWidthMTB->TabIndex = 3;
+			this->GLifesTB->Enabled = false;
+			this->GLifesTB->Location = System::Drawing::Point(208, 62);
+			this->GLifesTB->Name = L"GLifesTB";
+			this->GLifesTB->Size = System::Drawing::Size(41, 20);
+			this->GLifesTB->TabIndex = 28;
 			// 
 			// DefaultPresetsFLP
 			// 
@@ -377,13 +381,23 @@ namespace MineSweeperGame {
 			this->DefaultPresetsFLP->Controls->Add(this->GPreset1RB);
 			this->DefaultPresetsFLP->Controls->Add(this->GPreset2RB);
 			this->DefaultPresetsFLP->Controls->Add(this->GPreset3RB);
+			this->DefaultPresetsFLP->Controls->Add(this->GWidthInfo);
+			this->DefaultPresetsFLP->Controls->Add(this->GWidthTB);
+			this->DefaultPresetsFLP->Controls->Add(this->GHeightInfo);
+			this->DefaultPresetsFLP->Controls->Add(this->GHeightTB);
+			this->DefaultPresetsFLP->Controls->Add(this->GameMinesInfo);
+			this->DefaultPresetsFLP->Controls->Add(this->GMinesTB);
+			this->DefaultPresetsFLP->Controls->Add(this->GRandomRB);
 			this->DefaultPresetsFLP->Location = System::Drawing::Point(35, 3);
 			this->DefaultPresetsFLP->Name = L"DefaultPresetsFLP";
-			this->DefaultPresetsFLP->Size = System::Drawing::Size(290, 179);
+			this->DefaultPresetsFLP->Size = System::Drawing::Size(290, 243);
 			this->DefaultPresetsFLP->TabIndex = 0;
 			// 
 			// GPreset1RB
 			// 
+			this->GPreset1RB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GPreset1RB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
 			this->GPreset1RB->Location = System::Drawing::Point(3, 3);
 			this->GPreset1RB->Name = L"GPreset1RB";
 			this->GPreset1RB->Size = System::Drawing::Size(216, 34);
@@ -396,6 +410,9 @@ namespace MineSweeperGame {
 			// 
 			// GPreset2RB
 			// 
+			this->GPreset2RB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GPreset2RB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
 			this->GPreset2RB->Location = System::Drawing::Point(3, 43);
 			this->GPreset2RB->Name = L"GPreset2RB";
 			this->GPreset2RB->Size = System::Drawing::Size(216, 34);
@@ -408,6 +425,9 @@ namespace MineSweeperGame {
 			// 
 			// GPreset3RB
 			// 
+			this->GPreset3RB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GPreset3RB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
 			this->GPreset3RB->Location = System::Drawing::Point(3, 83);
 			this->GPreset3RB->Name = L"GPreset3RB";
 			this->GPreset3RB->Size = System::Drawing::Size(216, 34);
@@ -417,6 +437,76 @@ namespace MineSweeperGame {
 			this->GPreset3RB->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			this->GPreset3RB->UseVisualStyleBackColor = true;
 			this->GPreset3RB->CheckedChanged += gcnew System::EventHandler(this, &GameForm::GPreset3RB_CheckedChanged);
+			// 
+			// GWidthInfo
+			// 
+			this->GWidthInfo->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GWidthInfo->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->GWidthInfo->Location = System::Drawing::Point(3, 120);
+			this->GWidthInfo->Name = L"GWidthInfo";
+			this->GWidthInfo->Size = System::Drawing::Size(199, 23);
+			this->GWidthInfo->TabIndex = 24;
+			this->GWidthInfo->Text = L"Width....................:";
+			// 
+			// GWidthTB
+			// 
+			this->GWidthTB->Location = System::Drawing::Point(208, 123);
+			this->GWidthTB->Name = L"GWidthTB";
+			this->GWidthTB->Size = System::Drawing::Size(41, 20);
+			this->GWidthTB->TabIndex = 31;
+			this->GWidthTB->TextChanged += gcnew System::EventHandler(this, &GameForm::GWidthTB_TextChanged);
+			// 
+			// GHeightInfo
+			// 
+			this->GHeightInfo->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GHeightInfo->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->GHeightInfo->Location = System::Drawing::Point(3, 146);
+			this->GHeightInfo->Name = L"GHeightInfo";
+			this->GHeightInfo->Size = System::Drawing::Size(199, 31);
+			this->GHeightInfo->TabIndex = 36;
+			this->GHeightInfo->Text = L"Height...................:";
+			// 
+			// GHeightTB
+			// 
+			this->GHeightTB->Location = System::Drawing::Point(208, 149);
+			this->GHeightTB->Name = L"GHeightTB";
+			this->GHeightTB->Size = System::Drawing::Size(41, 20);
+			this->GHeightTB->TabIndex = 38;
+			this->GHeightTB->TextChanged += gcnew System::EventHandler(this, &GameForm::GHeightTB_TextChanged);
+			// 
+			// GameMinesInfo
+			// 
+			this->GameMinesInfo->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GameMinesInfo->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->GameMinesInfo->Location = System::Drawing::Point(3, 177);
+			this->GameMinesInfo->Name = L"GameMinesInfo";
+			this->GameMinesInfo->Size = System::Drawing::Size(199, 31);
+			this->GameMinesInfo->TabIndex = 41;
+			this->GameMinesInfo->Text = L"Mines....................:";
+			// 
+			// GMinesTB
+			// 
+			this->GMinesTB->Location = System::Drawing::Point(208, 180);
+			this->GMinesTB->Name = L"GMinesTB";
+			this->GMinesTB->Size = System::Drawing::Size(41, 20);
+			this->GMinesTB->TabIndex = 42;
+			this->GMinesTB->TextChanged += gcnew System::EventHandler(this, &GameForm::GMinesTB_TextChanged);
+			// 
+			// GRandomRB
+			// 
+			this->GRandomRB->AutoSize = true;
+			this->GRandomRB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GRandomRB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->GRandomRB->Location = System::Drawing::Point(3, 211);
+			this->GRandomRB->Name = L"GRandomRB";
+			this->GRandomRB->Size = System::Drawing::Size(138, 28);
+			this->GRandomRB->TabIndex = 43;
+			this->GRandomRB->Text = L"Random field";
+			this->GRandomRB->UseVisualStyleBackColor = true;
 			// 
 			// ControlP
 			// 
@@ -429,28 +519,28 @@ namespace MineSweeperGame {
 			// 
 			// flowLayoutPanel1
 			// 
-			this->flowLayoutPanel1->Controls->Add(this->label1);
+			this->flowLayoutPanel1->Controls->Add(this->GCSetOpenInfo);
 			this->flowLayoutPanel1->Controls->Add(this->GCOpenCellB);
-			this->flowLayoutPanel1->Controls->Add(this->label2);
+			this->flowLayoutPanel1->Controls->Add(this->GCSetFlagInfo);
 			this->flowLayoutPanel1->Controls->Add(this->GCSetFlagB);
-			this->flowLayoutPanel1->Controls->Add(this->label3);
+			this->flowLayoutPanel1->Controls->Add(this->GCSetUndefined);
 			this->flowLayoutPanel1->Controls->Add(this->GCSetUndef);
 			this->flowLayoutPanel1->Location = System::Drawing::Point(39, 3);
 			this->flowLayoutPanel1->Name = L"flowLayoutPanel1";
 			this->flowLayoutPanel1->Size = System::Drawing::Size(270, 188);
 			this->flowLayoutPanel1->TabIndex = 0;
 			// 
-			// label1
+			// GCSetOpenInfo
 			// 
-			this->label1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->GCSetOpenInfo->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GCSetOpenInfo->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label1->Location = System::Drawing::Point(3, 0);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(103, 53);
-			this->label1->TabIndex = 0;
-			this->label1->Text = L"Open cell";
-			this->label1->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			this->GCSetOpenInfo->Location = System::Drawing::Point(3, 0);
+			this->GCSetOpenInfo->Name = L"GCSetOpenInfo";
+			this->GCSetOpenInfo->Size = System::Drawing::Size(103, 53);
+			this->GCSetOpenInfo->TabIndex = 0;
+			this->GCSetOpenInfo->Text = L"Open cell";
+			this->GCSetOpenInfo->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
 			// GCOpenCellB
 			// 
@@ -460,19 +550,18 @@ namespace MineSweeperGame {
 			this->GCOpenCellB->Size = System::Drawing::Size(147, 50);
 			this->GCOpenCellB->TabIndex = 3;
 			this->GCOpenCellB->UseVisualStyleBackColor = true;
-			this->GCOpenCellB->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GCOpenCellB_MouseDown);
 			// 
-			// label2
+			// GCSetFlagInfo
 			// 
-			this->label2->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->GCSetFlagInfo->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GCSetFlagInfo->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label2->Location = System::Drawing::Point(3, 56);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(103, 53);
-			this->label2->TabIndex = 1;
-			this->label2->Text = L"Set flag";
-			this->label2->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			this->GCSetFlagInfo->Location = System::Drawing::Point(3, 56);
+			this->GCSetFlagInfo->Name = L"GCSetFlagInfo";
+			this->GCSetFlagInfo->Size = System::Drawing::Size(103, 53);
+			this->GCSetFlagInfo->TabIndex = 1;
+			this->GCSetFlagInfo->Text = L"Set flag";
+			this->GCSetFlagInfo->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
 			// GCSetFlagB
 			// 
@@ -484,17 +573,17 @@ namespace MineSweeperGame {
 			this->GCSetFlagB->UseVisualStyleBackColor = true;
 			this->GCSetFlagB->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GCSetFlagB_MouseDown);
 			// 
-			// label3
+			// GCSetUndefined
 			// 
-			this->label3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->GCSetUndefined->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->GCSetUndefined->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label3->Location = System::Drawing::Point(3, 112);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(103, 53);
-			this->label3->TabIndex = 2;
-			this->label3->Text = L"Set undefenite";
-			this->label3->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			this->GCSetUndefined->Location = System::Drawing::Point(3, 112);
+			this->GCSetUndefined->Name = L"GCSetUndefined";
+			this->GCSetUndefined->Size = System::Drawing::Size(103, 53);
+			this->GCSetUndefined->TabIndex = 2;
+			this->GCSetUndefined->Text = L"Set undefenite";
+			this->GCSetUndefined->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
 			// GCSetUndef
 			// 
@@ -509,8 +598,8 @@ namespace MineSweeperGame {
 			// OptionsGB
 			// 
 			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
-			this->OptionsGB->Controls->Add(this->ControlP);
 			this->OptionsGB->Controls->Add(this->PresetsP);
+			this->OptionsGB->Controls->Add(this->ControlP);
 			this->OptionsGB->Location = System::Drawing::Point(0, 28);
 			this->OptionsGB->Name = L"OptionsGB";
 			this->OptionsGB->Size = System::Drawing::Size(784, 535);
@@ -583,11 +672,6 @@ namespace MineSweeperGame {
 			this->CloseRecordsB->Text = L"Close records";
 			this->CloseRecordsB->UseVisualStyleBackColor = true;
 			// 
-			// TSLInfo
-			// 
-			this->TSLInfo->Name = L"TSLInfo";
-			this->TSLInfo->Size = System::Drawing::Size(0, 22);
-			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -607,6 +691,7 @@ namespace MineSweeperGame {
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
 			this->DefaultPresetsFLP->ResumeLayout(false);
+			this->DefaultPresetsFLP->PerformLayout();
 			this->ControlP->ResumeLayout(false);
 			this->flowLayoutPanel1->ResumeLayout(false);
 			this->OptionsGB->ResumeLayout(false);
@@ -671,6 +756,9 @@ private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, Sy
 }
 private: System::Void CloseOptionsB_Click(System::Object^  sender, System::EventArgs^  e) {
 	OptionsGB->Visible = false;
+	if (GWidthTB->Text=="" || GHeightTB->Text=="" || GMinesTB->Text=="" && GPreset1RB->Checked==false && GPreset2RB->Checked == false && GPreset3RB->Checked == false && GRandomRB->Checked == false) {
+		MessageBox::Show("All fields must be filled!!! Preset 1 is chosen.");
+	}
 }
 private: System::Void ControlB_Click(System::Object^  sender, System::EventArgs^  e) {
 	ControlP->Visible = true;
@@ -711,7 +799,7 @@ private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^
 		field[i] = new Cell[32];
 	}
 	
-	
+	closedCells = width*height;
 	createField(field, width, height, mines, this, started);
 	TSTBMinesCounter->Text = "Mines: " + mines.ToString();
 	
@@ -726,16 +814,22 @@ private: System::Void GPreset1RB_CheckedChanged(System::Object^  sender, System:
 	quantity_of_cells_width = 9;
 	quantity_of_cells_height = 9;
 	quantity_of_mines = 10;
+	GWidthTB->Text = "";
+	GHeightTB->Text = "";
 }
 private: System::Void GPreset2RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 	quantity_of_cells_width = 16;
 	quantity_of_cells_height = 16;
 	quantity_of_mines = 40;
+	GWidthTB->Text = "";
+	GHeightTB->Text = "";
 }
 private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 	quantity_of_cells_width = 24;
 	quantity_of_cells_height = 20;
 	quantity_of_mines = 99;
+	GWidthTB->Text = "";
+	GHeightTB->Text = "";
 }
 
 private: System::Void GCOpenCellB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
@@ -947,15 +1041,49 @@ private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windo
 		mb = 3;
 	}
 
-	openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes);
+	openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells);
 	TSTBMinesCounter->Text = "Flags: "+flags.ToString();
 	if (started == false) {
 		showMines(field, width, height, this);
 		TSLInfo->Text = "You are looser!!! LOL";
 	}
-	if (mines == 0) {
+	if (mines == 0 || closedCells==mines) {
 		started = false;
 		TSLInfo->Text = "Win!!!!";
+	}
+}
+
+private: System::Void GWrongCB_CheckedChanged_1(System::Object^  sender, System::EventArgs^  e) {
+	if (GWrongCB->Checked == true) {
+		GLifesTB->Enabled = true;
+	}
+	else {
+		GLifesTB->Enabled = 0;
+		GLifesTB->Text = "";
+	}
+}
+private: System::Void GWidthTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	GPreset1RB->Checked = false;
+	GPreset2RB->Checked = false;
+	GPreset3RB->Checked = false;
+	GRandomRB->Checked = false;
+}
+private: System::Void GHeightTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	GPreset1RB->Checked = false;
+	GPreset2RB->Checked = false;
+	GPreset3RB->Checked = false;
+	GRandomRB->Checked = false;
+}
+private: System::Void GMinesTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	GPreset1RB->Checked = false;
+	GPreset2RB->Checked = false;
+	GPreset3RB->Checked = false;
+	GRandomRB->Checked = false;
+	if (GMinesTB->Text != "") {
+		GUnknownCB->Checked = false;
+	}
+	else {
+		GUnknownCB->Checked = true;
 	}
 }
 };

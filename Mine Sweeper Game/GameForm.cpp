@@ -89,7 +89,7 @@ void showMines(Cell **field, int &width, int &height, Form ^f) {
 	}
 }
 
-void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes) {
+void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells) {
 	float xStart = field[0][0].getXStart(),
 		 xEnd = field[width - 1][height - 1].getXEnd(),
 		 yStart = field[0][0].getYStart(),
@@ -111,6 +111,7 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 				if (field[curPosX][curPosY].getState() == state::empty) {
 					field[curPosX][curPosY].drawOpenedCell(f);
 					field[curPosX][curPosY].setExtraState(state::opened);
+					closedCells--;
 				}
 				else {
 					if (field[curPosX][curPosY].getState()==state::mined)
