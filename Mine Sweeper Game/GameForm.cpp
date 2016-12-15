@@ -10,7 +10,8 @@
 using namespace MineSweeperGame;
 using namespace System;
 
-enum state {empty = 0, mined = 1, opened = 2, flagged = 3, undefined = 4};
+enum state { empty = 0, mined = 1 };
+enum extraState { unchecked = 0, opened = 2, flagged = 3, undefined = 4};
 /*Cell **field;
 int	width,
 	height,
@@ -85,7 +86,7 @@ void spawnMines(Cell **field, int &width, int &height, int mines, int &curPosX, 
 void showMines(Cell **field, int &width, int &height, Form ^f) {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			if (field[i][j].getState() == state::mined && field[i][j].getExtraState() != state::flagged) {
+			if (field[i][j].getState() == state::mined && field[i][j].getExtraState() != extraState::flagged) {
 				field[i][j].drawExplodedCell(f);
 			}
 		}
@@ -105,7 +106,7 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 			curPosX = (int)((x - xStart) / Cell::edge);
 			curPosY = (int)((y - yStart) / Cell::edge);
 
-			if (mb==mb_open && field[curPosX][curPosY].getExtraState()!=state::opened && field[curPosX][curPosY].getExtraState() != state::flagged && field[curPosX][curPosY].getExtraState() != state::undefined) {
+			if (mb==mb_open && field[curPosX][curPosY].getExtraState()!=extraState::opened && field[curPosX][curPosY].getExtraState() != extraState::flagged && field[curPosX][curPosY].getExtraState() != extraState::undefined) {
 				if (wasFirstClick == false) {
 					spawnMines(field, width, height, mines, curPosX, curPosY);
 					wasFirstClick = true;
@@ -113,15 +114,15 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 
 				if (field[curPosX][curPosY].getState() == state::empty) {
 					field[curPosX][curPosY].drawOpenedCell(f);
-					field[curPosX][curPosY].setExtraState(state::opened);
+					field[curPosX][curPosY].setExtraState(extraState::opened);
 					closedCells--;
 				}
 				else {
-					if (field[curPosX][curPosY].getState()==state::mined)
+					//if (field[curPosX][curPosY].getState()==state::mined)
 					flags--;
 					mines--;
 					field[curPosX][curPosY].drawExplodedCell(f);
-					field[curPosX][curPosY].setExtraState(state::opened);
+					field[curPosX][curPosY].setExtraState(extraState::opened);
 					if (lifes == 0) {
 						started = false;
 					}
@@ -131,12 +132,12 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 				}
 			}
 
-			if (mb==mb_flag && field[curPosX][curPosY].getExtraState()!=state::opened && field[curPosX][curPosY].getExtraState()!=state::undefined) {
+			if (mb==mb_flag && field[curPosX][curPosY].getExtraState()!=extraState::opened && field[curPosX][curPosY].getExtraState()!=extraState::undefined) {
 				if (wasFirstClick == false) {
 					spawnMines(field, width, height, mines, curPosX, curPosY);
 					wasFirstClick = true;
 				}
-				if (field[curPosX][curPosY].getExtraState() == state::flagged) {
+				if (field[curPosX][curPosY].getExtraState() == extraState::flagged) {
 					field[curPosX][curPosY].drawEmptyCell(f);
 					field[curPosX][curPosY].setExtraState(state::empty);
 					flags++;
@@ -147,7 +148,7 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 				else {
 					if (flags > 0) {
 						field[curPosX][curPosY].drawFlaggedCell(f);
-						field[curPosX][curPosY].setExtraState(state::flagged);
+						field[curPosX][curPosY].setExtraState(extraState::flagged);
 						flags--;
 						if (field[curPosX][curPosY].getState() == state::mined) {
 							mines--;
@@ -156,18 +157,18 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 				}
 			}
 			
-			if (mb == mb_undefined && field[curPosX][curPosY].getExtraState()!=state::opened && field[curPosX][curPosY].getExtraState()!=state::flagged) {
+			if (mb == mb_undefined && field[curPosX][curPosY].getExtraState()!=extraState::opened && field[curPosX][curPosY].getExtraState()!=extraState::flagged) {
 				if (wasFirstClick == false) {
 					spawnMines(field, width, height, mines, curPosX, curPosY);
 					wasFirstClick = true;
 				}
-				if (field[curPosX][curPosY].getExtraState() == state::undefined) {
+				if (field[curPosX][curPosY].getExtraState() == extraState::undefined) {
 					field[curPosX][curPosY].drawEmptyCell(f);
-					field[curPosX][curPosY].setExtraState(state::empty);
+					field[curPosX][curPosY].setExtraState(extraState::unchecked);
 				}
 				else {
 					field[curPosX][curPosY].drawUndefinedCell(f);
-					field[curPosX][curPosY].setExtraState(state::undefined);
+					field[curPosX][curPosY].setExtraState(extraState::undefined);
 				}
 			}	
 		}	
@@ -187,11 +188,13 @@ void clearField(Cell **field, int &width, int &height) {
 	delete field;
 }
 
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes) {
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags) {
 	std::fstream save;
 	save.open("Save.sav", std::ios::out | std::ios::trunc);
 	//save.write("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
-	save.write(reinterpret_cast<char*> (&lifes), sizeof(int));	
+	save.write(reinterpret_cast<char*> (&lifes), sizeof(int));
+	save.write(reinterpret_cast<char*> (&mines), sizeof(int));
+	save.write(reinterpret_cast<char*> (&flags), sizeof(int));
 	save.write(reinterpret_cast<char*> (&width), sizeof(int));
 	save.write(reinterpret_cast<char*> (&height), sizeof(int));
 	for (int i = 0; i < width; i++) {
@@ -202,10 +205,13 @@ void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes) {
 	save.close();
 }
 
-void loadGame(Cell **field, int &width, int &height, int &mines, int &lifes, System::Windows::Forms::Form ^f, bool started, int &closedCells) {
+Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &flags, System::Windows::Forms::Form ^f, bool &started, int &closedCells) {
+	Cell **field; 
 	std::fstream load;
 	load.open("Save.sav", std::ios::in | std::ios::binary);
 	load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
+	load.read(reinterpret_cast<char*> (&mines), sizeof(int));
+	load.read(reinterpret_cast<char*> (&flags), sizeof(int));
 	load.read(reinterpret_cast<char*> (&width), sizeof(int));
 	load.read(reinterpret_cast<char*> (&height), sizeof(int));
 	
@@ -223,7 +229,9 @@ void loadGame(Cell **field, int &width, int &height, int &mines, int &lifes, Sys
 	}
 	closedCells = width*height;
 	started = true;
+	return field;
 }
+
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {

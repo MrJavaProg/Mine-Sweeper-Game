@@ -8,7 +8,6 @@ Cell::Cell()
 	state = 0;
 	nearbyMines = 0;
 	extraState = 0;
-	mined = false;
 }
 
 
@@ -36,11 +35,6 @@ void Cell::setExtraState(int extraState)
 	this->extraState = extraState;
 }
 
-void Cell::setMined(bool mined)
-{
-	this->mined = mined;
-}
-
 
 float Cell::edge = 25;
 
@@ -62,11 +56,6 @@ float Cell::getXEnd()
 float Cell::getYEnd()
 {
 	return yEnd;
-}
-
-bool Cell::getMined()
-{
-	return mined;
 }
 
 void Cell::setNearbyMines(int nearbyMines)
@@ -150,22 +139,24 @@ void Cell::drawExplodedCell(System::Windows::Forms::Form ^ form)
 
 void Cell::redrawCell(System::Windows::Forms::Form ^ form)
 {
-	if (state != 2) {
-		if (extraState == 3) {
-			drawFlaggedCell(form);
+	drawEmptyCell(form);
+	if (extraState == 2) {
+		if (state == 0) {
+			drawOpenedCell(form);
 		}
 		else {
-			if (extraState == 4) {
-				drawUndefinedCell(form);
-			}
+			drawExplodedCell(form);
 		}
 	}
 	else {
-		if (mined == true) {
-			drawExplodedCell(form);
+		if (extraState == 0) {
+			drawEmptyCell(form);
 		}
-		else {
-			drawOpenedCell(form);
+		if (extraState == 3) {
+			drawFlaggedCell(form);
+		}
+		if (extraState == 4) {
+			drawFlaggedCell(form);
 		}
 	}
 }

@@ -11,9 +11,8 @@ void createField(Cell **field, int &width, int &height, int &mines, System::Wind
 void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells);
 void clearField(Cell **field, int &width, int &height);
 void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
-void saveGame(Cell **field, int &width, int &height);
-void loadGame(Cell **field, int &width, int &height, int &mines, int &lifes, System::Windows::Forms::Form ^f, bool started, int &closedCells);
-
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes);
+Cell** loadGame(int &width, int &height, int &mines, int &lifes, System::Windows::Forms::Form ^f, bool &started, int &closedCells);
 /*extern int	width,
 	        height,
             mines,
@@ -148,6 +147,10 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::CheckBox^  GUnknownCB;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 	private: System::Windows::Forms::ColorDialog^  colorDialog1;
+	private: System::Windows::Forms::ToolStripLabel^  TimerTSL;
+	private: System::Windows::Forms::Timer^  timer1;
+	private: System::Windows::Forms::DateTimePicker^  dateTimePicker1;
+
 
 
 	private: System::ComponentModel::IContainer^  components;
@@ -165,6 +168,7 @@ namespace MineSweeperGame {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(GameForm::typeid));
 			this->ToolsTS = (gcnew System::Windows::Forms::ToolStrip());
 			this->MenuTCDDB = (gcnew System::Windows::Forms::ToolStripDropDownButton());
@@ -173,6 +177,7 @@ namespace MineSweeperGame {
 			this->StartTSB = (gcnew System::Windows::Forms::ToolStripButton());
 			this->TSTBMinesCounter = (gcnew System::Windows::Forms::ToolStripTextBox());
 			this->TSLInfo = (gcnew System::Windows::Forms::ToolStripLabel());
+			this->TimerTSL = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->OptionsMenuFLP = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->PresetsB = (gcnew System::Windows::Forms::Button());
 			this->ControlB = (gcnew System::Windows::Forms::Button());
@@ -210,6 +215,8 @@ namespace MineSweeperGame {
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->colorDialog1 = (gcnew System::Windows::Forms::ColorDialog());
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->dateTimePicker1 = (gcnew System::Windows::Forms::DateTimePicker());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -224,9 +231,9 @@ namespace MineSweeperGame {
 			// 
 			// ToolsTS
 			// 
-			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
+			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
 				this->MenuTCDDB, this->StartTSB,
-					this->TSTBMinesCounter, this->TSLInfo
+					this->TSTBMinesCounter, this->TSLInfo, this->TimerTSL
 			});
 			this->ToolsTS->Location = System::Drawing::Point(0, 0);
 			this->ToolsTS->Name = L"ToolsTS";
@@ -251,14 +258,14 @@ namespace MineSweeperGame {
 			// OptionsTSMI
 			// 
 			this->OptionsTSMI->Name = L"OptionsTSMI";
-			this->OptionsTSMI->Size = System::Drawing::Size(152, 22);
+			this->OptionsTSMI->Size = System::Drawing::Size(116, 22);
 			this->OptionsTSMI->Text = L"Options";
 			this->OptionsTSMI->Click += gcnew System::EventHandler(this, &GameForm::optionsToolStripMenuItem_Click);
 			// 
 			// RecordsTSMI
 			// 
 			this->RecordsTSMI->Name = L"RecordsTSMI";
-			this->RecordsTSMI->Size = System::Drawing::Size(152, 22);
+			this->RecordsTSMI->Size = System::Drawing::Size(116, 22);
 			this->RecordsTSMI->Text = L"Records";
 			this->RecordsTSMI->Click += gcnew System::EventHandler(this, &GameForm::recordsToolStripMenuItem_Click);
 			// 
@@ -282,6 +289,11 @@ namespace MineSweeperGame {
 			// 
 			this->TSLInfo->Name = L"TSLInfo";
 			this->TSLInfo->Size = System::Drawing::Size(0, 22);
+			// 
+			// TimerTSL
+			// 
+			this->TimerTSL->Name = L"TimerTSL";
+			this->TimerTSL->Size = System::Drawing::Size(0, 22);
 			// 
 			// OptionsMenuFLP
 			// 
@@ -683,17 +695,26 @@ namespace MineSweeperGame {
 			// 
 			this->openFileDialog1->FileName = L"openFileDialog1";
 			// 
+			// dateTimePicker1
+			// 
+			this->dateTimePicker1->Location = System::Drawing::Point(401, 0);
+			this->dateTimePicker1->Name = L"dateTimePicker1";
+			this->dateTimePicker1->Size = System::Drawing::Size(200, 20);
+			this->dateTimePicker1->TabIndex = 7;
+			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(784, 562);
+			this->Controls->Add(this->dateTimePicker1);
 			this->Controls->Add(this->ToolsTS);
 			this->Controls->Add(this->OptionsGB);
 			this->Controls->Add(this->RecordsGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
 			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &GameForm::GameForm_FormClosing);
+			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &GameForm::GameForm_FormClosed);
 			this->Shown += gcnew System::EventHandler(this, &GameForm::GameForm_Shown);
 			this->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GameForm_MouseClick);
 			this->ToolsTS->ResumeLayout(false);
@@ -758,354 +779,357 @@ namespace MineSweeperGame {
 				}
 			}
 		}
-
-		//loadGame(field, width, height, mines, lifes, this, started, closedCells);
+		field = loadGame(width, height, mines, lifes, this, started, closedCells);
 	}
 
-private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-	OptionsGB->Visible = true;
-	ControlP->Visible = false;
-	PresetsP->Visible = true;
-	RecordsGB->Visible = false;
-}
-private: System::Void CloseOptionsB_Click(System::Object^  sender, System::EventArgs^  e) {
-	OptionsGB->Visible = false;
-	if (GWidthTB->Text=="" || GHeightTB->Text=="" || GMinesTB->Text=="" && GPreset1RB->Checked==false && GPreset2RB->Checked == false && GPreset3RB->Checked == false && GRandomRB->Checked == false) {
-		MessageBox::Show("All fields must be filled!!! Preset 1 is chosen.");
+	private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		OptionsGB->Visible = true;
+		ControlP->Visible = false;
+		PresetsP->Visible = true;
+		RecordsGB->Visible = false;
 	}
-}
-private: System::Void ControlB_Click(System::Object^  sender, System::EventArgs^  e) {
-	ControlP->Visible = true;
-	PresetsP->Visible = false;
-}
-private: System::Void PresetsB_Click(System::Object^  sender, System::EventArgs^  e) {
-	PresetsP->Visible = true;
-	ControlP->Visible = false;
-}
-private: System::Void recordsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-	RecordsGB->Visible = true;
-	OptionsGB->Visible = false;
-}
-private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::EventArgs^  e) {
-	RecordsGB->Visible = false;
-	
-}
+	private: System::Void CloseOptionsB_Click(System::Object^  sender, System::EventArgs^  e) {
+		OptionsGB->Visible = false;
+		if (GWidthTB->Text == "" || GHeightTB->Text == "" || GMinesTB->Text == "" && GPreset1RB->Checked == false && GPreset2RB->Checked == false && GPreset3RB->Checked == false && GRandomRB->Checked == false) {
+			MessageBox::Show("All fields must be filled!!! Preset 1 is chosen.");
+		}
+	}
+	private: System::Void ControlB_Click(System::Object^  sender, System::EventArgs^  e) {
+		ControlP->Visible = true;
+		PresetsP->Visible = false;
+	}
+	private: System::Void PresetsB_Click(System::Object^  sender, System::EventArgs^  e) {
+		PresetsP->Visible = true;
+		ControlP->Visible = false;
+	}
+	private: System::Void recordsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		RecordsGB->Visible = true;
+		OptionsGB->Visible = false;
+	}
+	private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::EventArgs^  e) {
+		RecordsGB->Visible = false;
 
-private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-	if (width != 0 && height != 0) {
-		clearField(field, width, height);
 	}
 
-	if (quantity_of_cells_width == 0 && quantity_of_cells_height == 0 && quantity_of_mines == 0) {
-		width = 9;
-		height = 9;
-		mines = 10;
-	}
-	else {
-		width = quantity_of_cells_width;
-		height = quantity_of_cells_height;
-		mines = quantity_of_mines;
-	}
-	
-	field = new Cell*[width];
-	
-	for (int i = 0; i < width; i++) {
-		field[i] = new Cell[height];
-	}
-	
-	closedCells = width*height;
-	createField(field, width, height, mines, this, started);
-	TSTBMinesCounter->Text = "Mines: " + mines.ToString();
-	
-}
+	private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
+		if (width != 0 && height != 0) {
+			clearField(field, width, height);
+		}
 
-/*private: System::Void GameForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
-	
-	System::Drawing::Graphics ^g = e->Graphics;
-}*/
+		if (quantity_of_cells_width == 0 && quantity_of_cells_height == 0 && quantity_of_mines == 0) {
+			width = 9;
+			height = 9;
+			mines = 10;
+		}
+		else {
+			width = quantity_of_cells_width;
+			height = quantity_of_cells_height;
+			mines = quantity_of_mines;
+		}
 
-private: System::Void GPreset1RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-	quantity_of_cells_width = 9;
-	quantity_of_cells_height = 9;
-	quantity_of_mines = 10;
-	GWidthTB->Text = "";
-	GHeightTB->Text = "";
-}
-private: System::Void GPreset2RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-	quantity_of_cells_width = 16;
-	quantity_of_cells_height = 16;
-	quantity_of_mines = 40;
-	GWidthTB->Text = "";
-	GHeightTB->Text = "";
-}
-private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-	quantity_of_cells_width = 24;
-	quantity_of_cells_height = 20;
-	quantity_of_mines = 99;
-	GWidthTB->Text = "";
-	GHeightTB->Text = "";
-}
+		field = new Cell*[width];
 
-private: System::Void GCOpenCellB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-	int tmp_mb_open = mb_open;
-	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
-		mb_open = 1;
+		for (int i = 0; i < width; i++) {
+			field[i] = new Cell[height];
+		}
+
+		closedCells = width*height;
+		createField(field, width, height, mines, this, started);
+		TSTBMinesCounter->Text = "Mines: " + mines.ToString();
+
 	}
-	else {
+
+			 /*private: System::Void GameForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
+
+				 System::Drawing::Graphics ^g = e->Graphics;
+			 }*/
+
+	private: System::Void GPreset1RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+		quantity_of_cells_width = 9;
+		quantity_of_cells_height = 9;
+		quantity_of_mines = 10;
+		GWidthTB->Text = "";
+		GHeightTB->Text = "";
+	}
+	private: System::Void GPreset2RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+		quantity_of_cells_width = 16;
+		quantity_of_cells_height = 16;
+		quantity_of_mines = 40;
+		GWidthTB->Text = "";
+		GHeightTB->Text = "";
+	}
+	private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+		quantity_of_cells_width = 24;
+		quantity_of_cells_height = 20;
+		quantity_of_mines = 99;
+		GWidthTB->Text = "";
+		GHeightTB->Text = "";
+	}
+
+	private: System::Void GCOpenCellB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		int tmp_mb_open = mb_open;
+		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+			mb_open = 1;
+		}
+		else {
+			if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+				mb_open = 2;
+			}
+			else {
+				if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+					mb_open = 3;
+				}
+			}
+		}
+
+		if (mb_open == mb_flag) {
+			mb_flag = tmp_mb_open;
+		}
+		if (mb_open == mb_undefined) {
+			mb_undefined = tmp_mb_open;
+		}
+
+		if (mb_open == 1) {
+			GCOpenCellB->Text = "Left mouse button";
+		}
+		else {
+			if (mb_open == 2) {
+				GCOpenCellB->Text = "Right mouse button";
+			}
+			else {
+				if (mb_open == 3) {
+					GCOpenCellB->Text = "Middle mouse button";
+				}
+			}
+		}
+
+		if (mb_flag == 1) {
+			GCSetFlagB->Text = "Left mouse button";
+		}
+		else {
+			if (mb_flag == 2) {
+				GCSetFlagB->Text = "Right mouse button";
+			}
+			else {
+				if (mb_flag == 3) {
+					GCSetFlagB->Text = "Middle mouse button";
+				}
+			}
+		}
+
+		if (mb_undefined == 1) {
+			GCSetUndef->Text = "Left mouse button";
+		}
+		else {
+			if (mb_undefined == 2) {
+				GCSetUndef->Text = "Right mouse button";
+			}
+			else {
+				if (mb_undefined == 3) {
+					GCSetUndef->Text = "Middle mouse button";
+				}
+			}
+		}
+	}
+	private: System::Void GCSetFlagB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		int tmp_mb_flag = mb_flag;
+		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+			mb_flag = 1;
+		}
+		else {
+			if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+				mb_flag = 2;
+			}
+			else {
+				if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+					mb_flag = 3;
+				}
+			}
+		}
+
+		if (mb_open == mb_flag) {
+			mb_open = tmp_mb_flag;
+		}
+		if (mb_flag == mb_undefined) {
+			mb_undefined = tmp_mb_flag;
+		}
+
+		if (mb_open == 1) {
+			GCOpenCellB->Text = "Left mouse button";
+		}
+		else {
+			if (mb_open == 2) {
+				GCOpenCellB->Text = "Right mouse button";
+			}
+			else {
+				if (mb_open == 3) {
+					GCOpenCellB->Text = "Middle mouse button";
+				}
+			}
+		}
+
+		if (mb_flag == 1) {
+			GCSetFlagB->Text = "Left mouse button";
+		}
+		else {
+			if (mb_flag == 2) {
+				GCSetFlagB->Text = "Right mouse button";
+			}
+			else {
+				if (mb_flag == 3) {
+					GCSetFlagB->Text = "Middle mouse button";
+				}
+			}
+		}
+
+		if (mb_undefined == 1) {
+			GCSetUndef->Text = "Left mouse button";
+		}
+		else {
+			if (mb_undefined == 2) {
+				GCSetUndef->Text = "Right mouse button";
+			}
+			else {
+				if (mb_undefined == 3) {
+					GCSetUndef->Text = "Middle mouse button";
+				}
+			}
+		}
+	}
+	private: System::Void GCSetUndef_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		int tmp_mb_undefined = mb_undefined;
+		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+			mb_undefined = 1;
+		}
+		else {
+			if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+				mb_undefined = 2;
+			}
+			else {
+				if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+					mb_undefined = 3;
+				}
+			}
+		}
+
+		if (mb_open == mb_undefined) {
+			mb_open = tmp_mb_undefined;
+		}
+		if (mb_flag == mb_undefined) {
+			mb_flag = tmp_mb_undefined;
+		}
+
+		if (mb_open == 1) {
+			GCOpenCellB->Text = "Left mouse button";
+		}
+		else {
+			if (mb_open == 2) {
+				GCOpenCellB->Text = "Right mouse button";
+			}
+			else {
+				if (mb_open == 3) {
+					GCOpenCellB->Text = "Middle mouse button";
+				}
+			}
+		}
+
+		if (mb_flag == 1) {
+			GCSetFlagB->Text = "Left mouse button";
+		}
+		else {
+			if (mb_flag == 2) {
+				GCSetFlagB->Text = "Right mouse button";
+			}
+			else {
+				if (mb_flag == 3) {
+					GCSetFlagB->Text = "Middle mouse button";
+				}
+			}
+		}
+
+		if (mb_undefined == 1) {
+			GCSetUndef->Text = "Left mouse button";
+		}
+		else {
+			if (mb_undefined == 2) {
+				GCSetUndef->Text = "Right mouse button";
+			}
+			else {
+				if (mb_undefined == 3) {
+					GCSetUndef->Text = "Middle mouse button";
+				}
+			}
+		}
+	}
+
+	private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		int mb;
+
+		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+			mb = 1;
+		}
 		if (e->Button == System::Windows::Forms::MouseButtons::Right) {
-			mb_open = 2;
+			mb = 2;
 		}
-		else {
-			if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
-				mb_open = 3;
+		if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+			mb = 3;
+		}
+		if (started == true) {
+			openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells);
+			TSTBMinesCounter->Text = "Flags: " + flags.ToString();
+			if (started == false) {
+				showMines(field, width, height, this);
+				TSLInfo->Text = "You are looser!!! LOL";
+			}
+			if (mines == 0 || closedCells == mines) {
+				started = false;
+				TSLInfo->Text = "Win!!!!";
 			}
 		}
 	}
 
-	if (mb_open == mb_flag) {
-		mb_flag = tmp_mb_open;
-	}
-	if (mb_open == mb_undefined) {
-		mb_undefined = tmp_mb_open;
-	}
-
-	if (mb_open == 1) {
-		GCOpenCellB->Text = "Left mouse button";
-	}
-	else {
-		if (mb_open == 2) {
-			GCOpenCellB->Text = "Right mouse button";
+	private: System::Void GWrongCB_CheckedChanged_1(System::Object^  sender, System::EventArgs^  e) {
+		if (GWrongCB->Checked == true) {
+			GLifesTB->Enabled = true;
 		}
 		else {
-			if (mb_open == 3) {
-				GCOpenCellB->Text = "Middle mouse button";
-			}
+			GLifesTB->Enabled = 0;
+			GLifesTB->Text = "";
+		}
+	}
+	private: System::Void GWidthTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		GPreset1RB->Checked = false;
+		GPreset2RB->Checked = false;
+		GPreset3RB->Checked = false;
+		GRandomRB->Checked = false;
+	}
+	private: System::Void GHeightTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		GPreset1RB->Checked = false;
+		GPreset2RB->Checked = false;
+		GPreset3RB->Checked = false;
+		GRandomRB->Checked = false;
+	}
+	private: System::Void GMinesTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		GPreset1RB->Checked = false;
+		GPreset2RB->Checked = false;
+		GPreset3RB->Checked = false;
+		GRandomRB->Checked = false;
+		if (GMinesTB->Text != "") {
+			GUnknownCB->Checked = false;
+		}
+		else {
+			GUnknownCB->Checked = true;
 		}
 	}
 
-	if (mb_flag == 1) {
-		GCSetFlagB->Text = "Left mouse button";
-	}
-	else {
-		if (mb_flag == 2) {
-			GCSetFlagB->Text = "Right mouse button";
-		}
-		else {
-			if (mb_flag == 3) {
-				GCSetFlagB->Text = "Middle mouse button";
-			}
-		}
+
+	private: System::Void GameForm_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
+		
 	}
 
-	if (mb_undefined == 1) {
-		GCSetUndef->Text = "Left mouse button";
-	}
-	else {
-		if (mb_undefined == 2) {
-			GCSetUndef->Text = "Right mouse button";
-		}
-		else {
-			if (mb_undefined == 3) {
-				GCSetUndef->Text = "Middle mouse button";
-			}
-		}
-	}
+private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
+	saveGame(field, width, height, mines, lifes);
 }
-private: System::Void GCSetFlagB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-	int tmp_mb_flag = mb_flag;
-	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
-		mb_flag = 1;
-	}
-	else {
-		if (e->Button == System::Windows::Forms::MouseButtons::Right) {
-			mb_flag = 2;
-		}
-		else {
-			if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
-				mb_flag = 3;
-			}
-		}
-	}
-
-	if (mb_open == mb_flag) {
-		mb_open = tmp_mb_flag;
-	}
-	if (mb_flag == mb_undefined) {
-		mb_undefined = tmp_mb_flag;
-	}
-
-	if (mb_open == 1) {
-		GCOpenCellB->Text = "Left mouse button";
-	}
-	else {
-		if (mb_open == 2) {
-			GCOpenCellB->Text = "Right mouse button";
-		}
-		else {
-			if (mb_open == 3) {
-				GCOpenCellB->Text = "Middle mouse button";
-			}
-		}
-	}
-
-	if (mb_flag == 1) {
-		GCSetFlagB->Text = "Left mouse button";
-	}
-	else {
-		if (mb_flag == 2) {
-			GCSetFlagB->Text = "Right mouse button";
-		}
-		else {
-			if (mb_flag == 3) {
-				GCSetFlagB->Text = "Middle mouse button";
-			}
-		}
-	}
-
-	if (mb_undefined == 1) {
-		GCSetUndef->Text = "Left mouse button";
-	}
-	else {
-		if (mb_undefined == 2) {
-			GCSetUndef->Text = "Right mouse button";
-		}
-		else {
-			if (mb_undefined == 3) {
-				GCSetUndef->Text = "Middle mouse button";
-			}
-		}
-	}
-}
-private: System::Void GCSetUndef_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-	int tmp_mb_undefined = mb_undefined;
-	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
-		mb_undefined = 1;
-	}
-	else {
-		if (e->Button == System::Windows::Forms::MouseButtons::Right) {
-			mb_undefined = 2;
-		}
-		else {
-			if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
-				mb_undefined = 3;
-			}
-		}
-	}
-
-	if (mb_open == mb_undefined) {
-		mb_open = tmp_mb_undefined;
-	}
-	if (mb_flag == mb_undefined) {
-		mb_flag = tmp_mb_undefined;
-	}
-
-	if (mb_open == 1) {
-		GCOpenCellB->Text = "Left mouse button";
-	}
-	else {
-		if (mb_open == 2) {
-			GCOpenCellB->Text = "Right mouse button";
-		}
-		else {
-			if (mb_open == 3) {
-				GCOpenCellB->Text = "Middle mouse button";
-			}
-		}
-	}
-
-	if (mb_flag == 1) {
-		GCSetFlagB->Text = "Left mouse button";
-	}
-	else {
-		if (mb_flag == 2) {
-			GCSetFlagB->Text = "Right mouse button";
-		}
-		else {
-			if (mb_flag == 3) {
-				GCSetFlagB->Text = "Middle mouse button";
-			}
-		}
-	}
-
-	if (mb_undefined == 1) {
-		GCSetUndef->Text = "Left mouse button";
-	}
-	else {
-		if (mb_undefined == 2) {
-			GCSetUndef->Text = "Right mouse button";
-		}
-		else {
-			if (mb_undefined == 3) {
-				GCSetUndef->Text = "Middle mouse button";
-			}
-		}
-	}
-}
-
-private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-	int mb;
-
-	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
-		mb = 1;
-	}
-	if (e->Button == System::Windows::Forms::MouseButtons::Right) {
-		mb = 2;
-	}
-	if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
-		mb = 3;
-	}
-	if (started == true) {
-		openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells);
-		TSTBMinesCounter->Text = "Flags: " + flags.ToString();
-		if (started == false) {
-			showMines(field, width, height, this);
-			TSLInfo->Text = "You are looser!!! LOL";
-		}
-		if (mines == 0 || closedCells == mines) {
-			started = false;
-			TSLInfo->Text = "Win!!!!";
-		}
-	}
-}
-
-private: System::Void GWrongCB_CheckedChanged_1(System::Object^  sender, System::EventArgs^  e) {
-	if (GWrongCB->Checked == true) {
-		GLifesTB->Enabled = true;
-	}
-	else {
-		GLifesTB->Enabled = 0;
-		GLifesTB->Text = "";
-	}
-}
-private: System::Void GWidthTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-	GPreset1RB->Checked = false;
-	GPreset2RB->Checked = false;
-	GPreset3RB->Checked = false;
-	GRandomRB->Checked = false;
-}
-private: System::Void GHeightTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-	GPreset1RB->Checked = false;
-	GPreset2RB->Checked = false;
-	GPreset3RB->Checked = false;
-	GRandomRB->Checked = false;
-}
-private: System::Void GMinesTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-	GPreset1RB->Checked = false;
-	GPreset2RB->Checked = false;
-	GPreset3RB->Checked = false;
-	GRandomRB->Checked = false;
-	if (GMinesTB->Text != "") {
-		GUnknownCB->Checked = false;
-	}
-	else {
-		GUnknownCB->Checked = true;
-	}
-}
-
-
-private: System::Void GameForm_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
-}
-//	saveGame(field, width, height, );
 };
 
 
