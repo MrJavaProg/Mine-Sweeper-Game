@@ -11,6 +11,7 @@ class Cell
 	int nearbyMines,
 		state,
 		extraState;
+	bool mined;
 
 public:
 	static float edge;
@@ -23,6 +24,7 @@ public:
 	float getYStart();
 	float getXEnd();
 	float getYEnd();
+	bool getMined();
 	//static float getEdge();
 
 	void drawEmptyCell(System::Windows::Forms::Form ^form);
@@ -30,6 +32,7 @@ public:
 	void drawUndefinedCell(System::Windows::Forms::Form ^form);
 	void drawFlaggedCell(System::Windows::Forms::Form ^form);
 	void drawExplodedCell(System::Windows::Forms::Form ^form);
+	void redrawCell(System::Windows::Forms::Form ^form);
 
 	void setNearbyMines(int nearbyMines);
 	void setXStart(float xStart);
@@ -38,6 +41,7 @@ public:
 	void setYEnd(float yEnd);
 	void setState(int state);
 	void setExtraState(int extraState);
+	void setMined(bool mined);
 
 	void addNearbyMines();
 };

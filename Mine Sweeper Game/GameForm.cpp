@@ -2,6 +2,9 @@
 
 #include "GameForm.h"
 #include <Windows.h>
+#include <fstream>
+#include <iostream>
+
 
 
 using namespace MineSweeperGame;
@@ -82,7 +85,7 @@ void spawnMines(Cell **field, int &width, int &height, int mines, int &curPosX, 
 void showMines(Cell **field, int &width, int &height, Form ^f) {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			if (field[i][j].getState() == state::mined) {
+			if (field[i][j].getState() == state::mined && field[i][j].getExtraState() != state::flagged) {
 				field[i][j].drawExplodedCell(f);
 			}
 		}
@@ -184,6 +187,42 @@ void clearField(Cell **field, int &width, int &height) {
 	delete field;
 }
 
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes) {
+	std::fstream save;
+	save.open("Save.sav", std::ios::out | std::ios::trunc);
+	//save.write("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
+	save.write(reinterpret_cast<char*> (&lifes), sizeof(int));	
+	save.write(reinterpret_cast<char*> (&width), sizeof(int));
+	save.write(reinterpret_cast<char*> (&height), sizeof(int));
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			save.write(reinterpret_cast<char*> (&field[i][j]), sizeof(Cell));
+		}
+	}
+	save.close();
+}
+
+void loadGame(Cell **field, int &width, int &height, int &mines, int &lifes, Windows::Forms::Form ^f, bool started, int &closedCells) {
+	std::fstream load;
+	load.open("Save.sav", std::ios::in | std::ios::binary);
+	load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
+	load.read(reinterpret_cast<char*> (&width), sizeof(int));
+	load.read(reinterpret_cast<char*> (&height), sizeof(int));
+	
+	field = new Cell*[width];
+
+	for (int i = 0; i < width; i++) {
+		field[i] = new Cell[height];
+	}
+
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			load.read(reinterpret_cast<char*> (&field[i][j]), sizeof(Cell));
+			field[i][j].dr
+		}
+	}
+	closedCells = width*height;
+}
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {

@@ -11,7 +11,7 @@ void createField(Cell **field, int &width, int &height, int &mines, System::Wind
 void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells);
 void clearField(Cell **field, int &width, int &height);
 void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
-
+void saveGame(Cell **field, int &width, int &height);
 /*extern int	width,
 	        height,
             mines,
@@ -144,6 +144,8 @@ namespace MineSweeperGame {
 
 
 	private: System::Windows::Forms::CheckBox^  GUnknownCB;
+	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+
 
 	private: System::ComponentModel::IContainer^  components;
 
@@ -203,6 +205,7 @@ namespace MineSweeperGame {
 			this->RPreset2TP = (gcnew System::Windows::Forms::TabPage());
 			this->RPreset3TP = (gcnew System::Windows::Forms::TabPage());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
+			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -244,14 +247,14 @@ namespace MineSweeperGame {
 			// OptionsTSMI
 			// 
 			this->OptionsTSMI->Name = L"OptionsTSMI";
-			this->OptionsTSMI->Size = System::Drawing::Size(116, 22);
+			this->OptionsTSMI->Size = System::Drawing::Size(152, 22);
 			this->OptionsTSMI->Text = L"Options";
 			this->OptionsTSMI->Click += gcnew System::EventHandler(this, &GameForm::optionsToolStripMenuItem_Click);
 			// 
 			// RecordsTSMI
 			// 
 			this->RecordsTSMI->Name = L"RecordsTSMI";
-			this->RecordsTSMI->Size = System::Drawing::Size(116, 22);
+			this->RecordsTSMI->Size = System::Drawing::Size(152, 22);
 			this->RecordsTSMI->Text = L"Records";
 			this->RecordsTSMI->Click += gcnew System::EventHandler(this, &GameForm::recordsToolStripMenuItem_Click);
 			// 
@@ -672,6 +675,10 @@ namespace MineSweeperGame {
 			this->CloseRecordsB->Text = L"Close records";
 			this->CloseRecordsB->UseVisualStyleBackColor = true;
 			// 
+			// openFileDialog1
+			// 
+			this->openFileDialog1->FileName = L"openFileDialog1";
+			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -682,6 +689,7 @@ namespace MineSweeperGame {
 			this->Controls->Add(this->RecordsGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
+			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &GameForm::GameForm_FormClosing);
 			this->Shown += gcnew System::EventHandler(this, &GameForm::GameForm_Shown);
 			this->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GameForm_MouseClick);
 			this->ToolsTS->ResumeLayout(false);
@@ -795,8 +803,8 @@ private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^
 	
 	field = new Cell*[width];
 	
-	for (int i = 0; i < height; i++) {
-		field[i] = new Cell[32];
+	for (int i = 0; i < width; i++) {
+		field[i] = new Cell[height];
 	}
 	
 	closedCells = width*height;
@@ -1040,16 +1048,17 @@ private: System::Void GameForm_MouseClick(System::Object^  sender, System::Windo
 	if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
 		mb = 3;
 	}
-
-	openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells);
-	TSTBMinesCounter->Text = "Flags: "+flags.ToString();
-	if (started == false) {
-		showMines(field, width, height, this);
-		TSLInfo->Text = "You are looser!!! LOL";
-	}
-	if (mines == 0 || closedCells==mines) {
-		started = false;
-		TSLInfo->Text = "Win!!!!";
+	if (started == true) {
+		openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells);
+		TSTBMinesCounter->Text = "Flags: " + flags.ToString();
+		if (started == false) {
+			showMines(field, width, height, this);
+			TSLInfo->Text = "You are looser!!! LOL";
+		}
+		if (mines == 0 || closedCells == mines) {
+			started = false;
+			TSLInfo->Text = "Win!!!!";
+		}
 	}
 }
 
@@ -1086,6 +1095,10 @@ private: System::Void GMinesTB_TextChanged(System::Object^  sender, System::Even
 		GUnknownCB->Checked = true;
 	}
 }
+private: System::Void GameForm_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
+	saveGame(field, width, height);
+}
+
 };
 
 

@@ -35,6 +35,11 @@ void Cell::setExtraState(int extraState)
 	this->extraState = extraState;
 }
 
+void Cell::setMined(bool mined)
+{
+	this->mined = mined;
+}
+
 
 float Cell::edge = 25;
 
@@ -56,6 +61,11 @@ float Cell::getXEnd()
 float Cell::getYEnd()
 {
 	return yEnd;
+}
+
+bool Cell::getMined()
+{
+	return mined;
 }
 
 void Cell::setNearbyMines(int nearbyMines)
@@ -135,4 +145,21 @@ void Cell::drawExplodedCell(System::Windows::Forms::Form ^ form)
 
 	g->FillRectangle(gcnew SolidBrush(Color::Red), xStart, yStart, edge, edge);
 	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, edge, edge);
+}
+
+void Cell::redrawCell(System::Windows::Forms::Form ^ form)
+{
+	if (state != 2) {
+		if (extraState == 3) {
+			drawFlaggedCell(form);
+		}
+		else {
+			if (extraState == 4) {
+				drawUndefinedCell(form);
+			}
+		}
+	}
+	else {
+		if (state == )
+	}
 }
