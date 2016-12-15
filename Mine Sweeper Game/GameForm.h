@@ -12,6 +12,8 @@ void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, S
 void clearField(Cell **field, int &width, int &height);
 void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
 void saveGame(Cell **field, int &width, int &height);
+void loadGame(Cell **field, int &width, int &height, int &mines, int &lifes, System::Windows::Forms::Form ^f, bool started, int &closedCells);
+
 /*extern int	width,
 	        height,
             mines,
@@ -145,6 +147,7 @@ namespace MineSweeperGame {
 
 	private: System::Windows::Forms::CheckBox^  GUnknownCB;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+	private: System::Windows::Forms::ColorDialog^  colorDialog1;
 
 
 	private: System::ComponentModel::IContainer^  components;
@@ -206,6 +209,7 @@ namespace MineSweeperGame {
 			this->RPreset3TP = (gcnew System::Windows::Forms::TabPage());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->colorDialog1 = (gcnew System::Windows::Forms::ColorDialog());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -754,6 +758,8 @@ namespace MineSweeperGame {
 				}
 			}
 		}
+
+		//loadGame(field, width, height, mines, lifes, this, started, closedCells);
 	}
 
 private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -1095,10 +1101,11 @@ private: System::Void GMinesTB_TextChanged(System::Object^  sender, System::Even
 		GUnknownCB->Checked = true;
 	}
 }
-private: System::Void GameForm_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
-	saveGame(field, width, height);
-}
 
+
+private: System::Void GameForm_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
+}
+//	saveGame(field, width, height, );
 };
 
 

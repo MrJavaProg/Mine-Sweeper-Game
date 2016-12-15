@@ -8,6 +8,7 @@ Cell::Cell()
 	state = 0;
 	nearbyMines = 0;
 	extraState = 0;
+	mined = false;
 }
 
 
@@ -160,6 +161,11 @@ void Cell::redrawCell(System::Windows::Forms::Form ^ form)
 		}
 	}
 	else {
-		if (state == )
+		if (mined == true) {
+			drawExplodedCell(form);
+		}
+		else {
+			drawOpenedCell(form);
+		}
 	}
 }

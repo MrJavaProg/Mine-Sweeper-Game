@@ -202,7 +202,7 @@ void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes) {
 	save.close();
 }
 
-void loadGame(Cell **field, int &width, int &height, int &mines, int &lifes, Windows::Forms::Form ^f, bool started, int &closedCells) {
+void loadGame(Cell **field, int &width, int &height, int &mines, int &lifes, System::Windows::Forms::Form ^f, bool started, int &closedCells) {
 	std::fstream load;
 	load.open("Save.sav", std::ios::in | std::ios::binary);
 	load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
@@ -218,10 +218,11 @@ void loadGame(Cell **field, int &width, int &height, int &mines, int &lifes, Win
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
 			load.read(reinterpret_cast<char*> (&field[i][j]), sizeof(Cell));
-			field[i][j].dr
+			field[i][j].redrawCell(f);
 		}
 	}
 	closedCells = width*height;
+	started = true;
 }
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
