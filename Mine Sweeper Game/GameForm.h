@@ -1,28 +1,20 @@
 #pragma once
 #include "Cell.h"
+#include <fstream>
+#include <iostream>
 
 
-extern Cell **field;
+
+//extern Cell **field;
 static bool started;
-
-//bool started;
 
 void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started);
 void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells);
 void clearField(Cell **field, int &width, int &height);
 void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes);
-Cell** loadGame(int &width, int &height, int &mines, int &lifes, System::Windows::Forms::Form ^f, bool &started, int &closedCells);
-/*extern int	width,
-	        height,
-            mines,
-		    quantity_of_mines,
-			quantity_of_cells_width,
-			quantity_of_cells_height,
-		    mb_open,
-			mb_flag,
-			mb_undefined,
-			lifes;*/
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, bool &started);
+Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &flags, System::Windows::Forms::Form ^f, bool &started, int &closedCells);
+
 static Cell **field;
 static int	width,
 	height,
@@ -33,7 +25,7 @@ static int	width,
 	mb_open = 1,
 	mb_flag = 2,
 	mb_undefined = 3,
-	lifes = 20,
+	lifes = 0,
 	closedCells;
 static bool wasFirstClick = false;
 static int flags;
@@ -737,7 +729,9 @@ namespace MineSweeperGame {
 #pragma endregion
 
 	private: System::Void GameForm_Shown(System::Object^  sender, System::EventArgs^  e) {
+		std::fstream load;
 		started = false;
+
 		if (mb_open == 1) {
 			GCOpenCellB->Text = "Left mouse button";
 		}
@@ -779,7 +773,19 @@ namespace MineSweeperGame {
 				}
 			}
 		}
-		field = loadGame(width, height, mines, lifes, this, started, closedCells);
+
+		std::fstream file;
+		file.open("Save.sav", std::ios::in);
+		if (file.is_open()) {
+			file.seekg(std::ios::end);
+			if (file.tellg()>0) {
+				file.close();
+				field = loadGame(width, height, mines, lifes, flags, this, started, closedCells);
+				if (started == false) {
+					TSLInfo->Text = "looser";
+				}
+			}
+		}
 	}
 
 	private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -1128,7 +1134,7 @@ namespace MineSweeperGame {
 	}
 
 private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
-	saveGame(field, width, height, mines, lifes);
+	saveGame(field, width, height, mines, lifes, flags, started);
 }
 };
 

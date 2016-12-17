@@ -2,8 +2,7 @@
 
 #include "GameForm.h"
 #include <Windows.h>
-#include <fstream>
-#include <iostream>
+
 
 
 
@@ -12,19 +11,6 @@ using namespace System;
 
 enum state { empty = 0, mined = 1 };
 enum extraState { unchecked = 0, opened = 2, flagged = 3, undefined = 4};
-/*Cell **field;
-int	width,
-	height,
-	mines,
-	quantity_of_mines = 0,
-	quantity_of_cells_width = 0,
-	quantity_of_cells_height = 0,
-	mb_open = 1,
-	mb_flag = 2,
-	mb_undefined = 3,
-	lifes = 20;*/
-
-
 
 void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started) {
 	float xStart,
@@ -188,10 +174,10 @@ void clearField(Cell **field, int &width, int &height) {
 	delete field;
 }
 
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags) {
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, bool &started) {
 	std::fstream save;
-	save.open("Save.sav", std::ios::out | std::ios::trunc);
-	//save.write("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
+	save.open("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
+	save.write(reinterpret_cast<char*> (&started), sizeof(bool));
 	save.write(reinterpret_cast<char*> (&lifes), sizeof(int));
 	save.write(reinterpret_cast<char*> (&mines), sizeof(int));
 	save.write(reinterpret_cast<char*> (&flags), sizeof(int));
@@ -209,6 +195,7 @@ Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &flags, Sys
 	Cell **field; 
 	std::fstream load;
 	load.open("Save.sav", std::ios::in | std::ios::binary);
+	load.read(reinterpret_cast<char*> (&started), sizeof(bool));
 	load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
 	load.read(reinterpret_cast<char*> (&mines), sizeof(int));
 	load.read(reinterpret_cast<char*> (&flags), sizeof(int));
@@ -228,7 +215,6 @@ Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &flags, Sys
 		}
 	}
 	closedCells = width*height;
-	started = true;
 	return field;
 }
 
