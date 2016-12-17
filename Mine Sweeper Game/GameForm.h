@@ -12,8 +12,8 @@ void createField(Cell **field, int &width, int &height, int &mines, System::Wind
 void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells);
 void clearField(Cell **field, int &width, int &height);
 void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, bool &started);
-Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &flags, System::Windows::Forms::Form ^f, bool &started, int &closedCells);
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &time, bool &started);
+Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int &flags, System::Windows::Forms::Form ^f, bool &started, int &closedCells);
 
 static Cell **field;
 static int	width,
@@ -26,8 +26,10 @@ static int	width,
 	mb_flag = 2,
 	mb_undefined = 3,
 	lifes = 0,
-	closedCells;
-static bool wasFirstClick = false;
+	closedCells,
+	time;
+static bool wasFirstClick = false,
+		    timerEnabled = false;
 static int flags;
 
 namespace MineSweeperGame {
@@ -103,10 +105,10 @@ namespace MineSweeperGame {
 
 	private: System::Windows::Forms::ToolStripButton^  StartTSB;
 	private: System::Windows::Forms::GroupBox^  RecordsGB;
-	private: System::Windows::Forms::TabControl^  tabControl1;
-	private: System::Windows::Forms::TabPage^  RPreset1TP;
-	private: System::Windows::Forms::TabPage^  RPreset2TP;
-	private: System::Windows::Forms::TabPage^  RPreset3TP;
+
+
+
+
 	private: System::Windows::Forms::Button^  CloseRecordsB;
 	private: System::Windows::Forms::Panel^  panel1;
 
@@ -137,11 +139,19 @@ namespace MineSweeperGame {
 
 
 	private: System::Windows::Forms::CheckBox^  GUnknownCB;
-	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
-	private: System::Windows::Forms::ColorDialog^  colorDialog1;
+
+
 	private: System::Windows::Forms::ToolStripLabel^  TimerTSL;
-	private: System::Windows::Forms::Timer^  timer1;
-	private: System::Windows::Forms::DateTimePicker^  dateTimePicker1;
+	private: System::Windows::Forms::Timer^  Timer;
+
+
+	private: System::Windows::Forms::TextBox^  textBox3;
+	private: System::Windows::Forms::TextBox^  textBox2;
+	private: System::Windows::Forms::TextBox^  textBox1;
+private: System::Windows::Forms::RichTextBox^  richTextBox1;
+private: System::Windows::Forms::ToolStripLabel^  TSLTime;
+
+
 
 
 
@@ -170,6 +180,7 @@ namespace MineSweeperGame {
 			this->TSTBMinesCounter = (gcnew System::Windows::Forms::ToolStripTextBox());
 			this->TSLInfo = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->TimerTSL = (gcnew System::Windows::Forms::ToolStripLabel());
+			this->TSLTime = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->OptionsMenuFLP = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->PresetsB = (gcnew System::Windows::Forms::Button());
 			this->ControlB = (gcnew System::Windows::Forms::Button());
@@ -200,15 +211,12 @@ namespace MineSweeperGame {
 			this->GCSetUndef = (gcnew System::Windows::Forms::Button());
 			this->OptionsGB = (gcnew System::Windows::Forms::GroupBox());
 			this->RecordsGB = (gcnew System::Windows::Forms::GroupBox());
-			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
-			this->RPreset1TP = (gcnew System::Windows::Forms::TabPage());
-			this->RPreset2TP = (gcnew System::Windows::Forms::TabPage());
-			this->RPreset3TP = (gcnew System::Windows::Forms::TabPage());
+			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
+			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
-			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->colorDialog1 = (gcnew System::Windows::Forms::ColorDialog());
-			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
-			this->dateTimePicker1 = (gcnew System::Windows::Forms::DateTimePicker());
+			this->Timer = (gcnew System::Windows::Forms::Timer(this->components));
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -218,14 +226,13 @@ namespace MineSweeperGame {
 			this->flowLayoutPanel1->SuspendLayout();
 			this->OptionsGB->SuspendLayout();
 			this->RecordsGB->SuspendLayout();
-			this->tabControl1->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// ToolsTS
 			// 
-			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
+			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {
 				this->MenuTCDDB, this->StartTSB,
-					this->TSTBMinesCounter, this->TSLInfo, this->TimerTSL
+					this->TSTBMinesCounter, this->TSLInfo, this->TimerTSL, this->TSLTime
 			});
 			this->ToolsTS->Location = System::Drawing::Point(0, 0);
 			this->ToolsTS->Name = L"ToolsTS";
@@ -286,6 +293,11 @@ namespace MineSweeperGame {
 			// 
 			this->TimerTSL->Name = L"TimerTSL";
 			this->TimerTSL->Size = System::Drawing::Size(0, 22);
+			// 
+			// TSLTime
+			// 
+			this->TSLTime->Name = L"TSLTime";
+			this->TSLTime->Size = System::Drawing::Size(0, 22);
 			// 
 			// OptionsMenuFLP
 			// 
@@ -621,7 +633,10 @@ namespace MineSweeperGame {
 			// 
 			// RecordsGB
 			// 
-			this->RecordsGB->Controls->Add(this->tabControl1);
+			this->RecordsGB->Controls->Add(this->richTextBox1);
+			this->RecordsGB->Controls->Add(this->textBox3);
+			this->RecordsGB->Controls->Add(this->textBox2);
+			this->RecordsGB->Controls->Add(this->textBox1);
 			this->RecordsGB->Controls->Add(this->CloseRecordsB);
 			this->RecordsGB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->RecordsGB->Location = System::Drawing::Point(1, 26);
@@ -632,46 +647,35 @@ namespace MineSweeperGame {
 			this->RecordsGB->Text = L"Records";
 			this->RecordsGB->Visible = false;
 			// 
-			// tabControl1
+			// richTextBox1
 			// 
-			this->tabControl1->Controls->Add(this->RPreset1TP);
-			this->tabControl1->Controls->Add(this->RPreset2TP);
-			this->tabControl1->Controls->Add(this->RPreset3TP);
-			this->tabControl1->Location = System::Drawing::Point(3, 16);
-			this->tabControl1->Name = L"tabControl1";
-			this->tabControl1->SelectedIndex = 0;
-			this->tabControl1->Size = System::Drawing::Size(774, 467);
-			this->tabControl1->TabIndex = 4;
+			this->richTextBox1->Location = System::Drawing::Point(145, 94);
+			this->richTextBox1->Name = L"richTextBox1";
+			this->richTextBox1->Size = System::Drawing::Size(317, 254);
+			this->richTextBox1->TabIndex = 7;
+			this->richTextBox1->Text = L"";
 			// 
-			// RPreset1TP
+			// textBox3
 			// 
-			this->RPreset1TP->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->RPreset1TP->Location = System::Drawing::Point(4, 22);
-			this->RPreset1TP->Name = L"RPreset1TP";
-			this->RPreset1TP->Padding = System::Windows::Forms::Padding(3);
-			this->RPreset1TP->Size = System::Drawing::Size(766, 441);
-			this->RPreset1TP->TabIndex = 0;
-			this->RPreset1TP->Text = L"9x9, 10 m";
-			this->RPreset1TP->UseVisualStyleBackColor = true;
+			this->textBox3->Location = System::Drawing::Point(484, 58);
+			this->textBox3->Name = L"textBox3";
+			this->textBox3->Size = System::Drawing::Size(100, 20);
+			this->textBox3->TabIndex = 6;
 			// 
-			// RPreset2TP
+			// textBox2
 			// 
-			this->RPreset2TP->Location = System::Drawing::Point(4, 22);
-			this->RPreset2TP->Name = L"RPreset2TP";
-			this->RPreset2TP->Padding = System::Windows::Forms::Padding(3);
-			this->RPreset2TP->Size = System::Drawing::Size(766, 441);
-			this->RPreset2TP->TabIndex = 1;
-			this->RPreset2TP->Text = L"16x16, 40 m";
-			this->RPreset2TP->UseVisualStyleBackColor = true;
+			this->textBox2->Location = System::Drawing::Point(362, 58);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->Size = System::Drawing::Size(100, 20);
+			this->textBox2->TabIndex = 5;
 			// 
-			// RPreset3TP
+			// textBox1
 			// 
-			this->RPreset3TP->Location = System::Drawing::Point(4, 22);
-			this->RPreset3TP->Name = L"RPreset3TP";
-			this->RPreset3TP->Size = System::Drawing::Size(766, 441);
-			this->RPreset3TP->TabIndex = 2;
-			this->RPreset3TP->Text = L"20x24, 99 m";
-			this->RPreset3TP->UseVisualStyleBackColor = true;
+			this->textBox1->Location = System::Drawing::Point(145, 58);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(194, 20);
+			this->textBox1->TabIndex = 4;
+			this->textBox1->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
 			// CloseRecordsB
 			// 
@@ -683,29 +687,21 @@ namespace MineSweeperGame {
 			this->CloseRecordsB->Text = L"Close records";
 			this->CloseRecordsB->UseVisualStyleBackColor = true;
 			// 
-			// openFileDialog1
+			// Timer
 			// 
-			this->openFileDialog1->FileName = L"openFileDialog1";
-			// 
-			// dateTimePicker1
-			// 
-			this->dateTimePicker1->Location = System::Drawing::Point(401, 0);
-			this->dateTimePicker1->Name = L"dateTimePicker1";
-			this->dateTimePicker1->Size = System::Drawing::Size(200, 20);
-			this->dateTimePicker1->TabIndex = 7;
+			this->Timer->Interval = 1000;
+			this->Timer->Tick += gcnew System::EventHandler(this, &GameForm::Timer_Tick);
 			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(784, 562);
-			this->Controls->Add(this->dateTimePicker1);
 			this->Controls->Add(this->ToolsTS);
-			this->Controls->Add(this->OptionsGB);
 			this->Controls->Add(this->RecordsGB);
+			this->Controls->Add(this->OptionsGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
-			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &GameForm::GameForm_FormClosing);
 			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &GameForm::GameForm_FormClosed);
 			this->Shown += gcnew System::EventHandler(this, &GameForm::GameForm_Shown);
 			this->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GameForm_MouseClick);
@@ -721,7 +717,7 @@ namespace MineSweeperGame {
 			this->flowLayoutPanel1->ResumeLayout(false);
 			this->OptionsGB->ResumeLayout(false);
 			this->RecordsGB->ResumeLayout(false);
-			this->tabControl1->ResumeLayout(false);
+			this->RecordsGB->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -775,17 +771,19 @@ namespace MineSweeperGame {
 		}
 
 		std::fstream file;
+		time = 0;
 		file.open("Save.sav", std::ios::in);
 		if (file.is_open()) {
 			file.seekg(std::ios::end);
 			if (file.tellg()>0) {
 				file.close();
-				field = loadGame(width, height, mines, lifes, flags, this, started, closedCells);
+				field = loadGame(width, height, mines, lifes, time, flags, this, started, closedCells);
 				if (started == false) {
 					TSLInfo->Text = "looser";
 				}
 			}
 		}
+		TSLTime->Text = time.ToString();
 	}
 
 	private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -842,13 +840,9 @@ namespace MineSweeperGame {
 		closedCells = width*height;
 		createField(field, width, height, mines, this, started);
 		TSTBMinesCounter->Text = "Mines: " + mines.ToString();
-
+		time = 0;
 	}
 
-			 /*private: System::Void GameForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
-
-				 System::Drawing::Graphics ^g = e->Graphics;
-			 }*/
 
 	private: System::Void GPreset1RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		quantity_of_cells_width = 9;
@@ -1081,15 +1075,23 @@ namespace MineSweeperGame {
 			mb = 3;
 		}
 		if (started == true) {
+			if (timerEnabled == false) {
+			}
+			timerEnabled = true;
+			Timer->Enabled = true;
 			openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells);
 			TSTBMinesCounter->Text = "Flags: " + flags.ToString();
 			if (started == false) {
 				showMines(field, width, height, this);
 				TSLInfo->Text = "You are looser!!! LOL";
+				timerEnabled = false;
+				Timer->Enabled = false;
 			}
 			if (mines == 0 || closedCells == mines) {
 				started = false;
 				TSLInfo->Text = "Win!!!!";
+				timerEnabled = false;
+				Timer->Enabled = false;
 			}
 		}
 	}
@@ -1128,13 +1130,14 @@ namespace MineSweeperGame {
 		}
 	}
 
-
-	private: System::Void GameForm_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
-		
-	}
-
 private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
-	saveGame(field, width, height, mines, lifes, flags, started);
+	saveGame(field, width, height, mines, lifes, flags, time, started);
+}
+
+
+private: System::Void Timer_Tick(System::Object^  sender, System::EventArgs^  e) {
+	TSLTime->Text = time.ToString();
+	time++;
 }
 };
 

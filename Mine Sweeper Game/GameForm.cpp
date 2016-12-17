@@ -174,10 +174,11 @@ void clearField(Cell **field, int &width, int &height) {
 	delete field;
 }
 
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, bool &started) {
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &time, bool &started) {
 	std::fstream save;
 	save.open("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
 	save.write(reinterpret_cast<char*> (&started), sizeof(bool));
+	save.write(reinterpret_cast<char*> (&time), sizeof(int));
 	save.write(reinterpret_cast<char*> (&lifes), sizeof(int));
 	save.write(reinterpret_cast<char*> (&mines), sizeof(int));
 	save.write(reinterpret_cast<char*> (&flags), sizeof(int));
@@ -191,11 +192,12 @@ void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int
 	save.close();
 }
 
-Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &flags, System::Windows::Forms::Form ^f, bool &started, int &closedCells) {
+Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int &flags, System::Windows::Forms::Form ^f, bool &started, int &closedCells) {
 	Cell **field; 
 	std::fstream load;
 	load.open("Save.sav", std::ios::in | std::ios::binary);
 	load.read(reinterpret_cast<char*> (&started), sizeof(bool));
+	load.read(reinterpret_cast<char*> (&time), sizeof(int));
 	load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
 	load.read(reinterpret_cast<char*> (&mines), sizeof(int));
 	load.read(reinterpret_cast<char*> (&flags), sizeof(int));
