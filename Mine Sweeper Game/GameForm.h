@@ -12,8 +12,10 @@ void createField(Cell **field, int &width, int &height, int &mines, System::Wind
 void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick);
 void clearField(Cell **field, int &width, int &height);
 void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &time, bool &started, bool &wasFirstClicked);
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &closedCells, int &time, bool &started, bool &wasFirstClick);
 Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int &flags, System::Windows::Forms::Form ^f, bool &started, bool &wasFirstClick, int &closedCells);
+void writeRecord();
+
 
 static Cell **field;
 static int	width,
@@ -843,7 +845,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		TSTBMinesCounter->Text = "Mines: " + mines.ToString();
 		time = 0;
 		wasFirstClick = false;
-		showMines(field, width, height, this);
+		showMines(field, width, height, this);//тест
 	}
 
 
@@ -1078,6 +1080,8 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			mb = 3;
 		}
 		if (started == true) {
+			showMines(field, width, height, this);
+
 			if (timerEnabled == false) {
 			}
 			timerEnabled = true;
@@ -1085,7 +1089,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells, wasFirstClick);
 			TSTBMinesCounter->Text = "Flags: " + flags.ToString();
 			if (started == false) {
-				showMines(field, width, height, this);
+
 				TSLInfo->Text = "You are looser!!! LOL";
 				timerEnabled = false;
 				Timer->Enabled = false;
@@ -1134,7 +1138,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 	}
 
 private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
-	saveGame(field, width, height, mines, lifes, flags, time, started, wasFirstClick);
+	saveGame(field, width, height, mines, lifes, flags, closedCells, time, started, wasFirstClick);
 }
 
 

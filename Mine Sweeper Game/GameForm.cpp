@@ -30,6 +30,7 @@ void createField(Cell **field, int &width, int &height, int &mines, System::Wind
 	started = true;
 	wasFirstClick = false;
 	flags = mines;
+	showMines(field, width, height, f);
 }
 
 void spawnMines(Cell **field, int &width, int &height, int mines, int &curPosX, int &curPosY) {
@@ -174,7 +175,7 @@ void clearField(Cell **field, int &width, int &height) {
 	delete field;
 }
 
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &time, bool &started, bool &wasFirstClick) {
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &closedCells, int &time, bool &started, bool &wasFirstClick) {
 	std::fstream save;
 	save.open("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
 	save.write(reinterpret_cast<char*> (&started), sizeof(bool));
@@ -183,6 +184,7 @@ void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int
 	save.write(reinterpret_cast<char*> (&lifes), sizeof(int));
 	save.write(reinterpret_cast<char*> (&mines), sizeof(int));
 	save.write(reinterpret_cast<char*> (&flags), sizeof(int));
+	save.write(reinterpret_cast<char*> (&closedCells), sizeof(int));
 	save.write(reinterpret_cast<char*> (&width), sizeof(int));
 	save.write(reinterpret_cast<char*> (&height), sizeof(int));
 	for (int i = 0; i < width; i++) {
@@ -203,6 +205,7 @@ Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int 
 	load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
 	load.read(reinterpret_cast<char*> (&mines), sizeof(int));
 	load.read(reinterpret_cast<char*> (&flags), sizeof(int));
+	load.read(reinterpret_cast<char*> (&closedCells), sizeof(int));
 	load.read(reinterpret_cast<char*> (&width), sizeof(int));
 	load.read(reinterpret_cast<char*> (&height), sizeof(int));
 	
