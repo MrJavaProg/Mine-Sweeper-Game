@@ -9,11 +9,11 @@
 static bool started;
 
 void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started);
-void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells);
+void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick);
 void clearField(Cell **field, int &width, int &height);
 void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &time, bool &started);
-Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int &flags, System::Windows::Forms::Form ^f, bool &started, int &closedCells);
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &time, bool &started, bool &wasFirstClicked);
+Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int &flags, System::Windows::Forms::Form ^f, bool &started, bool &wasFirstClick, int &closedCells);
 
 static Cell **field;
 static int	width,
@@ -777,9 +777,10 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			file.seekg(std::ios::end);
 			if (file.tellg()>0) {
 				file.close();
-				field = loadGame(width, height, mines, lifes, time, flags, this, started, closedCells);
+				field = loadGame(width, height, mines, lifes, time, flags, this, started,wasFirstClick, closedCells);
 				if (started == false) {
 					TSLInfo->Text = "looser";
+					showMines(field, width, height, this);
 				}
 			}
 		}
@@ -841,6 +842,8 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		createField(field, width, height, mines, this, started);
 		TSTBMinesCounter->Text = "Mines: " + mines.ToString();
 		time = 0;
+		wasFirstClick = false;
+		showMines(field, width, height, this);
 	}
 
 
@@ -1079,7 +1082,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			}
 			timerEnabled = true;
 			Timer->Enabled = true;
-			openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells);
+			openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells, wasFirstClick);
 			TSTBMinesCounter->Text = "Flags: " + flags.ToString();
 			if (started == false) {
 				showMines(field, width, height, this);
@@ -1131,7 +1134,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 	}
 
 private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
-	saveGame(field, width, height, mines, lifes, flags, time, started);
+	saveGame(field, width, height, mines, lifes, flags, time, started, wasFirstClick);
 }
 
 

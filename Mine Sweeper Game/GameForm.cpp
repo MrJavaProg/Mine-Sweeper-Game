@@ -79,7 +79,7 @@ void showMines(Cell **field, int &width, int &height, Form ^f) {
 	}
 }
 
-void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells) {
+void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick) {
 	float xStart = field[0][0].getXStart(),
 		 xEnd = field[width - 1][height - 1].getXEnd(),
 		 yStart = field[0][0].getYStart(),
@@ -174,10 +174,11 @@ void clearField(Cell **field, int &width, int &height) {
 	delete field;
 }
 
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &time, bool &started) {
+void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &time, bool &started, bool &wasFirstClick) {
 	std::fstream save;
 	save.open("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
 	save.write(reinterpret_cast<char*> (&started), sizeof(bool));
+	save.write(reinterpret_cast<char*> (&wasFirstClick), sizeof(bool));
 	save.write(reinterpret_cast<char*> (&time), sizeof(int));
 	save.write(reinterpret_cast<char*> (&lifes), sizeof(int));
 	save.write(reinterpret_cast<char*> (&mines), sizeof(int));
@@ -192,11 +193,12 @@ void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int
 	save.close();
 }
 
-Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int &flags, System::Windows::Forms::Form ^f, bool &started, int &closedCells) {
+Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int &flags, System::Windows::Forms::Form ^f, bool &started, bool &wasFirstClick, int &closedCells) {
 	Cell **field; 
 	std::fstream load;
 	load.open("Save.sav", std::ios::in | std::ios::binary);
 	load.read(reinterpret_cast<char*> (&started), sizeof(bool));
+	load.read(reinterpret_cast<char*> (&wasFirstClick), sizeof(bool));
 	load.read(reinterpret_cast<char*> (&time), sizeof(int));
 	load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
 	load.read(reinterpret_cast<char*> (&mines), sizeof(int));
