@@ -816,11 +816,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			mines = quantity_of_mines;
 		}
 
-		field = new Cell*[width];
-
-		for (int i = 0; i < width; i++) {
-			field[i] = new Cell[height];
-		}
+		
 
 		closedCells = width*height;
 		createField(field, width, height, mines, this, started);

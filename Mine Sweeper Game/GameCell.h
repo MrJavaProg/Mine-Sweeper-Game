@@ -18,14 +18,14 @@ public:
 	void addNearbyMines();
 
 	void redrawCell(System::Windows::Forms::Form ^ form);
-	void openCell(System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick);
-
 
 	GameCell() : CellDrawing() {};
 	~GameCell();
 
 	static int mb_open,
 		mb_flag,
-		mb_undefined;
+		mb_undefined3;
+	static enum state { empty = 0, mined = 1 };
+	static enum extraState { unchecked = 0, opened = 2, flagged = 3, undefined = 4 };
 };
 

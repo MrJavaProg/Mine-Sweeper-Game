@@ -22,4 +22,24 @@ Player::~Player()
 {
 }
 
+void Player::setMines(int mines)
+{
+	this->mines = mines;
+}
+
+void Player::setTime(int time)
+{
+	this->time = time;
+}
+
+int Player::getMines()
+{
+	return mines;
+}
+
+int Player::getTime()
+{
+	return time;
+}
+
 

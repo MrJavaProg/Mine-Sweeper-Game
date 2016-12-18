@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Player.h"
+using namespace System::Windows::Forms;
 
 
 class Game
@@ -10,22 +11,23 @@ class Game
 
 	int	width,
 		height,
-		mines,
-		lifes = 0,
-		closedCells,
-		time;
-	bool wasFirstClick = false,
-		timerEnabled = false;
+		closedCells;
+	bool wasFirstClick,
+		started,
+		timerEnabled;
 	int flags;
 
 
 public:
-	Game();
+	Game(int width, int height, int mines);
 	~Game();
-	void saveGame();
-	GameCell* loadGame();
-	void writeRecord();
-	void spawnMines();
-	void showMines();
+	void saveGame(bool &started);
+	void loadGame(Form ^ f, bool & started);
+	void spawnMines(int &curPosX, int &curPosY);
+	void showMines(Form ^f);
+	void createField(Form ^f);
+	void showMines(Form ^f);
+	void openCell(System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick);
+
 };
 

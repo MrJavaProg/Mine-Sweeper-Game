@@ -12,7 +12,7 @@ public:
 	static float edge;
 	Cell();
 	~Cell();
-	
+
 	float getXStart();
 	float getYStart();
 	float getXEnd();

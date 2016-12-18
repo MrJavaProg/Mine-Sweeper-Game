@@ -7,16 +7,21 @@ class Player
 {
 	string name;
 	int time,
-		mines;
-
+		mines,
+		lifes;
 
 
 public:
-	void setName(string name);
-	const char* getName();
 	Player();
 	~Player();
 	
-	
+	void setName(string name);
+	const char* getName();
+	void setMines(int mines);
+	void setTime(int time);
+	int getMines();
+	int getTime();
+
+	void writeRecord();
 };
 
