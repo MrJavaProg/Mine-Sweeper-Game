@@ -4,8 +4,8 @@ using namespace System::Drawing;
 
 CellDrawing::CellDrawing()
 {
+	Cell();
 }
-
 
 CellDrawing::~CellDrawing()
 {

@@ -4,7 +4,7 @@
 class CellDrawing : public Cell
 {
 public:
-	CellDrawing() : Cell() {};
+	CellDrawing();
 	~CellDrawing();
 
 protected:

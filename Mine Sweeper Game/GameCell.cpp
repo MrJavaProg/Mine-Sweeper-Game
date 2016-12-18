@@ -1,18 +1,16 @@
 #include "GameCell.h"
 
-
 static int mb_open = 1,
 	mb_flag = 2,
 	mb_undefined = 3;
 
-
 GameCell::GameCell()
 {
+	CellDrawing();
 	state = 0;
 	nearbyMines = 0;
 	extraState = 0;
 }
-
 
 GameCell::~GameCell()
 {

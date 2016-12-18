@@ -1,12 +1,16 @@
 #include <fstream>
 #include "Game.h"
 
+using namespace System::Windows::Forms;
 
 Game::Game(int width, int height, int mines)
 {
+	//player = new Player();
 	this->width = width;
 	this->height = height;
+	this->mines = mines;
 	player.setMines(mines);
+	flags = mines;
 }
 
 Game::~Game()
@@ -36,20 +40,19 @@ void Game::createField(Form ^f) {
 		}
 	}
 	wasFirstClick = false;
-	flags = player.getMines();
 	showMines(f);
 }
 
 void Game::spawnMines(int &curPosX, int &curPosY) {
 	int x,
-		y,
-		mines = player.getMines();
+		y;
+//		mines = player.getMines();
 
 	while (mines != 0) {
 		x = rand() % (width - 1) + 0;
 		y = rand() % (height - 1) + 0;
-		if (x != curPosX && y != curPosY && field[x][y].getState() != GameCell::state::mined) {
-			field[x][y].setState(GameCell::state::mined);
+		if (x != curPosX && y != curPosY && field[x][y].getState() != state::mined) {
+			field[x][y].setState(state::mined);
 			if (x - 1 >= 0) {
 				field[x - 1][y - 1].addNearbyMines();
 			}
@@ -82,7 +85,7 @@ void Game::spawnMines(int &curPosX, int &curPosY) {
 void Game::showMines(Form ^f) {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			if (field[i][j].getState() == GameCell::state::mined && field[i][j].getExtraState() != GameCell::extraState::flagged) {
+			if (field[i][j].getState() == state::mined && field[i][j].getExtraState() != extraState::flagged) {
 				field[i][j].redrawCell(f);
 			}
 		}
@@ -145,73 +148,81 @@ void Game::loadGame(Form ^f, bool &started) {
 	}
 }
 
-void Game::openCell(int System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick) {
-	/**/
-	if (mb == GameCell::mb_open && getExtraState() != extraState::opened && getExtraState() != extraState::flagged && getExtraState() != extraState::undefined) {
-	if (wasFirstClick == false) {
-	spawnMines(field, width, height, mines, curPosX, curPosY);
-	wasFirstClick = true;
-	}
+void Game::openCell(int &x, int &y, Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick) {
+	float xStart = field[0][0].getXStart(),
+		xEnd = field[width - 1][height - 1].getXEnd(),
+		yStart = field[0][0].getYStart(),
+		yEnd = field[width - 1][height - 1].getYEnd();
+	int curPosX,
+		curPosY;
 
-	if (state == state::empty) {
-		drawOpenedCell(f);
-		setExtraState(extraState::opened);
-		closedCells--;
-	}
-	else {
-		//if (field[curPosX][curPosY].getState()==state::mined)
-		flags--;
-		mines--;
-		drawExplodedCell(f);
-		setExtraState(extraState::opened);
-		if (lifes == 0) {
-			started = false;
-		}
-		else {
-			lifes--;
-		}
-	}
-}
-
-if (mb == mb_flag && getExtraState() != extraState::opened && getExtraState() != extraState::undefined) {
-	if (wasFirstClick == false) {
-		spawnMines(field, width, height, mines, curPosX, curPosY);
-		wasFirstClick = true;
-	}
-	if (getExtraState() == extraState::flagged) {
-		drawEmptyCell(f);
-		setExtraState(state::empty);
-		flags++;
-		if (getState() == state::mined) {
-			mines++;
-		}
-	}
-	else {
-		if (flags > 0) {
-			drawFlaggedCell(f);
-			setExtraState(extraState::flagged);
-			flags--;
-			if (getState() == state::mined) {
-				mines--;
+		if (started == true) {
+			if (x > xStart && x<xEnd && y>yStart && y < yEnd) {
+				curPosX = (int)((x - xStart) / Cell::edge);
+				curPosY = (int)((y - yStart) / Cell::edge);
+			
+				if (mb == GameCell::mb_open && field[curPosX][curPosY].getExtraState() != extraState::opened && field[curPosX][curPosY].getExtraState() != extraState::flagged && field[curPosX][curPosY].getExtraState() != extraState::undefined) {
+					if (wasFirstClick == false) {
+						spawnMines(curPosX, curPosY);
+						wasFirstClick = true;
+				}
+				
+				if (field[curPosX][curPosY].getState() == state::empty) {
+					field[curPosX][curPosY].setExtraState(extraState::opened);
+					field[curPosX][curPosY].redrawCell(f);
+					closedCells--;
+				}
+				else {
+					flags--;
+					mines--;
+					field[curPosX][curPosY].setExtraState(extraState::opened);
+					field[curPosX][curPosY].redrawCell(f);
+					if (lifes == 0) {
+						started = false;
+					}
+					else {
+						lifes--;
+					}	
+				}	
 			}
-		}
-	}
-}
-
-if (mb == mb_undefined && getExtraState() != extraState::opened && getExtraState() != extraState::flagged) {
-	if (wasFirstClick == false) {
-		spawnMines(field, width, height, mines, curPosX, curPosY);
-		wasFirstClick = true;
-	}
-	if (getExtraState() == extraState::undefined) {
-		drawEmptyCell(f);
-		setExtraState(extraState::unchecked);
-	}
-	else {
-		drawUndefinedCell(f);
-		setExtraState(extraState::undefined);
-	}
-}
+				if (mb == GameCell::mb_flag && field[curPosX][curPosY].getExtraState() != extraState::opened && field[curPosX][curPosY].getExtraState() != extraState::undefined) {
+				if (wasFirstClick == false) {
+					spawnMines(curPosX, curPosY);
+					wasFirstClick = true;
+				}
+				if (field[curPosX][curPosY].getExtraState() == extraState::flagged) {
+					field[curPosX][curPosY].setExtraState(state::empty);
+					field[curPosX][curPosY].redrawCell(f);
+					flags++;
+					if (field[curPosX][curPosY].getState() == state::mined) {
+						mines++;
+					}
+				}
+				else {
+					if (flags > 0) {
+						field[curPosX][curPosY].setExtraState(extraState::flagged);
+						field[curPosX][curPosY].redrawCell(f);
+						flags--;
+						if (field[curPosX][curPosY].getState() == state::mined) {
+							mines--;
+						}
+					}
+				}
+			}
+				if (mb == GameCell::mb_undefined && field[curPosX][curPosY].getExtraState() != extraState::opened && field[curPosX][curPosY].getExtraState() != extraState::flagged) {
+					if (wasFirstClick == false) {
+						spawnMines(curPosX, curPosY);
+						wasFirstClick = true;
+				}
+				if (field[curPosX][curPosY].getExtraState() == extraState::undefined) {
+					field[curPosX][curPosY].setExtraState(extraState::unchecked);
+					field[curPosX][curPosY].redrawCell(f);
+				}
+				else {
+					field[curPosX][curPosY].setExtraState(extraState::undefined);
+					field[curPosX][curPosY].redrawCell(f);
+				}
+			}
 		}
 	}
 }

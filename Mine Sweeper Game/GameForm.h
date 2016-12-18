@@ -1,20 +1,15 @@
 #pragma once
-#include <fstream>
-#include <iostream>
 #include "Game.h"
-
-
 
 //extern Cell **field;
 static bool started;
 
-static int	width,
-	quantity_of_mines = 0,
-	quantity_of_cells_width = 0,
-	quantity_of_cells_height = 0,
-static bool wasFirstClick = false,
+static int	quantity_of_mines = 0,
+quantity_of_cells_width = 0,
+quantity_of_cells_height = 0;
+/*static bool wasFirstClick = false,
 		    timerEnabled = false;
-static int flags;
+static int flags;*/
 
 namespace MineSweeperGame {
 
@@ -709,7 +704,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 #pragma endregion
 
 	private: System::Void GameForm_Shown(System::Object^  sender, System::EventArgs^  e) {
-		std::fstream load;
+		/*std::fstream load;
 		started = false;
 
 		if (GameCell::mb_open == 1) {
@@ -768,7 +763,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 				}
 			}
 		}
-		TSLTime->Text = time.ToString();
+		TSLTime->Text = time.ToString();*/
 	}
 
 	private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -801,7 +796,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 	}
 
 	private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-		if (width != 0 && height != 0) {
+		/*if (width != 0 && height != 0) {
 			clearField(field, width, height);
 		}
 
@@ -818,12 +813,12 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 
 		
 
-		closedCells = width*height;
+		/*closedCells = width*height;
 		createField(field, width, height, mines, this, started);
 		TSTBMinesCounter->Text = "Mines: " + mines.ToString();
 		time = 0;
 		wasFirstClick = false;
-		showMines(field, width, height, this);//тест
+	*/
 	}
 
 
@@ -959,7 +954,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 				GCSetFlagB->Text = "Right mouse button";
 			}
 			else {
-				if (mb_flag == 3) {
+				if (GameCell::mb_flag == 3) {
 					GCSetFlagB->Text = "Middle mouse button";
 				}
 			}
@@ -1001,7 +996,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		if (GameCell::mb_flag == GameCell::mb_undefined) {
 			GameCell::mb_flag = tmp_mb_undefined;
 		}
-
+		
 		if (GameCell::mb_open == 1) {
 			GCOpenCellB->Text = "Left mouse button";
 		}
@@ -1057,7 +1052,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
 			mb = 3;
 		}
-		if (started == true) {
+		/*if (started == true) {
 			showMines(field, width, height, this);
 
 			if (timerEnabled == false) {
@@ -1078,7 +1073,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 				timerEnabled = false;
 				Timer->Enabled = false;
 			}
-		}
+		}*/
 	}
 
 	private: System::Void GWrongCB_CheckedChanged_1(System::Object^  sender, System::EventArgs^  e) {
@@ -1116,15 +1111,14 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 	}
 
 private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
-	saveGame(field, width, height, mines, lifes, flags, closedCells, time, started, wasFirstClick);
+	//saveGame(field, width, height, mines, lifes, flags, closedCells, time, started, wasFirstClick);
 }
 
 
 private: System::Void Timer_Tick(System::Object^  sender, System::EventArgs^  e) {
-	TSLTime->Text = time.ToString();
-	time++;
+	//TSLTime->Text = time.ToString();
+	//time++;
 }
 };
-
 
 }

@@ -1,7 +1,6 @@
 #pragma once
-
+#include "GameCell.h"
 #include "Player.h"
-using namespace System::Windows::Forms;
 
 
 class Game
@@ -11,7 +10,8 @@ class Game
 
 	int	width,
 		height,
-		closedCells;
+		closedCells,
+		mines;
 	bool wasFirstClick,
 		started,
 		timerEnabled;
@@ -22,12 +22,11 @@ public:
 	Game(int width, int height, int mines);
 	~Game();
 	void saveGame(bool &started);
-	void loadGame(Form ^ f, bool & started);
+	void loadGame(System::Windows::Forms::Form ^ f, bool & started);
 	void spawnMines(int &curPosX, int &curPosY);
-	void showMines(Form ^f);
-	void createField(Form ^f);
-	void showMines(Form ^f);
-	void openCell(System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick);
+	void createField(System::Windows::Forms::Form ^f);
+	void showMines(System::Windows::Forms::Form ^f);
+	void openCell(int &x, int &y, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick);
 
 };
 
