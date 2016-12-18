@@ -1,8 +1,8 @@
 #include "GameCell.h"
 
-static int mb_open = 1,
-	mb_flag = 2,
-	mb_undefined = 3;
+int GameCell::mb_open = 1,
+GameCell::mb_flag = 2,
+GameCell::mb_undefined = 3;
 
 GameCell::GameCell()
 {
