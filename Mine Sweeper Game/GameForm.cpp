@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "GameForm.h"
 #include <Windows.h>
 
@@ -17,7 +15,7 @@ void createField(Cell **field, int &width, int &height, int &mines, System::Wind
 		  yStart;
 	yStart = (f->Height / 2) - (height / 2)*Cell::edge; 
 	xStart = (f->Width / 2) - (width/2)*Cell::edge;
-		
+
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
 			field[i][j].setXStart(xStart+i*Cell::edge);
@@ -80,87 +78,6 @@ void showMines(Cell **field, int &width, int &height, Form ^f) {
 	}
 }
 
-void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick) {
-	float xStart = field[0][0].getXStart(),
-		 xEnd = field[width - 1][height - 1].getXEnd(),
-		 yStart = field[0][0].getYStart(),
-		 yEnd = field[width - 1][height - 1].getYEnd();
-	int curPosX,
-		curPosY;
-
-	if (started == true) {
-		if (x > xStart && x<xEnd && y>yStart && y < yEnd) {
-			curPosX = (int)((x - xStart) / Cell::edge);
-			curPosY = (int)((y - yStart) / Cell::edge);
-
-			if (mb==mb_open && field[curPosX][curPosY].getExtraState()!=extraState::opened && field[curPosX][curPosY].getExtraState() != extraState::flagged && field[curPosX][curPosY].getExtraState() != extraState::undefined) {
-				if (wasFirstClick == false) {
-					spawnMines(field, width, height, mines, curPosX, curPosY);
-					wasFirstClick = true;
-				}
-
-				if (field[curPosX][curPosY].getState() == state::empty) {
-					field[curPosX][curPosY].drawOpenedCell(f);
-					field[curPosX][curPosY].setExtraState(extraState::opened);
-					closedCells--;
-				}
-				else {
-					//if (field[curPosX][curPosY].getState()==state::mined)
-					flags--;
-					mines--;
-					field[curPosX][curPosY].drawExplodedCell(f);
-					field[curPosX][curPosY].setExtraState(extraState::opened);
-					if (lifes == 0) {
-						started = false;
-					}
-					else {
-						lifes--;
-					}
-				}
-			}
-
-			if (mb==mb_flag && field[curPosX][curPosY].getExtraState()!=extraState::opened && field[curPosX][curPosY].getExtraState()!=extraState::undefined) {
-				if (wasFirstClick == false) {
-					spawnMines(field, width, height, mines, curPosX, curPosY);
-					wasFirstClick = true;
-				}
-				if (field[curPosX][curPosY].getExtraState() == extraState::flagged) {
-					field[curPosX][curPosY].drawEmptyCell(f);
-					field[curPosX][curPosY].setExtraState(state::empty);
-					flags++;
-					if (field[curPosX][curPosY].getState() == state::mined) {
-						mines++;
-					}
-				}
-				else {
-					if (flags > 0) {
-						field[curPosX][curPosY].drawFlaggedCell(f);
-						field[curPosX][curPosY].setExtraState(extraState::flagged);
-						flags--;
-						if (field[curPosX][curPosY].getState() == state::mined) {
-							mines--;
-						}
-					}
-				}
-			}
-			
-			if (mb == mb_undefined && field[curPosX][curPosY].getExtraState()!=extraState::opened && field[curPosX][curPosY].getExtraState()!=extraState::flagged) {
-				if (wasFirstClick == false) {
-					spawnMines(field, width, height, mines, curPosX, curPosY);
-					wasFirstClick = true;
-				}
-				if (field[curPosX][curPosY].getExtraState() == extraState::undefined) {
-					field[curPosX][curPosY].drawEmptyCell(f);
-					field[curPosX][curPosY].setExtraState(extraState::unchecked);
-				}
-				else {
-					field[curPosX][curPosY].drawUndefinedCell(f);
-					field[curPosX][curPosY].setExtraState(extraState::undefined);
-				}
-			}	
-		}	
-	}
-}
 
 void clearField(Cell **field, int &width, int &height) {
 	for (int i = 0; i < width; i++) {

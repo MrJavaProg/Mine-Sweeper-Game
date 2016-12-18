@@ -1,8 +1,8 @@
 #pragma once
-#include "Cell.h"
 #include <fstream>
 #include <iostream>
-
+#include "Cell.h"
+#include "Player.h"
 
 
 //extern Cell **field;
