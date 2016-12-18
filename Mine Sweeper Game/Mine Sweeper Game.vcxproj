@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CellDrawing.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameCell.h" />
     <ClInclude Include="GameForm.h">
       <FileType>CppForm</FileType>
@@ -152,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CellDrawing.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCell.cpp" />
     <ClCompile Include="GameForm.cpp" />
     <ClCompile Include="Player.cpp" />

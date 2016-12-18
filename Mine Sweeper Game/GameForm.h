@@ -1,35 +1,17 @@
 #pragma once
 #include <fstream>
 #include <iostream>
-#include "Cell.h"
-#include "Player.h"
+#include "Game.h"
+
 
 
 //extern Cell **field;
 static bool started;
 
-void createField(Cell **field, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started);
-void openCell(Cell **field, int x, int y, int &width, int &height, int &mines, System::Windows::Forms::Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick);
-void clearField(Cell **field, int &width, int &height);
-void showMines(Cell **field, int &width, int &height, System::Windows::Forms::Form ^f);
-void saveGame(Cell **field, int &width, int &height, int &mines, int &lifes, int &flags, int &closedCells, int &time, bool &started, bool &wasFirstClick);
-Cell** loadGame(int &width, int &height, int &mines, int &lifes, int &time, int &flags, System::Windows::Forms::Form ^f, bool &started, bool &wasFirstClick, int &closedCells);
-void writeRecord();
-
-
-static Cell **field;
 static int	width,
-	height,
-	mines,
 	quantity_of_mines = 0,
 	quantity_of_cells_width = 0,
 	quantity_of_cells_height = 0,
-	mb_open = 1,
-	mb_flag = 2,
-	mb_undefined = 3,
-	lifes = 0,
-	closedCells,
-	time;
 static bool wasFirstClick = false,
 		    timerEnabled = false;
 static int flags;
@@ -730,43 +712,43 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		std::fstream load;
 		started = false;
 
-		if (mb_open == 1) {
+		if (GameCell::mb_open == 1) {
 			GCOpenCellB->Text = "Left mouse button";
 		}
 		else {
-			if (mb_open == 2) {
+			if (GameCell::mb_open == 2) {
 				GCOpenCellB->Text = "Right mouse button";
 			}
 			else {
-				if (mb_open == 3) {
+				if (GameCell::mb_open == 3) {
 					GCOpenCellB->Text = "Middle mouse button";
 				}
 			}
 		}
 
-		if (mb_flag == 1) {
+		if (GameCell::mb_flag == 1) {
 			GCSetFlagB->Text = "Left mouse button";
 		}
 		else {
-			if (mb_flag == 2) {
+			if (GameCell::mb_flag == 2) {
 				GCSetFlagB->Text = "Right mouse button";
 			}
 			else {
-				if (mb_flag == 3) {
+				if (GameCell::mb_flag == 3) {
 					GCSetFlagB->Text = "Middle mouse button";
 				}
 			}
 		}
 
-		if (mb_undefined == 1) {
+		if (GameCell::mb_undefined == 1) {
 			GCSetUndef->Text = "Left mouse button";
 		}
 		else {
-			if (mb_undefined == 2) {
+			if (GameCell::mb_undefined == 2) {
 				GCSetUndef->Text = "Right mouse button";
 			}
 			else {
-				if (mb_undefined == 3) {
+				if (GameCell::mb_undefined == 3) {
 					GCSetUndef->Text = "Middle mouse button";
 				}
 			}
@@ -872,112 +854,112 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 	}
 
 	private: System::Void GCOpenCellB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-		int tmp_mb_open = mb_open;
+		int tmp_mb_open = GameCell::mb_open;
 		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
-			mb_open = 1;
+			GameCell::mb_open = 1;
 		}
 		else {
 			if (e->Button == System::Windows::Forms::MouseButtons::Right) {
-				mb_open = 2;
+				GameCell::mb_open = 2;
 			}
 			else {
 				if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
-					mb_open = 3;
+					GameCell::mb_open = 3;
 				}
 			}
 		}
 
-		if (mb_open == mb_flag) {
-			mb_flag = tmp_mb_open;
+		if (GameCell::mb_open == GameCell::mb_flag) {
+			GameCell::mb_flag = tmp_mb_open;
 		}
-		if (mb_open == mb_undefined) {
-			mb_undefined = tmp_mb_open;
+		if (GameCell::mb_open == GameCell::mb_undefined) {
+			GameCell::mb_undefined = tmp_mb_open;
 		}
 
-		if (mb_open == 1) {
+		if (GameCell::mb_open == 1) {
 			GCOpenCellB->Text = "Left mouse button";
 		}
 		else {
-			if (mb_open == 2) {
+			if (GameCell::mb_open == 2) {
 				GCOpenCellB->Text = "Right mouse button";
 			}
 			else {
-				if (mb_open == 3) {
+				if (GameCell::mb_open == 3) {
 					GCOpenCellB->Text = "Middle mouse button";
 				}
 			}
 		}
 
-		if (mb_flag == 1) {
+		if (GameCell::mb_flag == 1) {
 			GCSetFlagB->Text = "Left mouse button";
 		}
 		else {
-			if (mb_flag == 2) {
+			if (GameCell::mb_flag == 2) {
 				GCSetFlagB->Text = "Right mouse button";
 			}
 			else {
-				if (mb_flag == 3) {
+				if (GameCell::mb_flag == 3) {
 					GCSetFlagB->Text = "Middle mouse button";
 				}
 			}
 		}
 
-		if (mb_undefined == 1) {
+		if (GameCell::mb_undefined == 1) {
 			GCSetUndef->Text = "Left mouse button";
 		}
 		else {
-			if (mb_undefined == 2) {
+			if (GameCell::mb_undefined == 2) {
 				GCSetUndef->Text = "Right mouse button";
 			}
 			else {
-				if (mb_undefined == 3) {
+				if (GameCell::mb_undefined == 3) {
 					GCSetUndef->Text = "Middle mouse button";
 				}
 			}
 		}
 	}
 	private: System::Void GCSetFlagB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-		int tmp_mb_flag = mb_flag;
+		int tmp_mb_flag = GameCell::mb_flag;
 		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
-			mb_flag = 1;
+			GameCell::mb_flag = 1;
 		}
 		else {
 			if (e->Button == System::Windows::Forms::MouseButtons::Right) {
-				mb_flag = 2;
+				GameCell::mb_flag = 2;
 			}
 			else {
 				if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
-					mb_flag = 3;
+					GameCell::mb_flag = 3;
 				}
 			}
 		}
 
-		if (mb_open == mb_flag) {
-			mb_open = tmp_mb_flag;
+		if (GameCell::mb_open == GameCell::mb_flag) {
+			GameCell::mb_open = tmp_mb_flag;
 		}
-		if (mb_flag == mb_undefined) {
-			mb_undefined = tmp_mb_flag;
+		if (GameCell::mb_flag == GameCell::mb_undefined) {
+			GameCell::mb_undefined = tmp_mb_flag;
 		}
 
-		if (mb_open == 1) {
+		if (GameCell::mb_open == 1) {
 			GCOpenCellB->Text = "Left mouse button";
 		}
 		else {
-			if (mb_open == 2) {
+			if (GameCell::mb_open == 2) {
 				GCOpenCellB->Text = "Right mouse button";
 			}
 			else {
-				if (mb_open == 3) {
+				if (GameCell::mb_open == 3) {
 					GCOpenCellB->Text = "Middle mouse button";
 				}
 			}
 		}
 
-		if (mb_flag == 1) {
+		if (GameCell::mb_flag == 1) {
 			GCSetFlagB->Text = "Left mouse button";
 		}
 		else {
-			if (mb_flag == 2) {
+			if (GameCell::mb_flag == 2) {
 				GCSetFlagB->Text = "Right mouse button";
 			}
 			else {
@@ -987,80 +969,80 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			}
 		}
 
-		if (mb_undefined == 1) {
+		if (GameCell::mb_undefined == 1) {
 			GCSetUndef->Text = "Left mouse button";
 		}
 		else {
-			if (mb_undefined == 2) {
+			if (GameCell::mb_undefined == 2) {
 				GCSetUndef->Text = "Right mouse button";
 			}
 			else {
-				if (mb_undefined == 3) {
+				if (GameCell::mb_undefined == 3) {
 					GCSetUndef->Text = "Middle mouse button";
 				}
 			}
 		}
 	}
 	private: System::Void GCSetUndef_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-		int tmp_mb_undefined = mb_undefined;
+		int tmp_mb_undefined = GameCell::mb_undefined;
 		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
-			mb_undefined = 1;
+			GameCell::mb_undefined = 1;
 		}
 		else {
 			if (e->Button == System::Windows::Forms::MouseButtons::Right) {
-				mb_undefined = 2;
+				GameCell::mb_undefined = 2;
 			}
 			else {
 				if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
-					mb_undefined = 3;
+					GameCell::mb_undefined = 3;
 				}
 			}
 		}
 
-		if (mb_open == mb_undefined) {
-			mb_open = tmp_mb_undefined;
+		if (GameCell::mb_open == GameCell::mb_undefined) {
+			GameCell::mb_open = tmp_mb_undefined;
 		}
-		if (mb_flag == mb_undefined) {
-			mb_flag = tmp_mb_undefined;
+		if (GameCell::mb_flag == GameCell::mb_undefined) {
+			GameCell::mb_flag = tmp_mb_undefined;
 		}
 
-		if (mb_open == 1) {
+		if (GameCell::mb_open == 1) {
 			GCOpenCellB->Text = "Left mouse button";
 		}
 		else {
-			if (mb_open == 2) {
+			if (GameCell::mb_open == 2) {
 				GCOpenCellB->Text = "Right mouse button";
 			}
 			else {
-				if (mb_open == 3) {
+				if (GameCell::mb_open == 3) {
 					GCOpenCellB->Text = "Middle mouse button";
 				}
 			}
 		}
 
-		if (mb_flag == 1) {
+		if (GameCell::mb_flag == 1) {
 			GCSetFlagB->Text = "Left mouse button";
 		}
 		else {
-			if (mb_flag == 2) {
+			if (GameCell::mb_flag == 2) {
 				GCSetFlagB->Text = "Right mouse button";
 			}
 			else {
-				if (mb_flag == 3) {
+				if (GameCell::mb_flag == 3) {
 					GCSetFlagB->Text = "Middle mouse button";
 				}
 			}
 		}
 
-		if (mb_undefined == 1) {
+		if (GameCell::mb_undefined == 1) {
 			GCSetUndef->Text = "Left mouse button";
 		}
 		else {
-			if (mb_undefined == 2) {
+			if (GameCell::mb_undefined == 2) {
 				GCSetUndef->Text = "Right mouse button";
 			}
 			else {
-				if (mb_undefined == 3) {
+				if (GameCell::mb_undefined == 3) {
 					GCSetUndef->Text = "Middle mouse button";
 				}
 			}

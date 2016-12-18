@@ -1,4 +1,5 @@
 #pragma once
+#include "GameCell.h"
 
 using namespace std;
 
@@ -9,11 +10,13 @@ class Player
 		mines;
 
 
+
 public:
 	void setName(string name);
 	const char* getName();
 	Player();
 	~Player();
+	
 	
 };
 
