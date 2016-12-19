@@ -1,15 +1,17 @@
 #pragma once
 #include "Game.h"
 
+
+static Game *game;
 //extern Cell **field;
 static bool started;
 
 static int	quantity_of_mines = 0,
 quantity_of_cells_width = 0,
 quantity_of_cells_height = 0;
-/*static bool wasFirstClick = false,
+static bool wasFirstClick = false,
 		    timerEnabled = false;
-static int flags;*/
+static int flags;
 
 namespace MineSweeperGame {
 
@@ -796,6 +798,10 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 	}
 
 	private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
+		game = new Game(5, 5, 5, 2);
+
+		game->createField(this);
+
 		/*if (width != 0 && height != 0) {
 			clearField(field, width, height);
 		}
@@ -1052,6 +1058,10 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
 			mb = 3;
 		}
+		int lifes = 2;
+		bool wasFirstClick = false;
+		started = true;
+		game->openCell(e->X, e->Y, lifes, this, wasFirstClick, started, timerEnabled);
 		/*if (started == true) {
 			showMines(field, width, height, this);
 

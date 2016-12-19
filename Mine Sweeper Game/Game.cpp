@@ -3,14 +3,16 @@
 
 using namespace System::Windows::Forms;
 
-Game::Game(int width, int height, int mines)
+Game::Game(int width, int height, int mines, int lifes)
 {
 	//player = new Player();
+	player.setLifes(lifes);
 	this->width = width;
 	this->height = height;
 	this->mines = mines;
 	player.setMines(mines);
 	flags = mines;
+	this->lifes = lifes;
 }
 
 Game::~Game()
@@ -39,7 +41,7 @@ void Game::createField(Form ^f) {
 			field[i][j].redrawCell(f);
 		}
 	}
-	wasFirstClick = false;
+	//wasFirstClick = false;
 	showMines(f);
 }
 
@@ -92,7 +94,7 @@ void Game::showMines(Form ^f) {
 	}
 }
 
-void Game::saveGame(bool &started) {
+void Game::saveGame(bool &started, bool &wasFirstClick) {
 	std::fstream save;
 	int time = player.getTime(),
 		mines = player.getMines(),
@@ -117,7 +119,7 @@ void Game::saveGame(bool &started) {
 }
 
 
-void Game::loadGame(Form ^f, bool &started) {
+void Game::loadGame(Form ^f, bool &started, bool &wasFirstClick) {
 	std::fstream load;
 	int time = player.getTime(),
 		mines = player.getMines(),
@@ -148,7 +150,7 @@ void Game::loadGame(Form ^f, bool &started) {
 	}
 }
 
-void Game::openCell(int &x, int &y, Form ^f, bool &started, int &mb, int &lifes, int &closedCells, bool &wasFirstClick) {
+void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f, bool &wasFirstClick, bool &started, bool &timerEnabled) {
 	float xStart = field[0][0].getXStart(),
 		xEnd = field[width - 1][height - 1].getXEnd(),
 		yStart = field[0][0].getYStart(),

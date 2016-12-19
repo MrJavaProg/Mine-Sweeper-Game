@@ -2,6 +2,11 @@
 
 
 
+void Player::setLifes(int lifes)
+{
+	this->lifes = lifes;
+}
+
 void Player::setName(char* name)
 {
 	this->name = name;
@@ -39,6 +44,11 @@ int Player::getMines()
 int Player::getTime()
 {
 	return time;
+}
+
+int Player::getLifes()
+{
+	return lifes;
 }
 
 
