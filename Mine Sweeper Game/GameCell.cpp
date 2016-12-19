@@ -1,8 +1,8 @@
 #include "GameCell.h"
 
 int GameCell::mb_open = 1,
-GameCell::mb_flag = 2,
-GameCell::mb_undefined = 3;
+	GameCell::mb_flag = 2,
+	GameCell::mb_undefined = 3;
 
 GameCell::GameCell()
 {
@@ -54,7 +54,7 @@ void GameCell::redrawCell(System::Windows::Forms::Form ^ form)
 	}
 	if (extraState == opened) {
 		if (state == state::empty) {
-			drawOpenedCell(form);
+			drawOpenedCell(form, nearbyMines);
 		}
 		else {
 			drawExplodedCell(form);

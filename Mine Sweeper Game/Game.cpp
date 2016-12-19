@@ -3,26 +3,47 @@
 
 using namespace System::Windows::Forms;
 
-Game::Game(int width, int height, int mines, int lifes)
+Game::Game(int width, int height, int mines, int lifes, Form ^f)
 {
 	//player = new Player();
 	player.setLifes(lifes);
+	this->lifes = lifes;
 	this->width = width;
 	this->height = height;
 	this->mines = mines;
 	player.setMines(mines);
 	flags = mines;
-	this->lifes = lifes;
+	wasFirstClick = false;
+	started = true;
+	createField(f);
+}
+
+Game::Game(Form ^f)
+{
+	loadGame(f);
+	xStart = field[0][0].getXStart();
+	yStart = field[0][0].getYStart();
+	xEnd = field[width - 1][height - 1].getXEnd();
+	yEnd = field[width - 1][height - 1].getYEnd();
 }
 
 Game::~Game()
 {
+	player.~Player();
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			field[i][j].~GameCell();
+		}
+	}
+
+	for (int i = 0; i < width; i++) {
+		delete[] field[i];
+	}
+	delete field;
 }
 
 void Game::createField(Form ^f) {
 	//GameCell **gField;   если что, проблема тут)
-	float xStart,
-		yStart;
 	yStart = (f->Height / 2) - (height / 2)*Cell::edge;
 	xStart = (f->Width / 2) - (width / 2)*Cell::edge;
 
@@ -41,14 +62,16 @@ void Game::createField(Form ^f) {
 			field[i][j].redrawCell(f);
 		}
 	}
-	//wasFirstClick = false;
-	showMines(f);
+	
+	xEnd = field[width - 1][height - 1].getXEnd(),
+	yEnd = field[width - 1][height - 1].getYEnd();
+	closedCells = width * height;
 }
 
 void Game::spawnMines(int &curPosX, int &curPosY) {
 	int x,
-		y;
-//		mines = player.getMines();
+		y,
+		mines = this->mines;
 
 	while (mines != 0) {
 		x = rand() % (width - 1) + 0;
@@ -88,13 +111,13 @@ void Game::showMines(Form ^f) {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
 			if (field[i][j].getState() == state::mined && field[i][j].getExtraState() != extraState::flagged) {
-				field[i][j].redrawCell(f);
+				field[i][j].drawExplodedCell(f);
 			}
 		}
 	}
 }
 
-void Game::saveGame(bool &started, bool &wasFirstClick) {
+void Game::saveGame() {
 	std::fstream save;
 	int time = player.getTime(),
 		mines = player.getMines(),
@@ -107,6 +130,9 @@ void Game::saveGame(bool &started, bool &wasFirstClick) {
 	save.write(reinterpret_cast<char*> (&lifes), sizeof(int));
 	save.write(reinterpret_cast<char*> (&mines), sizeof(int));
 	save.write(reinterpret_cast<char*> (&flags), sizeof(int));
+	save.write(reinterpret_cast<char*> (&this->lifes), sizeof(int));
+	save.write(reinterpret_cast<char*> (&this->mines), sizeof(int));
+	save.write(reinterpret_cast<char*> (&this->flags), sizeof(int));
 	save.write(reinterpret_cast<char*> (&closedCells), sizeof(int));
 	save.write(reinterpret_cast<char*> (&width), sizeof(int));
 	save.write(reinterpret_cast<char*> (&height), sizeof(int));
@@ -119,42 +145,49 @@ void Game::saveGame(bool &started, bool &wasFirstClick) {
 }
 
 
-void Game::loadGame(Form ^f, bool &started, bool &wasFirstClick) {
+void Game::loadGame(Form ^f) {
 	std::fstream load;
-	int time = player.getTime(),
-		mines = player.getMines(),
-		lifes = player.getMines();
-
 	load.open("Save.sav", std::ios::in | std::ios::binary);
-	load.read(reinterpret_cast<char*> (&started), sizeof(bool));
-	load.read(reinterpret_cast<char*> (&wasFirstClick), sizeof(bool));
-	load.read(reinterpret_cast<char*> (&time), sizeof(int));
-	load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
-	load.read(reinterpret_cast<char*> (&mines), sizeof(int));
-	load.read(reinterpret_cast<char*> (&flags), sizeof(int));
-	load.read(reinterpret_cast<char*> (&closedCells), sizeof(int));
-	load.read(reinterpret_cast<char*> (&width), sizeof(int));
-	load.read(reinterpret_cast<char*> (&height), sizeof(int));
+	int time,
+		mines,
+		lifes;
 
-	field = new GameCell*[width];
+		load.seekg(std::ios::end);
+		if (load.tellg() > 0) {
+			load.seekg(std::ios::beg);
 
-	for (int i = 0; i < width; i++) {
-		field[i] = new GameCell[height];
-	}
+			load.read(reinterpret_cast<char*> (&started), sizeof(bool));
+			load.read(reinterpret_cast<char*> (&wasFirstClick), sizeof(bool));
+			load.read(reinterpret_cast<char*> (&time), sizeof(int));
+			load.read(reinterpret_cast<char*> (&lifes), sizeof(int));
+			load.read(reinterpret_cast<char*> (&mines), sizeof(int));
+			load.read(reinterpret_cast<char*> (&flags), sizeof(int));
+			load.read(reinterpret_cast<char*> (&this->lifes), sizeof(int));
+			load.read(reinterpret_cast<char*> (&this->mines), sizeof(int));
+			load.read(reinterpret_cast<char*> (&this->flags), sizeof(int));
+			load.read(reinterpret_cast<char*> (&closedCells), sizeof(int));
+			load.read(reinterpret_cast<char*> (&width), sizeof(int));
+			load.read(reinterpret_cast<char*> (&height), sizeof(int));
 
-	for (int i = 0; i < width; i++) {
-		for (int j = 0; j < height; j++) {
-			load.read(reinterpret_cast<char*> (&field[i][j]), sizeof(GameCell));
-			field[i][j].redrawCell(f);
+			field = new GameCell*[width];
+
+			for (int i = 0; i < width; i++) {
+				field[i] = new GameCell[height];
+			}
+
+			for (int i = 0; i < width; i++) {
+				for (int j = 0; j < height; j++) {
+					load.read(reinterpret_cast<char*> (&field[i][j]), sizeof(GameCell));
+					field[i][j].redrawCell(f);
+				}
+			}
+			player.setLifes(lifes);
+			player.setMines(mines);
+			player.setTime(time);
 		}
-	}
 }
 
-void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f, bool &wasFirstClick, bool &started, bool &timerEnabled) {
-	float xStart = field[0][0].getXStart(),
-		xEnd = field[width - 1][height - 1].getXEnd(),
-		yStart = field[0][0].getYStart(),
-		yEnd = field[width - 1][height - 1].getYEnd();
+void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 	int curPosX,
 		curPosY;
 
@@ -167,6 +200,7 @@ void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f, bool
 					if (wasFirstClick == false) {
 						spawnMines(curPosX, curPosY);
 						wasFirstClick = true;
+						timerEnabled = true;
 				}
 				
 				if (field[curPosX][curPosY].getState() == state::empty) {
@@ -181,6 +215,7 @@ void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f, bool
 					field[curPosX][curPosY].redrawCell(f);
 					if (lifes == 0) {
 						started = false;
+						timerEnabled = false;
 					}
 					else {
 						lifes--;
@@ -191,6 +226,7 @@ void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f, bool
 				if (wasFirstClick == false) {
 					spawnMines(curPosX, curPosY);
 					wasFirstClick = true;
+					timerEnabled = true;
 				}
 				if (field[curPosX][curPosY].getExtraState() == extraState::flagged) {
 					field[curPosX][curPosY].setExtraState(state::empty);
@@ -215,6 +251,7 @@ void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f, bool
 					if (wasFirstClick == false) {
 						spawnMines(curPosX, curPosY);
 						wasFirstClick = true;
+						timerEnabled = true;
 				}
 				if (field[curPosX][curPosY].getExtraState() == extraState::undefined) {
 					field[curPosX][curPosY].setExtraState(extraState::unchecked);
@@ -227,5 +264,21 @@ void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f, bool
 			}
 		}
 	}
+		showMines(f);//для теста (удалить!!!)
+}
+
+bool Game::getTimerEnabled()
+{
+	return timerEnabled;
+}
+
+int Game::getWidth()
+{
+	return width;
+}
+
+int Game::getHeight()
+{
+	return height;
 }
 

@@ -14,17 +14,27 @@ class Game
 		mines,
 		lifes;
 	int flags;
+	float xStart,
+		yStart,
+		xEnd,
+		yEnd;
+	bool wasFirstClick,
+		started,
+		timerEnabled;
 
 
 public:
-	Game(int width, int height, int mines, int lifes);
+	Game(int width, int height, int mines, int lifes, System::Windows::Forms::Form ^f);
+	Game(System::Windows::Forms::Form ^f);
 	~Game();
-	void saveGame(bool &started, bool &wasFirstClick);
-	void loadGame(System::Windows::Forms::Form ^ f, bool & started, bool &wasFirstClick);
+	void saveGame();
+	void loadGame(System::Windows::Forms::Form ^ f);
 	void spawnMines(int &curPosX, int &curPosY);
 	void createField(System::Windows::Forms::Form ^f);
 	void showMines(System::Windows::Forms::Form ^f);
-	void openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f, bool &wasFirstClick, bool &started, bool &timerEnabled);
-
+	void openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f);
+	bool getTimerEnabled();
+	int getWidth();
+	int getHeight();
 };
 

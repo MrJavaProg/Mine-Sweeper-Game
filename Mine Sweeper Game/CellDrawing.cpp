@@ -19,12 +19,15 @@ void CellDrawing::drawEmptyCell(System::Windows::Forms::Form ^form)
 	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, edge, edge);
 }
 
-void CellDrawing::drawOpenedCell(System::Windows::Forms::Form ^form)
+void CellDrawing::drawOpenedCell(System::Windows::Forms::Form ^form, int nearbyMines)
 {
 	Graphics ^g = form->CreateGraphics();
 
 	g->FillRectangle(gcnew SolidBrush(Color::FromArgb(255, 255, 255)), xStart, yStart, edge, edge);
 	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, edge, edge);
+	if (nearbyMines != 0) {
+		g->DrawString(nearbyMines.ToString(), gcnew Font(FontFamily::GenericSansSerif, 14, FontStyle::Bold), gcnew SolidBrush(Color::FromArgb(84, 4, 4)), xStart, yStart);
+	}
 }
 
 void CellDrawing::drawUndefinedCell(System::Windows::Forms::Form ^ form)

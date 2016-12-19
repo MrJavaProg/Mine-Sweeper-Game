@@ -1,17 +1,16 @@
 #pragma once
 #include "Game.h"
+#include <fstream>
 
 
-static Game *game;
+static Game *game = NULL;
 //extern Cell **field;
 static bool started;
 
 static int	quantity_of_mines = 0,
 quantity_of_cells_width = 0,
-quantity_of_cells_height = 0;
-static bool wasFirstClick = false,
-		    timerEnabled = false;
-static int flags;
+quantity_of_cells_height = 0,
+lifes = 0;
 
 namespace MineSweeperGame {
 
@@ -706,8 +705,6 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 #pragma endregion
 
 	private: System::Void GameForm_Shown(System::Object^  sender, System::EventArgs^  e) {
-		/*std::fstream load;
-		started = false;
 
 		if (GameCell::mb_open == 1) {
 			GCOpenCellB->Text = "Left mouse button";
@@ -752,20 +749,11 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		}
 
 		std::fstream file;
-		time = 0;
 		file.open("Save.sav", std::ios::in);
 		if (file.is_open()) {
-			file.seekg(std::ios::end);
-			if (file.tellg()>0) {
-				file.close();
-				field = loadGame(width, height, mines, lifes, time, flags, this, started,wasFirstClick, closedCells);
-				if (started == false) {
-					TSLInfo->Text = "looser";
-					showMines(field, width, height, this);
-				}
-			}
+			file.close();
+			game = new Game(this);
 		}
-		TSLTime->Text = time.ToString();*/
 	}
 
 	private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -798,33 +786,27 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 	}
 
 	private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-		game = new Game(5, 5, 5, 2);
-
-		game->createField(this);
-
-		/*if (width != 0 && height != 0) {
-			clearField(field, width, height);
+		if (game == NULL) {
+			if (quantity_of_cells_height == 0 || quantity_of_cells_width == 0 || quantity_of_mines == 0) {
+				game = new Game(9, 9, 10, lifes, this);
+			}
+			else {
+				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, this);
+			}
 		}
-
-		if (quantity_of_cells_width == 0 && quantity_of_cells_height == 0 && quantity_of_mines == 0) {
-			width = 9;
-			height = 9;
-			mines = 10;
-		}
-		else {
-			width = quantity_of_cells_width;
-			height = quantity_of_cells_height;
-			mines = quantity_of_mines;
-		}
-
 		
-
-		/*closedCells = width*height;
-		createField(field, width, height, mines, this, started);
-		TSTBMinesCounter->Text = "Mines: " + mines.ToString();
-		time = 0;
-		wasFirstClick = false;
-	*/
+		else {
+			if (game->getWidth() != 0 && game->getHeight() != 0) {
+				game->~Game();
+			}
+			if (quantity_of_cells_height == 0 || quantity_of_cells_width == 0 || quantity_of_mines == 0) {
+				game = new Game(9, 9, 10, lifes, this);
+			}
+			else {
+				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, this);
+			}
+		}
+		
 	}
 
 
@@ -1058,32 +1040,10 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
 			mb = 3;
 		}
-		int lifes = 2;
-		bool wasFirstClick = false;
-		started = true;
-		game->openCell(e->X, e->Y, lifes, this, wasFirstClick, started, timerEnabled);
-		/*if (started == true) {
-			showMines(field, width, height, this);
-
-			if (timerEnabled == false) {
-			}
-			timerEnabled = true;
-			Timer->Enabled = true;
-			openCell(field, e->X, e->Y, width, height, mines, this, started, mb, lifes, closedCells, wasFirstClick);
-			TSTBMinesCounter->Text = "Flags: " + flags.ToString();
-			if (started == false) {
-
-				TSLInfo->Text = "You are looser!!! LOL";
-				timerEnabled = false;
-				Timer->Enabled = false;
-			}
-			if (mines == 0 || closedCells == mines) {
-				started = false;
-				TSLInfo->Text = "Win!!!!";
-				timerEnabled = false;
-				Timer->Enabled = false;
-			}
-		}*/
+		if (game != NULL) {
+			game->openCell(e->X, e->Y, mb, this);
+		}
+		
 	}
 
 	private: System::Void GWrongCB_CheckedChanged_1(System::Object^  sender, System::EventArgs^  e) {
@@ -1121,7 +1081,10 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 	}
 
 private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
-	//saveGame(field, width, height, mines, lifes, flags, closedCells, time, started, wasFirstClick);
+	if (game != NULL) {
+		game->saveGame();
+		game->~Game();
+	}
 }
 
 
