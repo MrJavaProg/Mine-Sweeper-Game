@@ -16,6 +16,8 @@ Game::Game(int width, int height, int mines, int lifes, Form ^f)
 	wasFirstClick = false;
 	started = true;
 	createField(f);
+	player.setHeight(height);
+	player.setWidth(width);
 }
 
 Game::Game(Form ^f)
@@ -184,10 +186,12 @@ void Game::loadGame(Form ^f) {
 			player.setLifes(lifes);
 			player.setMines(mines);
 			player.setTime(time);
+			player.setWidth(width);
+			player.setHeight(height);
 		}
 }
 
-void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
+bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 	int curPosX,
 		curPosY;
 
@@ -216,6 +220,7 @@ void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 					if (lifes == 0) {
 						started = false;
 						timerEnabled = false;
+						return false;
 					}
 					else {
 						lifes--;
@@ -265,6 +270,11 @@ void Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 		}
 	}
 		showMines(f);//для теста (удалить!!!)
+		if (closedCells == mines) {
+			timerEnabled = false;
+			started = false;
+			return true;
+		}
 }
 
 bool Game::getTimerEnabled()
@@ -280,5 +290,10 @@ int Game::getWidth()
 int Game::getHeight()
 {
 	return height;
+}
+
+void Game::writeDownRecords(System::String ^name, int &time)
+{
+	player.writeDownRecord(name, time);
 }
 

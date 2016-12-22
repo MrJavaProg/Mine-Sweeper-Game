@@ -32,9 +32,10 @@ public:
 	void spawnMines(int &curPosX, int &curPosY);
 	void createField(System::Windows::Forms::Form ^f);
 	void showMines(System::Windows::Forms::Form ^f);
-	void openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f);
+	bool openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f);
 	bool getTimerEnabled();
 	int getWidth();
 	int getHeight();
+	void writeDownRecords(System::String ^name, int &time);
 };
 

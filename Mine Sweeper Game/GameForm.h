@@ -2,7 +2,7 @@
 #include "Game.h"
 #include <fstream>
 
-
+using namespace System::Drawing;
 static Game *game = NULL;
 //extern Cell **field;
 static bool started;
@@ -10,7 +10,9 @@ static bool started;
 static int	quantity_of_mines = 0,
 quantity_of_cells_width = 0,
 quantity_of_cells_height = 0,
-lifes = 0;
+lifes = 0,
+time;
+void getRecords(System::Windows::Forms::RichTextBox ^rtb);
 
 namespace MineSweeperGame {
 
@@ -125,11 +127,30 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::Timer^  Timer;
 
 
-	private: System::Windows::Forms::TextBox^  textBox3;
-	private: System::Windows::Forms::TextBox^  textBox2;
-	private: System::Windows::Forms::TextBox^  textBox1;
-private: System::Windows::Forms::RichTextBox^  richTextBox1;
-private: System::Windows::Forms::ToolStripLabel^  TSLTime;
+
+
+
+
+
+	private: System::Windows::Forms::ToolStripLabel^  TSLTime;
+private: System::Windows::Forms::RichTextBox^  RecordsRTB;
+
+private: System::Windows::Forms::Label^  RecordsL;
+private: System::Windows::Forms::GroupBox^  WinGB;
+private: System::Windows::Forms::TextBox^  WinTB;
+
+
+
+private: System::Windows::Forms::Button^  WinB;
+
+
+
+
+
+
+
+
+
 
 
 
@@ -191,12 +212,13 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			this->GCSetUndef = (gcnew System::Windows::Forms::Button());
 			this->OptionsGB = (gcnew System::Windows::Forms::GroupBox());
 			this->RecordsGB = (gcnew System::Windows::Forms::GroupBox());
-			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
-			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
-			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->RecordsL = (gcnew System::Windows::Forms::Label());
+			this->RecordsRTB = (gcnew System::Windows::Forms::RichTextBox());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
 			this->Timer = (gcnew System::Windows::Forms::Timer(this->components));
+			this->WinGB = (gcnew System::Windows::Forms::GroupBox());
+			this->WinTB = (gcnew System::Windows::Forms::TextBox());
+			this->WinB = (gcnew System::Windows::Forms::Button());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -206,6 +228,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			this->flowLayoutPanel1->SuspendLayout();
 			this->OptionsGB->SuspendLayout();
 			this->RecordsGB->SuspendLayout();
+			this->WinGB->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// ToolsTS
@@ -237,14 +260,14 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			// OptionsTSMI
 			// 
 			this->OptionsTSMI->Name = L"OptionsTSMI";
-			this->OptionsTSMI->Size = System::Drawing::Size(116, 22);
+			this->OptionsTSMI->Size = System::Drawing::Size(152, 22);
 			this->OptionsTSMI->Text = L"Options";
 			this->OptionsTSMI->Click += gcnew System::EventHandler(this, &GameForm::optionsToolStripMenuItem_Click);
 			// 
 			// RecordsTSMI
 			// 
 			this->RecordsTSMI->Name = L"RecordsTSMI";
-			this->RecordsTSMI->Size = System::Drawing::Size(116, 22);
+			this->RecordsTSMI->Size = System::Drawing::Size(152, 22);
 			this->RecordsTSMI->Text = L"Records";
 			this->RecordsTSMI->Click += gcnew System::EventHandler(this, &GameForm::recordsToolStripMenuItem_Click);
 			// 
@@ -601,8 +624,8 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			// OptionsGB
 			// 
 			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
-			this->OptionsGB->Controls->Add(this->PresetsP);
 			this->OptionsGB->Controls->Add(this->ControlP);
+			this->OptionsGB->Controls->Add(this->PresetsP);
 			this->OptionsGB->Location = System::Drawing::Point(0, 28);
 			this->OptionsGB->Name = L"OptionsGB";
 			this->OptionsGB->Size = System::Drawing::Size(784, 535);
@@ -613,10 +636,8 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			// 
 			// RecordsGB
 			// 
-			this->RecordsGB->Controls->Add(this->richTextBox1);
-			this->RecordsGB->Controls->Add(this->textBox3);
-			this->RecordsGB->Controls->Add(this->textBox2);
-			this->RecordsGB->Controls->Add(this->textBox1);
+			this->RecordsGB->Controls->Add(this->RecordsL);
+			this->RecordsGB->Controls->Add(this->RecordsRTB);
 			this->RecordsGB->Controls->Add(this->CloseRecordsB);
 			this->RecordsGB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->RecordsGB->Location = System::Drawing::Point(1, 26);
@@ -627,35 +648,28 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			this->RecordsGB->Text = L"Records";
 			this->RecordsGB->Visible = false;
 			// 
-			// richTextBox1
+			// RecordsL
 			// 
-			this->richTextBox1->Location = System::Drawing::Point(145, 94);
-			this->richTextBox1->Name = L"richTextBox1";
-			this->richTextBox1->Size = System::Drawing::Size(317, 254);
-			this->richTextBox1->TabIndex = 7;
-			this->richTextBox1->Text = L"";
+			this->RecordsL->AutoSize = true;
+			this->RecordsL->Font = (gcnew System::Drawing::Font(L"Playbill", 60, static_cast<System::Drawing::FontStyle>(((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Italic)
+				| System::Drawing::FontStyle::Underline)), System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->RecordsL->Location = System::Drawing::Point(159, 4);
+			this->RecordsL->Name = L"RecordsL";
+			this->RecordsL->Size = System::Drawing::Size(440, 81);
+			this->RecordsL->TabIndex = 6;
+			this->RecordsL->Text = L"THE ELITEST GUYS";
 			// 
-			// textBox3
+			// RecordsRTB
 			// 
-			this->textBox3->Location = System::Drawing::Point(484, 58);
-			this->textBox3->Name = L"textBox3";
-			this->textBox3->Size = System::Drawing::Size(100, 20);
-			this->textBox3->TabIndex = 6;
-			// 
-			// textBox2
-			// 
-			this->textBox2->Location = System::Drawing::Point(362, 58);
-			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(100, 20);
-			this->textBox2->TabIndex = 5;
-			// 
-			// textBox1
-			// 
-			this->textBox1->Location = System::Drawing::Point(145, 58);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(194, 20);
-			this->textBox1->TabIndex = 4;
-			this->textBox1->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			this->RecordsRTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->RecordsRTB->Font = (gcnew System::Drawing::Font(L"Harlow Solid Italic", 18, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->RecordsRTB->Location = System::Drawing::Point(11, 91);
+			this->RecordsRTB->Name = L"RecordsRTB";
+			this->RecordsRTB->ReadOnly = true;
+			this->RecordsRTB->Size = System::Drawing::Size(756, 398);
+			this->RecordsRTB->TabIndex = 5;
+			this->RecordsRTB->Text = L"";
 			// 
 			// CloseRecordsB
 			// 
@@ -672,6 +686,41 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			this->Timer->Interval = 1000;
 			this->Timer->Tick += gcnew System::EventHandler(this, &GameForm::Timer_Tick);
 			// 
+			// WinGB
+			// 
+			this->WinGB->Controls->Add(this->WinTB);
+			this->WinGB->Controls->Add(this->WinB);
+			this->WinGB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->WinGB->Location = System::Drawing::Point(107, 190);
+			this->WinGB->Name = L"WinGB";
+			this->WinGB->Size = System::Drawing::Size(570, 183);
+			this->WinGB->TabIndex = 8;
+			this->WinGB->TabStop = false;
+			this->WinGB->Text = L"Who is that hero\?";
+			this->WinGB->Visible = false;
+			// 
+			// WinTB
+			// 
+			this->WinTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->WinTB->Font = (gcnew System::Drawing::Font(L"Harlow Solid Italic", 12, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->WinTB->Location = System::Drawing::Point(53, 52);
+			this->WinTB->Name = L"WinTB";
+			this->WinTB->Size = System::Drawing::Size(467, 28);
+			this->WinTB->TabIndex = 3;
+			this->WinTB->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			// 
+			// WinB
+			// 
+			this->WinB->Location = System::Drawing::Point(172, 115);
+			this->WinB->Name = L"WinB";
+			this->WinB->Size = System::Drawing::Size(230, 42);
+			this->WinB->TabIndex = 1;
+			this->WinB->Text = L"Check in the Boss";
+			this->WinB->UseVisualStyleBackColor = true;
+			this->WinB->Click += gcnew System::EventHandler(this, &GameForm::WinB_Click);
+			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -680,6 +729,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			this->Controls->Add(this->ToolsTS);
 			this->Controls->Add(this->RecordsGB);
 			this->Controls->Add(this->OptionsGB);
+			this->Controls->Add(this->WinGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
 			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &GameForm::GameForm_FormClosed);
@@ -698,6 +748,8 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			this->OptionsGB->ResumeLayout(false);
 			this->RecordsGB->ResumeLayout(false);
 			this->RecordsGB->PerformLayout();
+			this->WinGB->ResumeLayout(false);
+			this->WinGB->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -754,6 +806,11 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			file.close();
 			game = new Game(this);
 		}
+
+
+		
+		//RecordsRTB->Text = "\t\tELITE GUYS:";
+		
 	}
 
 	private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -776,10 +833,14 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		PresetsP->Visible = true;
 		ControlP->Visible = false;
 	}
+
 	private: System::Void recordsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		RecordsGB->Visible = true;
 		OptionsGB->Visible = false;
+		
+		getRecords(RecordsRTB);
 	}
+
 	private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::EventArgs^  e) {
 		RecordsGB->Visible = false;
 
@@ -794,7 +855,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, this);
 			}
 		}
-		
+
 		else {
 			if (game->getWidth() != 0 && game->getHeight() != 0) {
 				game->~Game();
@@ -806,7 +867,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, this);
 			}
 		}
-		
+
 	}
 
 
@@ -984,7 +1045,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		if (GameCell::mb_flag == GameCell::mb_undefined) {
 			GameCell::mb_flag = tmp_mb_undefined;
 		}
-		
+
 		if (GameCell::mb_open == 1) {
 			GCOpenCellB->Text = "Left mouse button";
 		}
@@ -1041,9 +1102,13 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 			mb = 3;
 		}
 		if (game != NULL) {
-			game->openCell(e->X, e->Y, mb, this);
+			bool win;
+			win = game->openCell(e->X, e->Y, mb, this);
+			if (win == false) {
+				WinGB->Visible = true;
+			}
 		}
-		
+
 	}
 
 	private: System::Void GWrongCB_CheckedChanged_1(System::Object^  sender, System::EventArgs^  e) {
@@ -1080,17 +1145,23 @@ private: System::Windows::Forms::ToolStripLabel^  TSLTime;
 		}
 	}
 
-private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
-	if (game != NULL) {
-		game->saveGame();
-		game->~Game();
+	private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
+		if (game != NULL) {
+			game->saveGame();
+			game->~Game();
+		}
 	}
-}
 
 
-private: System::Void Timer_Tick(System::Object^  sender, System::EventArgs^  e) {
-	//TSLTime->Text = time.ToString();
-	//time++;
+	private: System::Void Timer_Tick(System::Object^  sender, System::EventArgs^  e) {
+		//TSLTime->Text = time.ToString();
+		//time++;
+	}
+
+
+
+private: System::Void WinB_Click(System::Object^  sender, System::EventArgs^  e) {
+	game->writeDownRecords(WinTB->Text, time);
 }
 };
 

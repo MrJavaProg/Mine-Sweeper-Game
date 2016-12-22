@@ -21,9 +21,6 @@
     <ClInclude Include="CellDrawing.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="GameForm.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="GameCell.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -31,6 +28,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="GameForm.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
@@ -46,9 +46,6 @@
     <ClCompile Include="CellDrawing.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="GameForm.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="GameCell.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -58,8 +55,14 @@
     <ClCompile Include="Player.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="GameForm.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Object Include="Debug\CellDrawing.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Records.htm" />
   </ItemGroup>
 </Project>

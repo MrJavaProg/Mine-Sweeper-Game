@@ -1,10 +1,12 @@
 #pragma once
 
+
 class Player
 {
-	char *name;
 	int time,
 		mines,
+		width,
+		height,
 		lifes;
 
 
@@ -13,14 +15,13 @@ public:
 	~Player();
 	
 	void setLifes(int lifes);
-	void setName(char *name);
-	char* getName();
 	void setMines(int mines);
 	void setTime(int time);
 	int getMines();
 	int getTime();
 	int getLifes();
-
-	//void writeRecord();
+	void writeDownRecord(System::String ^name, int &time);
+	void setWidth(int width);
+	void setHeight(int height);
 };
 
