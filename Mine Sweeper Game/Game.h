@@ -3,9 +3,9 @@
 #include "Player.h"
 
 
-class Game
+class Game : public Player
 {
-	Player player;
+	//Player player;
 	GameCell **field;
 
 	int	width,
@@ -36,6 +36,5 @@ public:
 	bool getTimerEnabled();
 	int getWidth();
 	int getHeight();
-	void writeDownRecords(System::String ^name, int &time);
 };
 

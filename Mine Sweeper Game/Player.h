@@ -1,3 +1,4 @@
+#include <fstream>
 #pragma once
 
 
@@ -8,6 +9,7 @@ class Player
 		width,
 		height,
 		lifes;
+	char *name;
 
 
 public:
@@ -20,8 +22,17 @@ public:
 	int getMines();
 	int getTime();
 	int getLifes();
-	void writeDownRecord(System::String ^name, int &time);
+//	void writeDownRecord(std::streampos &pos, std::fstream &records);
+	//void saveRecord();
+	void checkRecord(char *name);
 	void setWidth(int width);
 	void setHeight(int height);
+		
+
+private:
+	void setName(char* name);
+	void createTemp(std::fstream &records, char *fileName, int &line, int &lines);
+	void rewriteRecords(char *fileName, char *fileNameTmp, int &line, int &lines);
+	int countLines(char *fileName);
 };
 

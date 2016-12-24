@@ -6,23 +6,25 @@ using namespace System::Windows::Forms;
 Game::Game(int width, int height, int mines, int lifes, Form ^f)
 {
 	//player = new Player();
-	player.setLifes(lifes);
+	Player();
+	Player::setLifes(lifes);
 	this->lifes = lifes;
 	this->width = width;
 	this->height = height;
 	this->mines = mines;
-	player.setMines(mines);
+	Player::setMines(mines);
 	flags = mines;
 	wasFirstClick = false;
 	started = true;
 	createField(f);
-	player.setHeight(height);
-	player.setWidth(width);
+	Player::setHeight(height);
+	Player::setWidth(width);
 }
 
 Game::Game(Form ^f)
 {
 	loadGame(f);
+
 	xStart = field[0][0].getXStart();
 	yStart = field[0][0].getYStart();
 	xEnd = field[width - 1][height - 1].getXEnd();
@@ -31,7 +33,7 @@ Game::Game(Form ^f)
 
 Game::~Game()
 {
-	player.~Player();
+	//player.~Player();
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
 			field[i][j].~GameCell();
@@ -121,9 +123,9 @@ void Game::showMines(Form ^f) {
 
 void Game::saveGame() {
 	std::fstream save;
-	int time = player.getTime(),
-		mines = player.getMines(),
-		lifes = player.getMines();
+	int time = Player::getTime(),
+		mines = Player::getMines(),
+		lifes = Player::getMines();
 
 	save.open("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
 	save.write(reinterpret_cast<char*> (&started), sizeof(bool));
@@ -183,11 +185,11 @@ void Game::loadGame(Form ^f) {
 					field[i][j].redrawCell(f);
 				}
 			}
-			player.setLifes(lifes);
-			player.setMines(mines);
-			player.setTime(time);
-			player.setWidth(width);
-			player.setHeight(height);
+			Player::setLifes(lifes);
+			Player::setMines(mines);
+			Player::setTime(time);
+			Player::setWidth(width);
+			Player::setHeight(height);
 		}
 }
 
@@ -290,10 +292,5 @@ int Game::getWidth()
 int Game::getHeight()
 {
 	return height;
-}
-
-void Game::writeDownRecords(System::String ^name, int &time)
-{
-	player.writeDownRecord(name, time);
 }
 

@@ -133,7 +133,7 @@ namespace MineSweeperGame {
 
 
 	private: System::Windows::Forms::ToolStripLabel^  TSLTime;
-private: System::Windows::Forms::RichTextBox^  RecordsRTB;
+
 
 private: System::Windows::Forms::Label^  RecordsL;
 private: System::Windows::Forms::GroupBox^  WinGB;
@@ -142,6 +142,25 @@ private: System::Windows::Forms::TextBox^  WinTB;
 
 
 private: System::Windows::Forms::Button^  WinB;
+private: System::Windows::Forms::TabControl^  RecordsTC;
+private: System::Windows::Forms::TabPage^  NovisesTP;
+private: System::Windows::Forms::RichTextBox^  NovicesRTB;
+
+
+
+
+private: System::Windows::Forms::TabPage^  AmateursTP;
+private: System::Windows::Forms::RichTextBox^  AmateursRTB;
+
+
+
+
+private: System::Windows::Forms::TabPage^  MastersTP;
+private: System::Windows::Forms::RichTextBox^  MastersRTB;
+
+
+
+
 
 
 
@@ -212,8 +231,14 @@ private: System::Windows::Forms::Button^  WinB;
 			this->GCSetUndef = (gcnew System::Windows::Forms::Button());
 			this->OptionsGB = (gcnew System::Windows::Forms::GroupBox());
 			this->RecordsGB = (gcnew System::Windows::Forms::GroupBox());
+			this->RecordsTC = (gcnew System::Windows::Forms::TabControl());
+			this->NovisesTP = (gcnew System::Windows::Forms::TabPage());
+			this->NovicesRTB = (gcnew System::Windows::Forms::RichTextBox());
+			this->AmateursTP = (gcnew System::Windows::Forms::TabPage());
+			this->AmateursRTB = (gcnew System::Windows::Forms::RichTextBox());
+			this->MastersTP = (gcnew System::Windows::Forms::TabPage());
+			this->MastersRTB = (gcnew System::Windows::Forms::RichTextBox());
 			this->RecordsL = (gcnew System::Windows::Forms::Label());
-			this->RecordsRTB = (gcnew System::Windows::Forms::RichTextBox());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
 			this->Timer = (gcnew System::Windows::Forms::Timer(this->components));
 			this->WinGB = (gcnew System::Windows::Forms::GroupBox());
@@ -228,6 +253,10 @@ private: System::Windows::Forms::Button^  WinB;
 			this->flowLayoutPanel1->SuspendLayout();
 			this->OptionsGB->SuspendLayout();
 			this->RecordsGB->SuspendLayout();
+			this->RecordsTC->SuspendLayout();
+			this->NovisesTP->SuspendLayout();
+			this->AmateursTP->SuspendLayout();
+			this->MastersTP->SuspendLayout();
 			this->WinGB->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -260,14 +289,14 @@ private: System::Windows::Forms::Button^  WinB;
 			// OptionsTSMI
 			// 
 			this->OptionsTSMI->Name = L"OptionsTSMI";
-			this->OptionsTSMI->Size = System::Drawing::Size(152, 22);
+			this->OptionsTSMI->Size = System::Drawing::Size(116, 22);
 			this->OptionsTSMI->Text = L"Options";
 			this->OptionsTSMI->Click += gcnew System::EventHandler(this, &GameForm::optionsToolStripMenuItem_Click);
 			// 
 			// RecordsTSMI
 			// 
 			this->RecordsTSMI->Name = L"RecordsTSMI";
-			this->RecordsTSMI->Size = System::Drawing::Size(152, 22);
+			this->RecordsTSMI->Size = System::Drawing::Size(116, 22);
 			this->RecordsTSMI->Text = L"Records";
 			this->RecordsTSMI->Click += gcnew System::EventHandler(this, &GameForm::recordsToolStripMenuItem_Click);
 			// 
@@ -624,8 +653,8 @@ private: System::Windows::Forms::Button^  WinB;
 			// OptionsGB
 			// 
 			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
-			this->OptionsGB->Controls->Add(this->ControlP);
 			this->OptionsGB->Controls->Add(this->PresetsP);
+			this->OptionsGB->Controls->Add(this->ControlP);
 			this->OptionsGB->Location = System::Drawing::Point(0, 28);
 			this->OptionsGB->Name = L"OptionsGB";
 			this->OptionsGB->Size = System::Drawing::Size(784, 535);
@@ -636,8 +665,8 @@ private: System::Windows::Forms::Button^  WinB;
 			// 
 			// RecordsGB
 			// 
+			this->RecordsGB->Controls->Add(this->RecordsTC);
 			this->RecordsGB->Controls->Add(this->RecordsL);
-			this->RecordsGB->Controls->Add(this->RecordsRTB);
 			this->RecordsGB->Controls->Add(this->CloseRecordsB);
 			this->RecordsGB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->RecordsGB->Location = System::Drawing::Point(1, 26);
@@ -648,28 +677,94 @@ private: System::Windows::Forms::Button^  WinB;
 			this->RecordsGB->Text = L"Records";
 			this->RecordsGB->Visible = false;
 			// 
+			// RecordsTC
+			// 
+			this->RecordsTC->Controls->Add(this->NovisesTP);
+			this->RecordsTC->Controls->Add(this->AmateursTP);
+			this->RecordsTC->Controls->Add(this->MastersTP);
+			this->RecordsTC->ItemSize = System::Drawing::Size(100, 25);
+			this->RecordsTC->Location = System::Drawing::Point(23, 92);
+			this->RecordsTC->Name = L"RecordsTC";
+			this->RecordsTC->SelectedIndex = 0;
+			this->RecordsTC->Size = System::Drawing::Size(740, 386);
+			this->RecordsTC->TabIndex = 7;
+			// 
+			// NovisesTP
+			// 
+			this->NovisesTP->Controls->Add(this->NovicesRTB);
+			this->NovisesTP->Location = System::Drawing::Point(4, 29);
+			this->NovisesTP->Name = L"NovisesTP";
+			this->NovisesTP->Padding = System::Windows::Forms::Padding(3);
+			this->NovisesTP->Size = System::Drawing::Size(732, 353);
+			this->NovisesTP->TabIndex = 0;
+			this->NovisesTP->Text = L"Novices";
+			this->NovisesTP->UseVisualStyleBackColor = true;
+			// 
+			// NovicesRTB
+			// 
+			this->NovicesRTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->NovicesRTB->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->NovicesRTB->Location = System::Drawing::Point(3, 3);
+			this->NovicesRTB->Name = L"NovicesRTB";
+			this->NovicesRTB->ReadOnly = true;
+			this->NovicesRTB->Size = System::Drawing::Size(726, 347);
+			this->NovicesRTB->TabIndex = 0;
+			this->NovicesRTB->Text = L"";
+			// 
+			// AmateursTP
+			// 
+			this->AmateursTP->Controls->Add(this->AmateursRTB);
+			this->AmateursTP->Location = System::Drawing::Point(4, 29);
+			this->AmateursTP->Name = L"AmateursTP";
+			this->AmateursTP->Padding = System::Windows::Forms::Padding(3);
+			this->AmateursTP->Size = System::Drawing::Size(732, 353);
+			this->AmateursTP->TabIndex = 1;
+			this->AmateursTP->Text = L"Amateurs";
+			this->AmateursTP->UseVisualStyleBackColor = true;
+			// 
+			// AmateursRTB
+			// 
+			this->AmateursRTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->AmateursRTB->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->AmateursRTB->Location = System::Drawing::Point(3, 3);
+			this->AmateursRTB->Name = L"AmateursRTB";
+			this->AmateursRTB->ReadOnly = true;
+			this->AmateursRTB->Size = System::Drawing::Size(726, 347);
+			this->AmateursRTB->TabIndex = 0;
+			this->AmateursRTB->Text = L"";
+			// 
+			// MastersTP
+			// 
+			this->MastersTP->Controls->Add(this->MastersRTB);
+			this->MastersTP->Location = System::Drawing::Point(4, 29);
+			this->MastersTP->Name = L"MastersTP";
+			this->MastersTP->Padding = System::Windows::Forms::Padding(3);
+			this->MastersTP->Size = System::Drawing::Size(732, 353);
+			this->MastersTP->TabIndex = 2;
+			this->MastersTP->Text = L"Masters";
+			this->MastersTP->UseVisualStyleBackColor = true;
+			// 
+			// MastersRTB
+			// 
+			this->MastersRTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->MastersRTB->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->MastersRTB->Location = System::Drawing::Point(3, 3);
+			this->MastersRTB->Name = L"MastersRTB";
+			this->MastersRTB->ReadOnly = true;
+			this->MastersRTB->Size = System::Drawing::Size(726, 347);
+			this->MastersRTB->TabIndex = 0;
+			this->MastersRTB->Text = L"";
+			// 
 			// RecordsL
 			// 
 			this->RecordsL->AutoSize = true;
 			this->RecordsL->Font = (gcnew System::Drawing::Font(L"Playbill", 60, static_cast<System::Drawing::FontStyle>(((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Italic)
 				| System::Drawing::FontStyle::Underline)), System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->RecordsL->Location = System::Drawing::Point(159, 4);
+			this->RecordsL->Location = System::Drawing::Point(297, 10);
 			this->RecordsL->Name = L"RecordsL";
-			this->RecordsL->Size = System::Drawing::Size(440, 81);
+			this->RecordsL->Size = System::Drawing::Size(231, 81);
 			this->RecordsL->TabIndex = 6;
-			this->RecordsL->Text = L"THE ELITEST GUYS";
-			// 
-			// RecordsRTB
-			// 
-			this->RecordsRTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->RecordsRTB->Font = (gcnew System::Drawing::Font(L"Harlow Solid Italic", 18, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->RecordsRTB->Location = System::Drawing::Point(11, 91);
-			this->RecordsRTB->Name = L"RecordsRTB";
-			this->RecordsRTB->ReadOnly = true;
-			this->RecordsRTB->Size = System::Drawing::Size(756, 398);
-			this->RecordsRTB->TabIndex = 5;
-			this->RecordsRTB->Text = L"";
+			this->RecordsL->Text = L"VIP GUYS";
 			// 
 			// CloseRecordsB
 			// 
@@ -680,6 +775,7 @@ private: System::Windows::Forms::Button^  WinB;
 			this->CloseRecordsB->TabIndex = 3;
 			this->CloseRecordsB->Text = L"Close records";
 			this->CloseRecordsB->UseVisualStyleBackColor = true;
+			this->CloseRecordsB->Click += gcnew System::EventHandler(this, &GameForm::CloseRecordsB_Click);
 			// 
 			// Timer
 			// 
@@ -727,8 +823,8 @@ private: System::Windows::Forms::Button^  WinB;
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(784, 562);
 			this->Controls->Add(this->ToolsTS);
-			this->Controls->Add(this->RecordsGB);
 			this->Controls->Add(this->OptionsGB);
+			this->Controls->Add(this->RecordsGB);
 			this->Controls->Add(this->WinGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
@@ -748,6 +844,10 @@ private: System::Windows::Forms::Button^  WinB;
 			this->OptionsGB->ResumeLayout(false);
 			this->RecordsGB->ResumeLayout(false);
 			this->RecordsGB->PerformLayout();
+			this->RecordsTC->ResumeLayout(false);
+			this->NovisesTP->ResumeLayout(false);
+			this->AmateursTP->ResumeLayout(false);
+			this->MastersTP->ResumeLayout(false);
 			this->WinGB->ResumeLayout(false);
 			this->WinGB->PerformLayout();
 			this->ResumeLayout(false);
@@ -838,7 +938,7 @@ private: System::Windows::Forms::Button^  WinB;
 		RecordsGB->Visible = true;
 		OptionsGB->Visible = false;
 		
-		getRecords(RecordsRTB);
+		//getRecords(RecordsRTB);
 	}
 
 	private: System::Void CloseRecordsB_Click_1(System::Object^  sender, System::EventArgs^  e) {
@@ -1161,7 +1261,11 @@ private: System::Windows::Forms::Button^  WinB;
 
 
 private: System::Void WinB_Click(System::Object^  sender, System::EventArgs^  e) {
-	game->writeDownRecords(WinTB->Text, time);
+	game->checkRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer());
+}
+
+private: System::Void CloseRecordsB_Click(System::Object^  sender, System::EventArgs^  e) {
+	RecordsGB->Visible = false;
 }
 };
 
