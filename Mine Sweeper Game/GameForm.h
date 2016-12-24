@@ -1261,7 +1261,7 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 
 
 private: System::Void WinB_Click(System::Object^  sender, System::EventArgs^  e) {
-	game->checkRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer());
+	game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer());
 }
 
 private: System::Void CloseRecordsB_Click(System::Object^  sender, System::EventArgs^  e) {

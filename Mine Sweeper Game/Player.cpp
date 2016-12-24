@@ -51,62 +51,19 @@ void Player::setHeight(int height)
 	this->height = height;
 }
 
-void Player::checkRecord(char *name)
+void Player::writeDownRecord(char *name)
 {
-	std::fstream records;
-	int line=0,
-		lines=10;  //количество строк рекордов
-	char record[100];
-	bool isEmpty=true;
-
 	setName(name);
-	int recTime;
 		if (mines == 10 && width == 9 && height == 9) {
-			//lines = countLines("RecordsNovice.rec");
-			time = 0;//для теста
-			records.open("RecordsNovice.rec", std::ios::in);
-			records.getline(record, 100);
-			while (record[0] != '\0' && line<=lines) {
-				recTime = atoi(strchr(record, '.') + 1);
-				isEmpty = false;
-				if (time < recTime) {
-					createTemp(records, "RecordsNovice.rec", line, lines);
-					break;
-				}
-
-
-				else {
-					records.getline(record, 100);
-					line++;
-				}				
-			}
-			if (isEmpty == true) {
-				char cTime[10];
-				records.close();
-				records.open("RecordsNovice.rec", std::ios::out);
-				records.write(name, strlen(name));
-				records.write(".", 1);
-				records << itoa(time, cTime, 10);
-				records.write("\n", 1);
-				records.close();
-			}
+			checkRecord("RecordsNovice.rec");
 		}
-		/*if (this->mines == 40 && this->width == 16 && this->height == 16) {
-			records.open("RecordsAmateur.rec", std::ios::in);
+		if (this->mines == 40 && this->width == 16 && this->height == 16) {
+			checkRecord("RecordsAmateur.rec");
 		}
 		if (this->mines == 99 && this->width == 24 && this->height == 20) {
-			records.open("RecordsMater.rec", std::ios::in);
+			checkRecord("RecordsMaster.rec");
 
-		}*/
-		
-
-		/*records.open("Records.rec", std::ios::out);
-		for (int i = 0; i < name->Length; i++) {
-			records << static_cast<char> (name[i]);
 		}
-		records << delim << this->width << 'x' << delim << this->height << '-' << delim << this->mines << delim << time << '\n';
-		records.close();
-	}*/
 }
 
 void Player::setName(char * name)
@@ -175,15 +132,39 @@ void Player::rewriteRecords(char *fileName, char *fileNameTmp, int &line, int &l
 	records.close();
 }
 
-/*int Player::countLines(char *fileName) {
-	std::fstream records;
-	int lines = 0; 
-	char buf[2];
-	records.getline(buf, 2);
-	records.open(fileName, std::ios::in);
-	while (buf[0] !=0) {
-		records.getline(buf, 2);
-		lines++;
-	}
 
-}*/
+void Player::checkRecord(char *fileName) {
+	std::fstream records;
+	int line = 0,
+		lines = 10;  //количество строк рекордов
+	char record[100];
+	bool isEmpty = true;
+	int recTime;
+
+
+	records.open(fileName, std::ios::in);
+	records.getline(record, 100);
+	while (record[0] != '\0' && line <= lines) {
+		recTime = atoi(strchr(record, '.') + 1);
+		isEmpty = false;
+		if (time < recTime) {
+			createTemp(records, fileName, line, lines);
+			break;
+		}
+
+		else {
+			records.getline(record, 100);
+			line++;
+		}
+	}
+	if (isEmpty == true) {
+		char cTime[10];
+		records.close();
+		records.open(fileName, std::ios::out);
+		records.write(name, strlen(name));
+		records.write(".", 1);
+		records << itoa(time, cTime, 10);
+		records.write("\n", 1);
+		records.close();
+	}
+}

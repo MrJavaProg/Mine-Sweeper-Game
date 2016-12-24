@@ -22,17 +22,14 @@ public:
 	int getMines();
 	int getTime();
 	int getLifes();
-//	void writeDownRecord(std::streampos &pos, std::fstream &records);
-	//void saveRecord();
-	void checkRecord(char *name);
 	void setWidth(int width);
 	void setHeight(int height);
-		
+	void writeDownRecord(char *fileName);
 
 private:
-	void setName(char* name);
+	void setName(char *name);
 	void createTemp(std::fstream &records, char *fileName, int &line, int &lines);
 	void rewriteRecords(char *fileName, char *fileNameTmp, int &line, int &lines);
-	int countLines(char *fileName);
+	void checkRecord(char *fileName);
 };
 
