@@ -3,7 +3,7 @@
 
 using namespace System::Windows::Forms;
 
-Game::Game(int width, int height, int mines, int lifes, Form ^f)
+Game::Game(int width, int height, int mines, int lifes, bool shownMines, Form ^f)
 {
 	//player = new Player();
 	Player();
@@ -19,6 +19,7 @@ Game::Game(int width, int height, int mines, int lifes, Form ^f)
 	createField(f);
 	Player::setHeight(height);
 	Player::setWidth(width);
+	this->shownMines = shownMines;
 }
 
 Game::Game(Form ^f)
@@ -70,6 +71,16 @@ void Game::createField(Form ^f) {
 	xEnd = field[width - 1][height - 1].getXEnd(),
 	yEnd = field[width - 1][height - 1].getYEnd();
 	closedCells = width * height;
+}
+
+void Game::setShownMines(bool shownMines)
+{
+	this->shownMines = shownMines;
+}
+
+bool Game::getShownMines()
+{
+	return shownMines;
 }
 
 void Game::spawnMines(int &curPosX, int &curPosY) {
@@ -128,6 +139,7 @@ void Game::saveGame() {
 		lifes = Player::getMines();
 
 	save.open("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
+	save.write(reinterpret_cast<char*> (&this->shownMines), sizeof(bool));
 	save.write(reinterpret_cast<char*> (&started), sizeof(bool));
 	save.write(reinterpret_cast<char*> (&wasFirstClick), sizeof(bool));
 	save.write(reinterpret_cast<char*> (&time), sizeof(int));
@@ -159,7 +171,7 @@ void Game::loadGame(Form ^f) {
 		load.seekg(std::ios::end);
 		if (load.tellg() > 0) {
 			load.seekg(std::ios::beg);
-
+			load.read(reinterpret_cast<char*> (&this->shownMines), sizeof(bool));
 			load.read(reinterpret_cast<char*> (&started), sizeof(bool));
 			load.read(reinterpret_cast<char*> (&wasFirstClick), sizeof(bool));
 			load.read(reinterpret_cast<char*> (&time), sizeof(int));

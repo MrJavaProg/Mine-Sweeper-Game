@@ -24,10 +24,9 @@ public:
 	int getLifes();
 	void setWidth(int width);
 	void setHeight(int height);
-	void writeDownRecord(char *fileName);
+	void writeDownRecord(char *name, int &time);
 
 private:
-	void setName(char *name);
 	void createTemp(std::fstream &records, char *fileName, int &line, int &lines);
 	void rewriteRecords(char *fileName, char *fileNameTmp, int &line, int &lines);
 	void checkRecord(char *fileName);

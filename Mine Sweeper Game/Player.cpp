@@ -51,9 +51,10 @@ void Player::setHeight(int height)
 	this->height = height;
 }
 
-void Player::writeDownRecord(char *name)
+void Player::writeDownRecord(char *name, int &time)
 {
-	setName(name);
+	this->name = name;
+	this->time = time;
 		if (mines == 10 && width == 9 && height == 9) {
 			checkRecord("RecordsNovice.rec");
 		}
@@ -66,10 +67,6 @@ void Player::writeDownRecord(char *name)
 		}
 }
 
-void Player::setName(char * name)
-{
-	this->name = name;
-}
 
 void Player::createTemp(std::fstream &records, char *fileName, int &line, int &lines) {
 	char tmpRecord[100],

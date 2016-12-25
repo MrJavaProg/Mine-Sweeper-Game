@@ -421,6 +421,7 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			this->GUnknownCB->TabIndex = 29;
 			this->GUnknownCB->Text = L"Unknown quantity of mines";
 			this->GUnknownCB->UseVisualStyleBackColor = true;
+			this->GUnknownCB->CheckedChanged += gcnew System::EventHandler(this, &GameForm::GUnknownCB_CheckedChanged);
 			// 
 			// GLifesTB
 			// 
@@ -562,6 +563,7 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			this->GRandomRB->TabIndex = 43;
 			this->GRandomRB->Text = L"Random field";
 			this->GRandomRB->UseVisualStyleBackColor = true;
+			this->GRandomRB->CheckedChanged += gcnew System::EventHandler(this, &GameForm::GRandomRB_CheckedChanged);
 			// 
 			// ControlP
 			// 
@@ -905,12 +907,18 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 		if (file.is_open()) {
 			file.close();
 			game = new Game(this);
+			GWidthTB->Text = game->getWidth().ToString();
+			GHeightTB->Text = game->getHeight().ToString();
+			if (game->getShownMines() == true) {
+				GMinesTB->Text = game->getMines().ToString();
+				GUnknownCB->Checked = false;
+			}
+			else {
+				GUnknownCB->Checked = true;
+				GMinesTB->Text = "";
+			}
+			GMinesTB->Text = game->getMines().ToString();
 		}
-
-
-		
-		//RecordsRTB->Text = "\t\tELITE GUYS:";
-		
 	}
 
 	private: System::Void optionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -922,7 +930,7 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 	private: System::Void CloseOptionsB_Click(System::Object^  sender, System::EventArgs^  e) {
 		OptionsGB->Visible = false;
 		if (GWidthTB->Text == "" || GHeightTB->Text == "" || GMinesTB->Text == "" && GPreset1RB->Checked == false && GPreset2RB->Checked == false && GPreset3RB->Checked == false && GRandomRB->Checked == false) {
-			MessageBox::Show("All fields must be filled!!! Preset 1 is chosen.");
+			MessageBox::Show("All fields must be filled!!!");
 		}
 	}
 	private: System::Void ControlB_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -947,27 +955,36 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 	}
 
 	private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-		if (game == NULL) {
-			if (quantity_of_cells_height == 0 || quantity_of_cells_width == 0 || quantity_of_mines == 0) {
-				game = new Game(9, 9, 10, lifes, this);
+		/*try {
+			bool showMines;
+			//if (game==NULL) {
+			
+			//}
+
+			//else {
+				
+
+			//}
+
+
+
+			/*game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, 0, this);
+			if (GUnknownCB->Checked != true) {
+				TSTBMinesCounter->Text = "Mines: " + game->getMines().ToString();
 			}
 			else {
-				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, this);
+				TSTBMinesCounter->Text = "Mines: ???";
 			}
-		}
 
-		else {
-			if (game->getWidth() != 0 && game->getHeight() != 0) {
-				game->~Game();
-			}
-			if (quantity_of_cells_height == 0 || quantity_of_cells_width == 0 || quantity_of_mines == 0) {
-				game = new Game(9, 9, 10, lifes, this);
-			}
-			else {
-				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, this);
-			}
-		}
+			time = 0;
+			Timer->Enabled = true;
+		} //catch() {}
+		*/
 
+			
+				
+		
+		
 	}
 
 
@@ -977,6 +994,7 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 		quantity_of_mines = 10;
 		GWidthTB->Text = "";
 		GHeightTB->Text = "";
+		GMinesTB->Text = "";
 	}
 	private: System::Void GPreset2RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		quantity_of_cells_width = 16;
@@ -984,6 +1002,7 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 		quantity_of_mines = 40;
 		GWidthTB->Text = "";
 		GHeightTB->Text = "";
+		GMinesTB->Text = "";
 	}
 	private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		quantity_of_cells_width = 24;
@@ -991,6 +1010,7 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 		quantity_of_mines = 99;
 		GWidthTB->Text = "";
 		GHeightTB->Text = "";
+		GMinesTB->Text = "";
 	}
 
 	private: System::Void GCOpenCellB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
@@ -1204,7 +1224,13 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 		if (game != NULL) {
 			bool win;
 			win = game->openCell(e->X, e->Y, mb, this);
+			if (game->getTimerEnabled() == false) {
+				Timer->Enabled = false;
+			}
 			if (win == false) {
+				WinGB->Visible = false;
+			}
+			else {
 				WinGB->Visible = true;
 			}
 		}
@@ -1214,10 +1240,11 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 	private: System::Void GWrongCB_CheckedChanged_1(System::Object^  sender, System::EventArgs^  e) {
 		if (GWrongCB->Checked == true) {
 			GLifesTB->Enabled = true;
+			GLifesTB->Text = "0";
 		}
 		else {
-			GLifesTB->Enabled = 0;
-			GLifesTB->Text = "";
+			GLifesTB->Enabled = false;
+			GLifesTB->Text = "0";
 		}
 	}
 	private: System::Void GWidthTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
@@ -1226,12 +1253,14 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 		GPreset3RB->Checked = false;
 		GRandomRB->Checked = false;
 	}
+
 	private: System::Void GHeightTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 		GPreset1RB->Checked = false;
 		GPreset2RB->Checked = false;
 		GPreset3RB->Checked = false;
 		GRandomRB->Checked = false;
 	}
+
 	private: System::Void GMinesTB_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 		GPreset1RB->Checked = false;
 		GPreset2RB->Checked = false;
@@ -1254,18 +1283,29 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 
 
 	private: System::Void Timer_Tick(System::Object^  sender, System::EventArgs^  e) {
-		//TSLTime->Text = time.ToString();
-		//time++;
+		TSLTime->Text = time.ToString();
+		time++;
 	}
 
 
 
 private: System::Void WinB_Click(System::Object^  sender, System::EventArgs^  e) {
-	game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer());
+	game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), time);
 }
 
 private: System::Void CloseRecordsB_Click(System::Object^  sender, System::EventArgs^  e) {
 	RecordsGB->Visible = false;
+}
+private: System::Void GRandomRB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+	GPreset1RB->Checked = false;
+	GPreset2RB->Checked = false;
+	GPreset3RB->Checked = false;
+	GWidthTB->Text = "";
+	GHeightTB->Text = "";
+	GMinesTB->Text = "";
+}
+private: System::Void GUnknownCB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+	GMinesTB->Text = "";
 }
 };
 

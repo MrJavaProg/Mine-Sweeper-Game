@@ -20,17 +20,20 @@ class Game : public Player
 		yEnd;
 	bool wasFirstClick,
 		started,
-		timerEnabled;
+		timerEnabled,
+		shownMines;
 
 
 public:
-	Game(int width, int height, int mines, int lifes, System::Windows::Forms::Form ^f);
+	Game(int width, int height, int mines, int lifes, bool shownMines, System::Windows::Forms::Form ^f);
 	Game(System::Windows::Forms::Form ^f);
 	~Game();
 	void saveGame();
 	void loadGame(System::Windows::Forms::Form ^ f);
 	void spawnMines(int &curPosX, int &curPosY);
 	void createField(System::Windows::Forms::Form ^f);
+	void setShownMines(bool shownMines);
+	bool getShownMines();
 	void showMines(System::Windows::Forms::Form ^f);
 	bool openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f);
 	bool getTimerEnabled();
