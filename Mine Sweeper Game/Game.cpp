@@ -6,7 +6,7 @@ using namespace System::Windows::Forms;
 Game::Game(int width, int height, int mines, int lifes, bool shownMines, Form ^f)
 {
 	//player = new Player();
-	Player();
+	//Player();
 	Player::setLifes(lifes);
 	this->lifes = lifes;
 	this->width = width;

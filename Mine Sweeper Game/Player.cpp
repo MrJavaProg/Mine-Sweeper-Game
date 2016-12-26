@@ -144,8 +144,7 @@ void Player::checkRecord(char *fileName) {
 	while (record[0] != '\0' && line <= lines) {
 		recTime = atoi(strchr(record, '.') + 1);
 		isEmpty = false;
-		if (time < recTime) {
-			createTemp(records, fileName, line, lines);
+		if (time <= recTime) {
 			break;
 		}
 
@@ -154,6 +153,10 @@ void Player::checkRecord(char *fileName) {
 			line++;
 		}
 	}
+	if (line < 10) {
+		createTemp(records, fileName, line, lines);
+	}
+	
 	if (isEmpty == true) {
 		char cTime[10];
 		records.close();

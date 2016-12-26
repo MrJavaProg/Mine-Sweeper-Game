@@ -5,14 +5,11 @@
 using namespace System::Drawing;
 static Game *game = NULL;
 //extern Cell **field;
-static bool started;
 
-static int	quantity_of_mines = 0,
-quantity_of_cells_width = 0,
-quantity_of_cells_height = 0,
-lifes = 0,
-time;
-void getRecords(System::Windows::Forms::RichTextBox ^rtb);
+static int time,
+		   quantity_of_mines = 0,
+		   quantity_of_cells_width = 0,
+		   quantity_of_cells_height = 0;
 
 namespace MineSweeperGame {
 
@@ -99,7 +96,7 @@ namespace MineSweeperGame {
 
 
 
-	private: System::Windows::Forms::ToolStripTextBox^  TSTBMinesCounter;
+
 	private: System::Windows::Forms::ToolStripLabel^  TSLInfo;
 
 
@@ -157,6 +154,9 @@ private: System::Windows::Forms::RichTextBox^  AmateursRTB;
 
 private: System::Windows::Forms::TabPage^  MastersTP;
 private: System::Windows::Forms::RichTextBox^  MastersRTB;
+private: System::Windows::Forms::ToolStripLabel^  TSTBMinesCounterInfo;
+private: System::Windows::Forms::ToolStripLabel^  TSTBMinesCounter;
+private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 
 
 
@@ -197,9 +197,11 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			this->OptionsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->RecordsTSMI = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->StartTSB = (gcnew System::Windows::Forms::ToolStripButton());
-			this->TSTBMinesCounter = (gcnew System::Windows::Forms::ToolStripTextBox());
+			this->TSTBMinesCounterInfo = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->TSLInfo = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->TimerTSL = (gcnew System::Windows::Forms::ToolStripLabel());
+			this->TSTBMinesCounter = (gcnew System::Windows::Forms::ToolStripLabel());
+			this->toolStripLabel1 = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->TSLTime = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->OptionsMenuFLP = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->PresetsB = (gcnew System::Windows::Forms::Button());
@@ -262,9 +264,9 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			// 
 			// ToolsTS
 			// 
-			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {
+			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(8) {
 				this->MenuTCDDB, this->StartTSB,
-					this->TSTBMinesCounter, this->TSLInfo, this->TimerTSL, this->TSLTime
+					this->TSTBMinesCounterInfo, this->TSLInfo, this->TimerTSL, this->TSTBMinesCounter, this->toolStripLabel1, this->TSLTime
 			});
 			this->ToolsTS->Location = System::Drawing::Point(0, 0);
 			this->ToolsTS->Name = L"ToolsTS";
@@ -310,11 +312,11 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			this->StartTSB->Text = L"Start";
 			this->StartTSB->Click += gcnew System::EventHandler(this, &GameForm::StartTSB_Click);
 			// 
-			// TSTBMinesCounter
+			// TSTBMinesCounterInfo
 			// 
-			this->TSTBMinesCounter->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->TSTBMinesCounter->Name = L"TSTBMinesCounter";
-			this->TSTBMinesCounter->Size = System::Drawing::Size(70, 25);
+			this->TSTBMinesCounterInfo->Name = L"TSTBMinesCounterInfo";
+			this->TSTBMinesCounterInfo->Size = System::Drawing::Size(45, 22);
+			this->TSTBMinesCounterInfo->Text = L"Mines: ";
 			// 
 			// TSLInfo
 			// 
@@ -326,10 +328,23 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			this->TimerTSL->Name = L"TimerTSL";
 			this->TimerTSL->Size = System::Drawing::Size(0, 22);
 			// 
+			// TSTBMinesCounter
+			// 
+			this->TSTBMinesCounter->Name = L"TSTBMinesCounter";
+			this->TSTBMinesCounter->Size = System::Drawing::Size(13, 22);
+			this->TSTBMinesCounter->Text = L"0";
+			// 
+			// toolStripLabel1
+			// 
+			this->toolStripLabel1->Name = L"toolStripLabel1";
+			this->toolStripLabel1->Size = System::Drawing::Size(40, 22);
+			this->toolStripLabel1->Text = L"Time: ";
+			// 
 			// TSLTime
 			// 
 			this->TSLTime->Name = L"TSLTime";
-			this->TSLTime->Size = System::Drawing::Size(0, 22);
+			this->TSLTime->Size = System::Drawing::Size(13, 22);
+			this->TSLTime->Text = L"0";
 			// 
 			// OptionsMenuFLP
 			// 
@@ -823,11 +838,11 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(784, 562);
+			this->ClientSize = System::Drawing::Size(784, 587);
 			this->Controls->Add(this->ToolsTS);
+			this->Controls->Add(this->WinGB);
 			this->Controls->Add(this->OptionsGB);
 			this->Controls->Add(this->RecordsGB);
-			this->Controls->Add(this->WinGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
 			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &GameForm::GameForm_FormClosed);
@@ -902,6 +917,8 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			}
 		}
 
+		GLifesTB->Text = "0";
+
 		std::fstream file;
 		file.open("Save.sav", std::ios::in);
 		if (file.is_open()) {
@@ -910,14 +927,22 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 			GWidthTB->Text = game->getWidth().ToString();
 			GHeightTB->Text = game->getHeight().ToString();
 			if (game->getShownMines() == true) {
+				GMinesTB->Text = game->Player::getMines().ToString();
+				GUnknownCB->Checked = false; 
 				GMinesTB->Text = game->getMines().ToString();
-				GUnknownCB->Checked = false;
 			}
 			else {
 				GUnknownCB->Checked = true;
-				GMinesTB->Text = "";
+				GMinesTB->Text = "???";
 			}
-			GMinesTB->Text = game->getMines().ToString();
+			time = game->getTime();
+			if (game->getTimerEnabled() == false) {
+				game->~Game();
+			}
+			else {
+				Timer->Enabled = true; 
+			}
+			
 		}
 	}
 
@@ -929,9 +954,6 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 	}
 	private: System::Void CloseOptionsB_Click(System::Object^  sender, System::EventArgs^  e) {
 		OptionsGB->Visible = false;
-		if (GWidthTB->Text == "" || GHeightTB->Text == "" || GMinesTB->Text == "" && GPreset1RB->Checked == false && GPreset2RB->Checked == false && GPreset3RB->Checked == false && GRandomRB->Checked == false) {
-			MessageBox::Show("All fields must be filled!!!");
-		}
 	}
 	private: System::Void ControlB_Click(System::Object^  sender, System::EventArgs^  e) {
 		ControlP->Visible = true;
@@ -955,36 +977,110 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 	}
 
 	private: System::Void StartTSB_Click(System::Object^  sender, System::EventArgs^  e) {
-		/*try {
-			bool showMines;
-			//if (game==NULL) {
-			
-			//}
+		int lifes;
+		try {
+			WinGB->Visible = false;
+			if (game != NULL) {
+				game->~Game();
+			}
 
-			//else {
-				
-
-			//}
-
-
-
-			/*game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, 0, this);
-			if (GUnknownCB->Checked != true) {
-				TSTBMinesCounter->Text = "Mines: " + game->getMines().ToString();
+			if (GRandomRB->Checked == true) {
+				quantity_of_cells_width = rand() % 25 + 9;
+				quantity_of_cells_height = rand() % 22 + 9;
+				quantity_of_mines = rand() % 10 + (int)(quantity_of_cells_width*quantity_of_cells_height / 2);
 			}
 			else {
-				TSTBMinesCounter->Text = "Mines: ???";
+				if (GPreset1RB->Checked == true) {
+					quantity_of_cells_width = 9;
+					quantity_of_cells_height = 9;
+					quantity_of_mines = 10;
+				}
+				else {
+					if (GPreset2RB->Checked == true) {
+						quantity_of_cells_width = 16;
+						quantity_of_cells_height = 16;
+						quantity_of_mines = 40;
+					}
+					else {
+						if (GPreset3RB->Checked == true) {
+							quantity_of_cells_width = 24;
+							quantity_of_cells_height = 20;
+							quantity_of_mines = 99;
+						}
+						else {
+							quantity_of_cells_width = 9;
+							quantity_of_cells_height = 9;
+							quantity_of_mines = 10;
+						}
+					}
+				}
 			}
 
-			time = 0;
-			Timer->Enabled = true;
-		} //catch() {}
-		*/
-
-			
-				
-		
-		
+			if (GWidthTB->Text != "" && GHeightTB->Text != "") {
+				quantity_of_cells_width = System::Int32::Parse(GWidthTB->Text);
+				if (quantity_of_cells_width < 5 && quantity_of_cells_width >25) {
+					throw 1;
+				}
+				quantity_of_cells_height = System::Int32::Parse(GHeightTB->Text);
+				if (quantity_of_cells_width < 5 && quantity_of_cells_width > 22) {
+					throw 2;
+				}
+				if (GUnknownCB->Checked == true) {
+					quantity_of_mines = rand() % (int)(quantity_of_cells_height*quantity_of_cells_width / 2) + 10;
+				}
+				else {
+					quantity_of_mines = System::Int32::Parse(GMinesTB->Text);
+					if (quantity_of_mines > (int)(quantity_of_cells_height*quantity_of_cells_width / 2) && quantity_of_mines < 10) {
+						throw 3;
+					}
+				}
+			}
+					lifes = System::Int32::Parse(GLifesTB->Text);
+					if (lifes<0 && lifes>quantity_of_mines / 2) {
+						throw 4;
+					}
+					throw 0;
+		}
+		catch (int e) {
+			if (e == 0) {
+				TSTBMinesCounter->Text = "";
+				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this);
+				if (GUnknownCB->Checked == false) {
+					TSTBMinesCounter->Text = game->getMines().ToString();
+				}
+				else {
+					TSTBMinesCounter->Text = "???";
+				}
+				Timer->Enabled = false;
+				time = 0;
+				Timer->Enabled = true;
+			}
+			if (e == 1) {
+				MessageBox::Show("Too few or many width cells (must be more than 5 & less than 25)");
+				OptionsGB->Visible = true;
+				PresetsP->Visible = true;
+			}
+			if (e == 2) {
+				MessageBox::Show("Too few or many height cells (must be more than 5 & less than 22)");
+				OptionsGB->Visible = true;
+				PresetsP->Visible = true;
+			}
+			if (e == 3) {
+				MessageBox::Show("Too few or many mines (must be more than 10 & less than half of cells quantity)");
+				OptionsGB->Visible = true;
+				PresetsP->Visible = true;
+			}
+			if (e == 4) {
+				MessageBox::Show("Too few or many lifes (must be more than 0 & less than half of mines quantity)");
+				OptionsGB->Visible = true;
+				PresetsP->Visible = true;
+			}
+		}
+		catch (System::FormatException ^fe) {
+			MessageBox::Show("Incorrect data!");
+			OptionsGB->Visible = true;
+			PresetsP->Visible = true;
+		}		
 	}
 
 
@@ -1276,6 +1372,7 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 
 	private: System::Void GameForm_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e) {
 		if (game != NULL) {
+			game->setTime(time);
 			game->saveGame();
 			game->~Game();
 		}
@@ -1290,7 +1387,24 @@ private: System::Windows::Forms::RichTextBox^  MastersRTB;
 
 
 private: System::Void WinB_Click(System::Object^  sender, System::EventArgs^  e) {
-	game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), time);
+	if (WinTB->Text == "") {
+		MessageBox::Show("Do not enter an empty name!!!");
+	}
+	else {
+		String ^record = WinTB->Text;
+		for (int i = 0; i < WinTB->Text->Length; i++) {
+			if (WinTB->Text[i].CompareTo('.') == 0) {
+				WinTB->Text = "";
+				MessageBox::Show("Do not use '.'!!!");
+				break;
+			}
+			else {
+				if (i == WinTB->Text->Length-1) {
+					game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), time);
+				} 
+			}
+		}
+	}
 }
 
 private: System::Void CloseRecordsB_Click(System::Object^  sender, System::EventArgs^  e) {
