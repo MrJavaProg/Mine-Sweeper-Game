@@ -20,6 +20,7 @@ Game::Game(int width, int height, int mines, int lifes, bool shownMines, Form ^f
 	Player::setHeight(height);
 	Player::setWidth(width);
 	this->shownMines = shownMines;
+	closedCells = width*height;
 }
 
 Game::Game(Form ^f)
@@ -70,7 +71,6 @@ void Game::createField(Form ^f) {
 	
 	xEnd = field[width - 1][height - 1].getXEnd(),
 	yEnd = field[width - 1][height - 1].getYEnd();
-	closedCells = width * height;
 }
 
 void Game::setShownMines(bool shownMines)
@@ -202,6 +202,7 @@ void Game::loadGame(Form ^f) {
 			Player::setTime(time);
 			Player::setWidth(width);
 			Player::setHeight(height);
+			closedCells = width * height;
 		}
 }
 
@@ -222,9 +223,14 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 				}
 				
 				if (field[curPosX][curPosY].getState() == state::empty) {
-					field[curPosX][curPosY].setExtraState(extraState::opened);
-					field[curPosX][curPosY].redrawCell(f);
-					closedCells--;
+					if (field[curPosX][curPosY].getNearbyMines() == 0) {
+						autoOpen(curPosX, curPosY, f);
+					}
+					else {
+						field[curPosX][curPosY].setExtraState(extraState::opened);
+						field[curPosX][curPosY].redrawCell(f);
+						closedCells--;
+					}
 				}
 				else {
 					flags--;
@@ -238,6 +244,7 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 					}
 					else {
 						lifes--;
+						closedCells--;
 					}	
 				}	
 			}
@@ -289,6 +296,9 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 			started = false;
 			return true;
 		}
+		else { 
+			return false; 
+		}
 }
 
 bool Game::getTimerEnabled()
@@ -304,5 +314,48 @@ int Game::getWidth()
 int Game::getHeight()
 {
 	return height;
+}
+
+void Game::autoOpen(int x, int y, System::Windows::Forms::Form ^f) {
+	if (x >= 0 && y >= 0 && x < width && y < height) {
+		if (field[x][y].getNearbyMines() == 0 && field[x][y].getExtraState() != extraState::flagged && field[x][y].getExtraState() != extraState::opened && field[x][y].getExtraState() != extraState::undefined) {
+			field[x][y].setExtraState(extraState::opened);
+			field[x][y].redrawCell(f);
+			closedCells--;
+			if (x + 1 < width) {
+				autoOpen(x + 1, y, f);
+			}
+			if (x + 1 < width && y - 1 >= 0) {
+				autoOpen(x + 1, y - 1, f);
+			}
+			if (y - 1 >= 0) {
+				autoOpen(x, y - 1, f);
+			}
+			if (x - 1 >= 0 && y - 1 >= 0) {
+				autoOpen(x - 1, y - 1, f);
+			}
+			if (x - 1 >= 0) {
+				autoOpen(x - 1, y, f);
+			}
+			if (x - 1 >= 0 && y + 1 < height) {
+				autoOpen(x - 1, y + 1, f);
+			}
+			if (y + 1 < height) {
+				autoOpen(x, y + 1, f);
+			}
+			if (x + 1 < width && y + 1 < height) {
+				autoOpen(x + 1, y + 1, f);
+			}
+			return;
+		}
+		else {
+			if (field[x][y].getNearbyMines() != 0 && field[x][y].getExtraState() != extraState::opened) {
+				field[x][y].setExtraState(extraState::opened);
+				field[x][y].redrawCell(f);
+				closedCells--;
+			}
+		}
+		return;
+	}
 }
 

@@ -51,20 +51,46 @@ void Player::setHeight(int height)
 	this->height = height;
 }
 
-void Player::writeDownRecord(char *name, int &time)
+void Player::writeDownRecord(char *name, char *fileName, int &time)
 {
 	this->name = name;
 	this->time = time;
-		if (mines == 10 && width == 9 && height == 9) {
-			checkRecord("RecordsNovice.rec");
-		}
-		if (this->mines == 40 && this->width == 16 && this->height == 16) {
-			checkRecord("RecordsAmateur.rec");
-		}
-		if (this->mines == 99 && this->width == 24 && this->height == 20) {
-			checkRecord("RecordsMaster.rec");
+	std::fstream records;
+	int line = 0,
+		lines = 10;  //количество строк рекордов
+	char record[100];
+	bool isEmpty = true;
+	int recTime;
 
+
+	records.open(fileName, std::ios::in);
+	records.getline(record, 100);
+	while (record[0] != '\0' && line <= lines) {
+		recTime = atoi(strchr(record, '.') + 1);
+		isEmpty = false;
+		if (time <= recTime) {
+			break;
 		}
+
+		else {
+			records.getline(record, 100);
+			line++;
+		}
+	}
+	if (line < 10) {
+		createTemp(records, fileName, line, lines);
+	}
+
+	if (isEmpty == true) {
+		char cTime[10];
+		records.close();
+		records.open(fileName, std::ios::out);
+		records.write(name, strlen(name));
+		records.write(",", 1);
+		records << itoa(time, cTime, 10);
+		records.write("\n", 1);
+		records.close();
+	}
 }
 
 
@@ -112,7 +138,7 @@ void Player::rewriteRecords(char *fileName, char *fileNameTmp, int &line, int &l
 	}
 
 	records.write(name, strlen(name));
-	records.write(".", 1);
+	records.write(",", 1);
 	records << itoa(time, cTime, 10);
 	records.write("\n", 1);
 	line = lines-line-1;
@@ -129,42 +155,3 @@ void Player::rewriteRecords(char *fileName, char *fileNameTmp, int &line, int &l
 	records.close();
 }
 
-
-void Player::checkRecord(char *fileName) {
-	std::fstream records;
-	int line = 0,
-		lines = 10;  //количество строк рекордов
-	char record[100];
-	bool isEmpty = true;
-	int recTime;
-
-
-	records.open(fileName, std::ios::in);
-	records.getline(record, 100);
-	while (record[0] != '\0' && line <= lines) {
-		recTime = atoi(strchr(record, '.') + 1);
-		isEmpty = false;
-		if (time <= recTime) {
-			break;
-		}
-
-		else {
-			records.getline(record, 100);
-			line++;
-		}
-	}
-	if (line < 10) {
-		createTemp(records, fileName, line, lines);
-	}
-	
-	if (isEmpty == true) {
-		char cTime[10];
-		records.close();
-		records.open(fileName, std::ios::out);
-		records.write(name, strlen(name));
-		records.write(".", 1);
-		records << itoa(time, cTime, 10);
-		records.write("\n", 1);
-		records.close();
-	}
-}

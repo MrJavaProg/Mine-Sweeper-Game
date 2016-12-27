@@ -26,6 +26,11 @@ int GameCell::getExtraState()
 	return extraState;
 }
 
+int GameCell::getNearbyMines()
+{
+	return nearbyMines;
+}
+
 void GameCell::setState(int state)
 {
 	this->state = state;
@@ -34,11 +39,6 @@ void GameCell::setState(int state)
 void GameCell::setExtraState(int extraState)
 {
 	this->extraState = extraState;
-}
-
-void GameCell::setNearbyMines(int nearbyMines)
-{
-	this->nearbyMines = nearbyMines;
 }
 
 void GameCell::addNearbyMines()

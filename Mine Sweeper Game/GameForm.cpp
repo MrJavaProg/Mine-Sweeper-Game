@@ -3,10 +3,6 @@
 
 
 using namespace MineSweeperGame;
-
-void getRecords(RichTextBox ^rtb) {
-		
-}
 	
 
 

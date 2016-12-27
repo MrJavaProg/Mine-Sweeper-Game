@@ -14,7 +14,7 @@ public:
 	int getState();
 	int getExtraState();
 
-	void setNearbyMines(int nearbyMines);
+	int getNearbyMines();
 	void setState(int state);
 	void setExtraState(int extraState);
 	void addNearbyMines();

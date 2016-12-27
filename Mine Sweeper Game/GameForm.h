@@ -90,20 +90,7 @@ namespace MineSweeperGame {
 
 	private: System::Windows::Forms::Button^  CloseRecordsB;
 	private: System::Windows::Forms::Panel^  panel1;
-
-
-
-
-
-
-
 	private: System::Windows::Forms::ToolStripLabel^  TSLInfo;
-
-
-
-
-
-
 	private: System::Windows::Forms::Label^  GWidthInfo;
 	private: System::Windows::Forms::TextBox^  GWidthTB;
 	private: System::Windows::Forms::Label^  GHeightInfo;
@@ -112,69 +99,31 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::TextBox^  GMinesTB;
 	private: System::Windows::Forms::RadioButton^  GRandomRB;
 	private: System::Windows::Forms::TextBox^  GLifesTB;
-
-
 	private: System::Windows::Forms::CheckBox^  GWrongCB;
-
-
 	private: System::Windows::Forms::CheckBox^  GUnknownCB;
-
-
 	private: System::Windows::Forms::ToolStripLabel^  TimerTSL;
 	private: System::Windows::Forms::Timer^  Timer;
-
-
-
-
-
-
-
 	private: System::Windows::Forms::ToolStripLabel^  TSLTime;
-
-
 private: System::Windows::Forms::Label^  RecordsL;
 private: System::Windows::Forms::GroupBox^  WinGB;
 private: System::Windows::Forms::TextBox^  WinTB;
-
-
-
 private: System::Windows::Forms::Button^  WinB;
 private: System::Windows::Forms::TabControl^  RecordsTC;
 private: System::Windows::Forms::TabPage^  NovisesTP;
-private: System::Windows::Forms::RichTextBox^  NovicesRTB;
-
-
-
 
 private: System::Windows::Forms::TabPage^  AmateursTP;
-private: System::Windows::Forms::RichTextBox^  AmateursRTB;
-
-
-
 
 private: System::Windows::Forms::TabPage^  MastersTP;
-private: System::Windows::Forms::RichTextBox^  MastersRTB;
+
 private: System::Windows::Forms::ToolStripLabel^  TSTBMinesCounterInfo;
 private: System::Windows::Forms::ToolStripLabel^  TSTBMinesCounter;
 private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	private: System::Windows::Forms::ListBox^  NovicesLB;
+	private: System::Windows::Forms::ListBox^  AmateursLB;
+	private: System::Windows::Forms::ListBox^  MastersLB;
+	private: System::Windows::Forms::SaveFileDialog^  NovicesSFD;
+	private: System::Windows::Forms::SaveFileDialog^  AmateursSFD;
+	private: System::Windows::Forms::SaveFileDialog^  MastersSFD;
 	private: System::ComponentModel::IContainer^  components;
 
 	private:
@@ -235,17 +184,20 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->RecordsGB = (gcnew System::Windows::Forms::GroupBox());
 			this->RecordsTC = (gcnew System::Windows::Forms::TabControl());
 			this->NovisesTP = (gcnew System::Windows::Forms::TabPage());
-			this->NovicesRTB = (gcnew System::Windows::Forms::RichTextBox());
+			this->NovicesLB = (gcnew System::Windows::Forms::ListBox());
 			this->AmateursTP = (gcnew System::Windows::Forms::TabPage());
-			this->AmateursRTB = (gcnew System::Windows::Forms::RichTextBox());
+			this->AmateursLB = (gcnew System::Windows::Forms::ListBox());
 			this->MastersTP = (gcnew System::Windows::Forms::TabPage());
-			this->MastersRTB = (gcnew System::Windows::Forms::RichTextBox());
+			this->MastersLB = (gcnew System::Windows::Forms::ListBox());
 			this->RecordsL = (gcnew System::Windows::Forms::Label());
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
 			this->Timer = (gcnew System::Windows::Forms::Timer(this->components));
 			this->WinGB = (gcnew System::Windows::Forms::GroupBox());
 			this->WinTB = (gcnew System::Windows::Forms::TextBox());
 			this->WinB = (gcnew System::Windows::Forms::Button());
+			this->NovicesSFD = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->AmateursSFD = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->MastersSFD = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -693,6 +645,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->RecordsGB->TabStop = false;
 			this->RecordsGB->Text = L"Records";
 			this->RecordsGB->Visible = false;
+			this->RecordsGB->VisibleChanged += gcnew System::EventHandler(this, &GameForm::RecordsGB_VisibleChanged);
 			// 
 			// RecordsTC
 			// 
@@ -708,7 +661,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			// 
 			// NovisesTP
 			// 
-			this->NovisesTP->Controls->Add(this->NovicesRTB);
+			this->NovisesTP->Controls->Add(this->NovicesLB);
 			this->NovisesTP->Location = System::Drawing::Point(4, 29);
 			this->NovisesTP->Name = L"NovisesTP";
 			this->NovisesTP->Padding = System::Windows::Forms::Padding(3);
@@ -717,20 +670,20 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->NovisesTP->Text = L"Novices";
 			this->NovisesTP->UseVisualStyleBackColor = true;
 			// 
-			// NovicesRTB
+			// NovicesLB
 			// 
-			this->NovicesRTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->NovicesRTB->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->NovicesRTB->Location = System::Drawing::Point(3, 3);
-			this->NovicesRTB->Name = L"NovicesRTB";
-			this->NovicesRTB->ReadOnly = true;
-			this->NovicesRTB->Size = System::Drawing::Size(726, 347);
-			this->NovicesRTB->TabIndex = 0;
-			this->NovicesRTB->Text = L"";
+			this->NovicesLB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->NovicesLB->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->NovicesLB->Items->AddRange(gcnew cli::array< System::Object^  >(1) { L"" });
+			this->NovicesLB->Location = System::Drawing::Point(3, 3);
+			this->NovicesLB->Name = L"NovicesLB";
+			this->NovicesLB->SelectionMode = System::Windows::Forms::SelectionMode::None;
+			this->NovicesLB->Size = System::Drawing::Size(726, 347);
+			this->NovicesLB->TabIndex = 0;
 			// 
 			// AmateursTP
 			// 
-			this->AmateursTP->Controls->Add(this->AmateursRTB);
+			this->AmateursTP->Controls->Add(this->AmateursLB);
 			this->AmateursTP->Location = System::Drawing::Point(4, 29);
 			this->AmateursTP->Name = L"AmateursTP";
 			this->AmateursTP->Padding = System::Windows::Forms::Padding(3);
@@ -739,20 +692,19 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->AmateursTP->Text = L"Amateurs";
 			this->AmateursTP->UseVisualStyleBackColor = true;
 			// 
-			// AmateursRTB
+			// AmateursLB
 			// 
-			this->AmateursRTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->AmateursRTB->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->AmateursRTB->Location = System::Drawing::Point(3, 3);
-			this->AmateursRTB->Name = L"AmateursRTB";
-			this->AmateursRTB->ReadOnly = true;
-			this->AmateursRTB->Size = System::Drawing::Size(726, 347);
-			this->AmateursRTB->TabIndex = 0;
-			this->AmateursRTB->Text = L"";
+			this->AmateursLB->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->AmateursLB->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->AmateursLB->Location = System::Drawing::Point(3, 3);
+			this->AmateursLB->Name = L"AmateursLB";
+			this->AmateursLB->SelectionMode = System::Windows::Forms::SelectionMode::None;
+			this->AmateursLB->Size = System::Drawing::Size(726, 347);
+			this->AmateursLB->TabIndex = 0;
 			// 
 			// MastersTP
 			// 
-			this->MastersTP->Controls->Add(this->MastersRTB);
+			this->MastersTP->Controls->Add(this->MastersLB);
 			this->MastersTP->Location = System::Drawing::Point(4, 29);
 			this->MastersTP->Name = L"MastersTP";
 			this->MastersTP->Padding = System::Windows::Forms::Padding(3);
@@ -761,16 +713,15 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->MastersTP->Text = L"Masters";
 			this->MastersTP->UseVisualStyleBackColor = true;
 			// 
-			// MastersRTB
+			// MastersLB
 			// 
-			this->MastersRTB->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->MastersRTB->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->MastersRTB->Location = System::Drawing::Point(3, 3);
-			this->MastersRTB->Name = L"MastersRTB";
-			this->MastersRTB->ReadOnly = true;
-			this->MastersRTB->Size = System::Drawing::Size(726, 347);
-			this->MastersRTB->TabIndex = 0;
-			this->MastersRTB->Text = L"";
+			this->MastersLB->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->MastersLB->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->MastersLB->Location = System::Drawing::Point(3, 3);
+			this->MastersLB->Name = L"MastersLB";
+			this->MastersLB->SelectionMode = System::Windows::Forms::SelectionMode::None;
+			this->MastersLB->Size = System::Drawing::Size(726, 347);
+			this->MastersLB->TabIndex = 1;
 			// 
 			// RecordsL
 			// 
@@ -834,15 +785,27 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->WinB->UseVisualStyleBackColor = true;
 			this->WinB->Click += gcnew System::EventHandler(this, &GameForm::WinB_Click);
 			// 
+			// NovicesSFD
+			// 
+			this->NovicesSFD->FileName = L"RecordsNovice.rec";
+			// 
+			// AmateursSFD
+			// 
+			this->AmateursSFD->FileName = L"RecordsAmateur.rec";
+			// 
+			// MastersSFD
+			// 
+			this->MastersSFD->FileName = L"RecordsMaster.rec";
+			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(784, 587);
 			this->Controls->Add(this->ToolsTS);
+			this->Controls->Add(this->RecordsGB);
 			this->Controls->Add(this->WinGB);
 			this->Controls->Add(this->OptionsGB);
-			this->Controls->Add(this->RecordsGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
 			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &GameForm::GameForm_FormClosed);
@@ -1018,11 +981,11 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 
 			if (GWidthTB->Text != "" && GHeightTB->Text != "") {
 				quantity_of_cells_width = System::Int32::Parse(GWidthTB->Text);
-				if (quantity_of_cells_width < 5 && quantity_of_cells_width >25) {
+				if (quantity_of_cells_width < 5 || quantity_of_cells_width >25) {
 					throw 1;
 				}
 				quantity_of_cells_height = System::Int32::Parse(GHeightTB->Text);
-				if (quantity_of_cells_width < 5 && quantity_of_cells_width > 22) {
+				if (quantity_of_cells_width < 5 || quantity_of_cells_width > 22) {
 					throw 2;
 				}
 				if (GUnknownCB->Checked == true) {
@@ -1030,7 +993,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 				}
 				else {
 					quantity_of_mines = System::Int32::Parse(GMinesTB->Text);
-					if (quantity_of_mines > (int)(quantity_of_cells_height*quantity_of_cells_width / 2) && quantity_of_mines < 10) {
+					if (quantity_of_mines > (int)(quantity_of_cells_height*quantity_of_cells_width / 2) || quantity_of_mines < 10) {
 						throw 3;
 					}
 				}
@@ -1393,14 +1356,22 @@ private: System::Void WinB_Click(System::Object^  sender, System::EventArgs^  e)
 	else {
 		String ^record = WinTB->Text;
 		for (int i = 0; i < WinTB->Text->Length; i++) {
-			if (WinTB->Text[i].CompareTo('.') == 0) {
+			if (WinTB->Text[i].CompareTo(',') == 0) {
 				WinTB->Text = "";
-				MessageBox::Show("Do not use '.'!!!");
+				MessageBox::Show("Do not use ','!!!");
 				break;
 			}
 			else {
 				if (i == WinTB->Text->Length-1) {
-					game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), time);
+					if (game->Player::getMines() == 10 && game->getWidth() == 9 && game->getHeight() == 9) {
+						game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), (char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(NovicesSFD->FileName).ToPointer(), time);
+					}
+					if (game->Player::getMines() == 40 && game->getWidth() == 16 && game->getHeight() == 16) {
+						game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), (char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(AmateursSFD->FileName).ToPointer(), time);
+					}
+					if (game->Player::getMines() == 99 && game->getWidth() == 24 && game->getHeight() == 20) {
+						game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), (char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(MastersSFD->FileName).ToPointer(), time);
+					}
 				} 
 			}
 		}
@@ -1421,6 +1392,34 @@ private: System::Void GRandomRB_CheckedChanged(System::Object^  sender, System::
 private: System::Void GUnknownCB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 	GMinesTB->Text = "";
 }
+		 
+private:
+	void showRecords(char *fileName) {
+		std::fstream records;
+		char chRecord[100];
+		String ^strRecord;
+		records.open(fileName, std::ios::in);
+		records.getline(chRecord, 100);
+		delete[] strRecord;
+		while (chRecord[0] != '\0') {
+			strRecord = gcnew String(chRecord);
+			NovicesLB->Items->Add(strRecord);
+			records.getline(chRecord, 100);
+			delete[] strRecord;
+		}
+	}
+
+private: System::Void RecordsGB_VisibleChanged(System::Object^  sender, System::EventArgs^  e) {
+	if (RecordsGB->Visible == true) {
+		NovicesLB->Items->Clear();
+		AmateursLB->Items->Clear();
+		MastersLB->Items->Clear();
+		showRecords((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(NovicesSFD->FileName).ToPointer());
+		showRecords((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(AmateursSFD->FileName).ToPointer());
+		showRecords((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(MastersSFD->FileName).ToPointer());
+	}
+}
+
 };
 
 }
