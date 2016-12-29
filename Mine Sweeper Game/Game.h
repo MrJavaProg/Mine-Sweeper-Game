@@ -39,6 +39,8 @@ public:
 	bool getTimerEnabled();
 	int getWidth();
 	int getHeight();
+	int getLifes();
+	//void redrawField(Graphics ^g);
 private:
 	void autoOpen(int x, int y, System::Windows::Forms::Form ^f);
 };

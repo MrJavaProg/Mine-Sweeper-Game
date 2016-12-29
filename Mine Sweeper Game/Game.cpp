@@ -26,7 +26,6 @@ Game::Game(int width, int height, int mines, int lifes, bool shownMines, Form ^f
 Game::Game(Form ^f)
 {
 	loadGame(f);
-
 	xStart = field[0][0].getXStart();
 	yStart = field[0][0].getYStart();
 	xEnd = field[width - 1][height - 1].getXEnd();
@@ -35,21 +34,9 @@ Game::Game(Form ^f)
 
 Game::~Game()
 {
-	//player.~Player();
-	for (int i = 0; i < width; i++) {
-		for (int j = 0; j < height; j++) {
-			field[i][j].~GameCell();
-		}
-	}
-
-	for (int i = 0; i < width; i++) {
-		delete[] field[i];
-	}
-	delete field;
 }
 
 void Game::createField(Form ^f) {
-	//GameCell **gField;   если что, проблема тут)
 	yStart = (f->Height / 2) - (height / 2)*Cell::edge;
 	xStart = (f->Width / 2) - (width / 2)*Cell::edge;
 
@@ -136,9 +123,10 @@ void Game::saveGame() {
 	std::fstream save;
 	int time = Player::getTime(),
 		mines = Player::getMines(),
-		lifes = Player::getMines();
+		lifes = Player::getLifes();
 
 	save.open("Save.sav", std::ios::out | std::ios::trunc | std::ios::binary);
+	save.write(reinterpret_cast<char*>(&timerEnabled), sizeof(bool));
 	save.write(reinterpret_cast<char*> (&this->shownMines), sizeof(bool));
 	save.write(reinterpret_cast<char*> (&started), sizeof(bool));
 	save.write(reinterpret_cast<char*> (&wasFirstClick), sizeof(bool));
@@ -166,11 +154,12 @@ void Game::loadGame(Form ^f) {
 	load.open("Save.sav", std::ios::in | std::ios::binary);
 	int time,
 		mines,
-		lifes;
-
+		lifes = Player::getLifes();
+		
 		load.seekg(std::ios::end);
 		if (load.tellg() > 0) {
 			load.seekg(std::ios::beg);
+			load.read(reinterpret_cast<char*>(&timerEnabled), sizeof(bool));
 			load.read(reinterpret_cast<char*> (&this->shownMines), sizeof(bool));
 			load.read(reinterpret_cast<char*> (&started), sizeof(bool));
 			load.read(reinterpret_cast<char*> (&wasFirstClick), sizeof(bool));
@@ -202,7 +191,6 @@ void Game::loadGame(Form ^f) {
 			Player::setTime(time);
 			Player::setWidth(width);
 			Player::setHeight(height);
-			closedCells = width * height;
 		}
 }
 
@@ -237,15 +225,22 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 					mines--;
 					field[curPosX][curPosY].setExtraState(extraState::opened);
 					field[curPosX][curPosY].redrawCell(f);
-					if (lifes == 0) {
+					if (Player::getLifes() > 0) {
+						if (lifes > 0) {
+							started = false;
+							timerEnabled = false;
+							return false;
+						}
+						else {
+							lifes--;
+							closedCells--;
+						}
+					}
+					else {
 						started = false;
 						timerEnabled = false;
 						return false;
 					}
-					else {
-						lifes--;
-						closedCells--;
-					}	
 				}	
 			}
 				if (mb == GameCell::mb_flag && field[curPosX][curPosY].getExtraState() != extraState::opened && field[curPosX][curPosY].getExtraState() != extraState::undefined) {
@@ -316,6 +311,7 @@ int Game::getHeight()
 	return height;
 }
 
+
 void Game::autoOpen(int x, int y, System::Windows::Forms::Form ^f) {
 	if (x >= 0 && y >= 0 && x < width && y < height) {
 		if (field[x][y].getNearbyMines() == 0 && field[x][y].getExtraState() != extraState::flagged && field[x][y].getExtraState() != extraState::opened && field[x][y].getExtraState() != extraState::undefined) {
@@ -358,4 +354,17 @@ void Game::autoOpen(int x, int y, System::Windows::Forms::Form ^f) {
 		return;
 	}
 }
+
+int Game::getLifes() {
+	return this->lifes;
+}
+
+/*void Game::redrawField(Graphics ^ g)
+{
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			field[i][j].redrawCell()
+		}
+	}
+}*/
 

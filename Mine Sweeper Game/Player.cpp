@@ -66,7 +66,7 @@ void Player::writeDownRecord(char *name, char *fileName, int &time)
 	records.open(fileName, std::ios::in);
 	records.getline(record, 100);
 	while (record[0] != '\0' && line <= lines) {
-		recTime = atoi(strchr(record, '.') + 1);
+		recTime = atoi(strchr(record, ',') + 1);
 		isEmpty = false;
 		if (time <= recTime) {
 			break;

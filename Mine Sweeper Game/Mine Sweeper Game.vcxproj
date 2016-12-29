@@ -159,7 +159,7 @@
     <EmbeddedResource Include="GameForm.resx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Records.htm">
+    <None Include="Help.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
   </ItemGroup>

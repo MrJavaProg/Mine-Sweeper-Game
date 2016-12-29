@@ -29,9 +29,6 @@ namespace MineSweeperGame {
 		GameForm(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: добавьте код конструктора
-			//
 		}
 
 	protected:
@@ -49,11 +46,6 @@ namespace MineSweeperGame {
 	private: System::Windows::Forms::ToolStripMenuItem^  OptionsTSMI;
 
 	private: System::Windows::Forms::ToolStripMenuItem^  RecordsTSMI;
-	protected:
-
-	protected:
-
-
 
 	private: System::Windows::Forms::ToolStrip^  ToolsTS;
 
@@ -124,6 +116,12 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 	private: System::Windows::Forms::SaveFileDialog^  NovicesSFD;
 	private: System::Windows::Forms::SaveFileDialog^  AmateursSFD;
 	private: System::Windows::Forms::SaveFileDialog^  MastersSFD;
+	private: System::Windows::Forms::Button^  WinExitB;
+private: System::Windows::Forms::ToolStripLabel^  TSLifesInfo;
+private: System::Windows::Forms::ToolStripLabel^  TSLifes;
+
+
+
 	private: System::ComponentModel::IContainer^  components;
 
 	private:
@@ -150,6 +148,8 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->TSLInfo = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->TimerTSL = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->TSTBMinesCounter = (gcnew System::Windows::Forms::ToolStripLabel());
+			this->TSLifesInfo = (gcnew System::Windows::Forms::ToolStripLabel());
+			this->TSLifes = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->toolStripLabel1 = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->TSLTime = (gcnew System::Windows::Forms::ToolStripLabel());
 			this->OptionsMenuFLP = (gcnew System::Windows::Forms::FlowLayoutPanel());
@@ -193,6 +193,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
 			this->Timer = (gcnew System::Windows::Forms::Timer(this->components));
 			this->WinGB = (gcnew System::Windows::Forms::GroupBox());
+			this->WinExitB = (gcnew System::Windows::Forms::Button());
 			this->WinTB = (gcnew System::Windows::Forms::TextBox());
 			this->WinB = (gcnew System::Windows::Forms::Button());
 			this->NovicesSFD = (gcnew System::Windows::Forms::SaveFileDialog());
@@ -216,9 +217,10 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			// 
 			// ToolsTS
 			// 
-			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(8) {
+			this->ToolsTS->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(10) {
 				this->MenuTCDDB, this->StartTSB,
-					this->TSTBMinesCounterInfo, this->TSLInfo, this->TimerTSL, this->TSTBMinesCounter, this->toolStripLabel1, this->TSLTime
+					this->TSTBMinesCounterInfo, this->TSLInfo, this->TimerTSL, this->TSTBMinesCounter, this->TSLifesInfo, this->TSLifes, this->toolStripLabel1,
+					this->TSLTime
 			});
 			this->ToolsTS->Location = System::Drawing::Point(0, 0);
 			this->ToolsTS->Name = L"ToolsTS";
@@ -285,6 +287,18 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->TSTBMinesCounter->Name = L"TSTBMinesCounter";
 			this->TSTBMinesCounter->Size = System::Drawing::Size(13, 22);
 			this->TSTBMinesCounter->Text = L"0";
+			// 
+			// TSLifesInfo
+			// 
+			this->TSLifesInfo->Name = L"TSLifesInfo";
+			this->TSLifesInfo->Size = System::Drawing::Size(34, 22);
+			this->TSLifesInfo->Text = L"Lifes:";
+			// 
+			// TSLifes
+			// 
+			this->TSLifes->Name = L"TSLifes";
+			this->TSLifes->Size = System::Drawing::Size(13, 22);
+			this->TSLifes->Text = L"0";
 			// 
 			// toolStripLabel1
 			// 
@@ -574,6 +588,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->GCOpenCellB->Size = System::Drawing::Size(147, 50);
 			this->GCOpenCellB->TabIndex = 3;
 			this->GCOpenCellB->UseVisualStyleBackColor = true;
+			this->GCOpenCellB->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GCOpenCellB_MouseDown_1);
 			// 
 			// GCSetFlagInfo
 			// 
@@ -622,8 +637,8 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			// OptionsGB
 			// 
 			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
-			this->OptionsGB->Controls->Add(this->PresetsP);
 			this->OptionsGB->Controls->Add(this->ControlP);
+			this->OptionsGB->Controls->Add(this->PresetsP);
 			this->OptionsGB->Location = System::Drawing::Point(0, 28);
 			this->OptionsGB->Name = L"OptionsGB";
 			this->OptionsGB->Size = System::Drawing::Size(784, 535);
@@ -752,6 +767,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			// 
 			// WinGB
 			// 
+			this->WinGB->Controls->Add(this->WinExitB);
 			this->WinGB->Controls->Add(this->WinTB);
 			this->WinGB->Controls->Add(this->WinB);
 			this->WinGB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
@@ -763,6 +779,15 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->WinGB->TabStop = false;
 			this->WinGB->Text = L"Who is that hero\?";
 			this->WinGB->Visible = false;
+			// 
+			// WinExitB
+			// 
+			this->WinExitB->Location = System::Drawing::Point(540, 7);
+			this->WinExitB->Name = L"WinExitB";
+			this->WinExitB->Size = System::Drawing::Size(24, 23);
+			this->WinExitB->TabIndex = 4;
+			this->WinExitB->UseVisualStyleBackColor = true;
+			this->WinExitB->Click += gcnew System::EventHandler(this, &GameForm::button1_Click);
 			// 
 			// WinTB
 			// 
@@ -803,13 +828,14 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(784, 587);
 			this->Controls->Add(this->ToolsTS);
-			this->Controls->Add(this->RecordsGB);
-			this->Controls->Add(this->WinGB);
 			this->Controls->Add(this->OptionsGB);
+			this->Controls->Add(this->WinGB);
+			this->Controls->Add(this->RecordsGB);
 			this->Name = L"GameForm";
 			this->Text = L"GameForm";
 			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &GameForm::GameForm_FormClosed);
 			this->Shown += gcnew System::EventHandler(this, &GameForm::GameForm_Shown);
+			this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &GameForm::GameForm_Paint);
 			this->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &GameForm::GameForm_MouseClick);
 			this->ToolsTS->ResumeLayout(false);
 			this->ToolsTS->PerformLayout();
@@ -889,23 +915,41 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			game = new Game(this);
 			GWidthTB->Text = game->getWidth().ToString();
 			GHeightTB->Text = game->getHeight().ToString();
+			if (game->getLifes() == 0) {
+				GWrongCB->Checked = true;
+				GLifesTB->Enabled = true;
+				GLifesTB->Text = game->Player::getLifes().ToString();
+				TSLifes->Text = game->Game::getLifes().ToString();
+			}
+			else {
+				GWrongCB->Checked = false;
+				GLifesTB->Enabled = false;
+				TSLifes->Text = "0";
+				
+			}
+
 			if (game->getShownMines() == true) {
 				GMinesTB->Text = game->Player::getMines().ToString();
-				GUnknownCB->Checked = false; 
-				GMinesTB->Text = game->getMines().ToString();
+				GUnknownCB->Checked = false;
 			}
 			else {
 				GUnknownCB->Checked = true;
-				GMinesTB->Text = "???";
+				TSTBMinesCounter->Text = "???";
+				GMinesTB->Text = "";
 			}
-			time = game->getTime();
-			if (game->getTimerEnabled() == false) {
-				game->~Game();
+		
+			if (game->getTimerEnabled() == true) {
+				time = game->getTime();
+				TSLTime->Text = time.ToString();
+				Timer->Enabled = true;
 			}
 			else {
-				Timer->Enabled = true; 
+				TSLTime->Text = "0";
+				time = 0;
+				Timer->Enabled = false;
+				game->~Game();
+				game = NULL;
 			}
-			
 		}
 	}
 
@@ -945,6 +989,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			WinGB->Visible = false;
 			if (game != NULL) {
 				game->~Game();
+				game = NULL;
 			}
 
 			if (GRandomRB->Checked == true) {
@@ -998,15 +1043,14 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 					}
 				}
 			}
-					lifes = System::Int32::Parse(GLifesTB->Text);
-					if (lifes<0 && lifes>quantity_of_mines / 2) {
-						throw 4;
-					}
-					throw 0;
+			lifes = System::Int32::Parse(GLifesTB->Text);
+			if (lifes<0 && lifes>quantity_of_mines / 2) {
+				throw 4;
+			}
+			throw 0;
 		}
 		catch (int e) {
 			if (e == 0) {
-				TSTBMinesCounter->Text = "";
 				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this);
 				if (GUnknownCB->Checked == false) {
 					TSTBMinesCounter->Text = game->getMines().ToString();
@@ -1017,6 +1061,8 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 				Timer->Enabled = false;
 				time = 0;
 				Timer->Enabled = true;
+				TSLTime->Text = time.ToString();
+				TSLifes->Text = game->Game::getLifes().ToString();
 			}
 			if (e == 1) {
 				MessageBox::Show("Too few or many width cells (must be more than 5 & less than 25)");
@@ -1043,7 +1089,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			MessageBox::Show("Incorrect data!");
 			OptionsGB->Visible = true;
 			PresetsP->Visible = true;
-		}		
+		}
 	}
 
 
@@ -1054,6 +1100,8 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 		GWidthTB->Text = "";
 		GHeightTB->Text = "";
 		GMinesTB->Text = "";
+		GRandomRB->Checked = false;
+		GUnknownCB->Checked = false;
 	}
 	private: System::Void GPreset2RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		quantity_of_cells_width = 16;
@@ -1062,6 +1110,8 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 		GWidthTB->Text = "";
 		GHeightTB->Text = "";
 		GMinesTB->Text = "";
+		GRandomRB->Checked = false;
+		GUnknownCB->Checked = false;
 	}
 	private: System::Void GPreset3RB_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		quantity_of_cells_width = 24;
@@ -1070,6 +1120,8 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 		GWidthTB->Text = "";
 		GHeightTB->Text = "";
 		GMinesTB->Text = "";
+		GRandomRB->Checked = false;
+		GUnknownCB->Checked = false;
 	}
 
 	private: System::Void GCOpenCellB_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
@@ -1292,6 +1344,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 			else {
 				WinGB->Visible = true;
 			}
+			TSLifes->Text = game->Game::getLifes().ToString();
 		}
 
 	}
@@ -1363,13 +1416,13 @@ private: System::Void WinB_Click(System::Object^  sender, System::EventArgs^  e)
 			}
 			else {
 				if (i == WinTB->Text->Length-1) {
-					if (game->Player::getMines() == 10 && game->getWidth() == 9 && game->getHeight() == 9) {
+					if (game->Player::getMines() == 10 && game->getWidth() == 9 && game->getHeight() == 9 && game->Player::getLifes()==0) {
 						game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), (char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(NovicesSFD->FileName).ToPointer(), time);
 					}
-					if (game->Player::getMines() == 40 && game->getWidth() == 16 && game->getHeight() == 16) {
+					if (game->Player::getMines() == 40 && game->getWidth() == 16 && game->getHeight() == 16 && game->Player::getLifes() == 0) {
 						game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), (char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(AmateursSFD->FileName).ToPointer(), time);
 					}
-					if (game->Player::getMines() == 99 && game->getWidth() == 24 && game->getHeight() == 20) {
+					if (game->Player::getMines() == 99 && game->getWidth() == 24 && game->getHeight() == 20 && game->Player::getLifes() == 0) {
 						game->writeDownRecord((char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(WinTB->Text).ToPointer(), (char*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(MastersSFD->FileName).ToPointer(), time);
 					}
 				} 
@@ -1420,6 +1473,79 @@ private: System::Void RecordsGB_VisibleChanged(System::Object^  sender, System::
 	}
 }
 
+private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+	WinGB->Visible = false;
+}
+
+private: System::Void GCOpenCellB_MouseDown_1(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	int tmp_mb_open = GameCell::mb_open;
+	if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+		GameCell::mb_open = 1;
+	}
+	else {
+		if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+			GameCell::mb_open = 2;
+		}
+		else {
+			if (e->Button == System::Windows::Forms::MouseButtons::Middle) {
+				GameCell::mb_open = 3;
+			}
+		}
+	}
+
+	if (GameCell::mb_open == GameCell::mb_undefined) {
+		GameCell::mb_undefined = tmp_mb_open;
+	}
+	if (GameCell::mb_flag == GameCell::mb_open) {
+		GameCell::mb_flag = tmp_mb_open;
+	}
+
+	if (GameCell::mb_open == 1) {
+		GCOpenCellB->Text = "Left mouse button";
+	}
+	else {
+		if (GameCell::mb_open == 2) {
+			GCOpenCellB->Text = "Right mouse button";
+		}
+		else {
+			if (GameCell::mb_open == 3) {
+				GCOpenCellB->Text = "Middle mouse button";
+			}
+		}
+	}
+
+	if (GameCell::mb_flag == 1) {
+		GCSetFlagB->Text = "Left mouse button";
+	}
+	else {
+		if (GameCell::mb_flag == 2) {
+			GCSetFlagB->Text = "Right mouse button";
+		}
+		else {
+			if (GameCell::mb_flag == 3) {
+				GCSetFlagB->Text = "Middle mouse button";
+			}
+		}
+	}
+
+	if (GameCell::mb_undefined == 1) {
+		GCSetUndef->Text = "Left mouse button";
+	}
+	else {
+		if (GameCell::mb_undefined == 2) {
+			GCSetUndef->Text = "Right mouse button";
+		}
+		else {
+			if (GameCell::mb_undefined == 3) {
+				GCSetUndef->Text = "Middle mouse button";
+			}
+		}
+	}
+}
+
+private: System::Void GameForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
+	e->Graphics->DrawRectangle(gcnew Pen(Color::Black, 1), 10, 40, 100, 300);
+}
 };
 
 }

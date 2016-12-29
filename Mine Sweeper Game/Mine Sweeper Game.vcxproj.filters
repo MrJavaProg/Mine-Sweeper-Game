@@ -63,6 +63,6 @@
     <Object Include="Debug\CellDrawing.obj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Records.htm" />
+    <None Include="Help.htm" />
   </ItemGroup>
 </Project>

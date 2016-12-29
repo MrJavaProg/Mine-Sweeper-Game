@@ -15,7 +15,7 @@ void CellDrawing::drawEmptyCell(System::Windows::Forms::Form ^form)
 {
 	Graphics ^g = form->CreateGraphics();
 
-	g->FillRectangle(gcnew SolidBrush(Color::FromArgb(180, 180, 180)), xStart, yStart, edge, edge);
+	form->g->FillRectangle(gcnew SolidBrush(Color::FromArgb(180, 180, 180)), xStart, yStart, edge, edge);
 	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, edge, edge);
 }
 
