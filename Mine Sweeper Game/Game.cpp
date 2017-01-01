@@ -1,12 +1,10 @@
 #include <fstream>
 #include "Game.h"
 
-using namespace System::Windows::Forms;
+using namespace System::Drawing;
 
-Game::Game(int width, int height, int mines, int lifes, bool shownMines, Form ^f)
+Game::Game(int width, int height, float formWidth, float formHeight, int mines, int lifes, bool shownMines, Graphics ^g)
 {
-	//player = new Player();
-	//Player();
 	Player::setLifes(lifes);
 	this->lifes = lifes;
 	this->width = width;
@@ -16,16 +14,17 @@ Game::Game(int width, int height, int mines, int lifes, bool shownMines, Form ^f
 	flags = mines;
 	wasFirstClick = false;
 	started = true;
-	createField(f);
+	createField(g, formWidth, formHeight);
 	Player::setHeight(height);
 	Player::setWidth(width);
 	this->shownMines = shownMines;
 	closedCells = width*height;
 }
 
-Game::Game(Form ^f)
+
+Game::Game(Graphics ^g)
 {
-	loadGame(f);
+	loadGame(g);
 	xStart = field[0][0].getXStart();
 	yStart = field[0][0].getYStart();
 	xEnd = field[width - 1][height - 1].getXEnd();
@@ -36,9 +35,9 @@ Game::~Game()
 {
 }
 
-void Game::createField(Form ^f) {
-	yStart = (f->Height / 2) - (height / 2)*Cell::edge;
-	xStart = (f->Width / 2) - (width / 2)*Cell::edge;
+void Game::createField(Graphics ^g, float formWidth, float formHeight) {
+	yStart = (formHeight / 2) - (height / 2)*Cell::edge;
+	xStart = (formWidth / 2) - (width / 2)*Cell::edge;
 
 	field = new GameCell*[width];
 
@@ -52,17 +51,12 @@ void Game::createField(Form ^f) {
 			field[i][j].setYStart(yStart + j*Cell::edge);
 			field[i][j].setXEnd(field[i][j].getXStart() + Cell::edge);
 			field[i][j].setYEnd(field[i][j].getYStart() + Cell::edge);
-			field[i][j].redrawCell(f);
+			field[i][j].redrawCell(g);
 		}
 	}
 	
 	xEnd = field[width - 1][height - 1].getXEnd(),
 	yEnd = field[width - 1][height - 1].getYEnd();
-}
-
-void Game::setShownMines(bool shownMines)
-{
-	this->shownMines = shownMines;
 }
 
 bool Game::getShownMines()
@@ -109,11 +103,21 @@ void Game::spawnMines(int &curPosX, int &curPosY) {
 	}
 }
 
-void Game::showMines(Form ^f) {
+void Game::showMines(Graphics ^g) {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			if (field[i][j].getState() == state::mined && field[i][j].getExtraState() != extraState::flagged) {
-				field[i][j].drawExplodedCell(f);
+			if (field[i][j].getState() == state::mined) {
+				if (field[i][j].getExtraState() == extraState::flagged) {
+					field[i][j].drawExplodedCell(g);
+					field[i][j].drawFlaggedCell(g);
+				}
+				if (field[i][j].getExtraState() == extraState::undefined) {
+					field[i][j].drawExplodedCell(g);
+					field[i][j].drawUndefinedCell(g);
+				}
+				if (field[i][j].getExtraState() == extraState::unchecked) {
+					field[i][j].drawExplodedCell(g);
+				}
 			}
 		}
 	}
@@ -149,7 +153,7 @@ void Game::saveGame() {
 }
 
 
-void Game::loadGame(Form ^f) {
+void Game::loadGame(Graphics ^g) {
 	std::fstream load;
 	load.open("Save.sav", std::ios::in | std::ios::binary);
 	int time,
@@ -183,7 +187,7 @@ void Game::loadGame(Form ^f) {
 			for (int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {
 					load.read(reinterpret_cast<char*> (&field[i][j]), sizeof(GameCell));
-					field[i][j].redrawCell(f);
+					field[i][j].redrawCell(g);
 				}
 			}
 			Player::setLifes(lifes);
@@ -194,7 +198,7 @@ void Game::loadGame(Form ^f) {
 		}
 }
 
-bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
+bool Game::openCell(int x, int y, int &mb, Graphics ^g) {
 	int curPosX,
 		curPosY;
 
@@ -209,14 +213,14 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 						wasFirstClick = true;
 						timerEnabled = true;
 				}
-				
+					showMines(g); //only for test
 				if (field[curPosX][curPosY].getState() == state::empty) {
 					if (field[curPosX][curPosY].getNearbyMines() == 0) {
-						autoOpen(curPosX, curPosY, f);
+						autoOpen(curPosX, curPosY, g);
 					}
 					else {
 						field[curPosX][curPosY].setExtraState(extraState::opened);
-						field[curPosX][curPosY].redrawCell(f);
+						field[curPosX][curPosY].redrawCell(g);
 						closedCells--;
 					}
 				}
@@ -224,23 +228,17 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 					flags--;
 					mines--;
 					field[curPosX][curPosY].setExtraState(extraState::opened);
-					field[curPosX][curPosY].redrawCell(f);
-					if (Player::getLifes() > 0) {
-						if (lifes > 0) {
+					field[curPosX][curPosY].redrawCell(g);
+						if (lifes == 0) {
 							started = false;
 							timerEnabled = false;
+							showMines(g);
 							return false;
 						}
 						else {
 							lifes--;
 							closedCells--;
 						}
-					}
-					else {
-						started = false;
-						timerEnabled = false;
-						return false;
-					}
 				}	
 			}
 				if (mb == GameCell::mb_flag && field[curPosX][curPosY].getExtraState() != extraState::opened && field[curPosX][curPosY].getExtraState() != extraState::undefined) {
@@ -251,7 +249,7 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 				}
 				if (field[curPosX][curPosY].getExtraState() == extraState::flagged) {
 					field[curPosX][curPosY].setExtraState(state::empty);
-					field[curPosX][curPosY].redrawCell(f);
+					field[curPosX][curPosY].redrawCell(g);
 					flags++;
 					if (field[curPosX][curPosY].getState() == state::mined) {
 						mines++;
@@ -260,7 +258,7 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 				else {
 					if (flags > 0) {
 						field[curPosX][curPosY].setExtraState(extraState::flagged);
-						field[curPosX][curPosY].redrawCell(f);
+						field[curPosX][curPosY].redrawCell(g);
 						flags--;
 						if (field[curPosX][curPosY].getState() == state::mined) {
 							mines--;
@@ -276,16 +274,16 @@ bool Game::openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f) {
 				}
 				if (field[curPosX][curPosY].getExtraState() == extraState::undefined) {
 					field[curPosX][curPosY].setExtraState(extraState::unchecked);
-					field[curPosX][curPosY].redrawCell(f);
+					field[curPosX][curPosY].redrawCell(g);
 				}
 				else {
 					field[curPosX][curPosY].setExtraState(extraState::undefined);
-					field[curPosX][curPosY].redrawCell(f);
+					field[curPosX][curPosY].redrawCell(g);
 				}
 			}
 		}
 	}
-		showMines(f);//для теста (удалить!!!)
+	
 		if (closedCells == mines) {
 			timerEnabled = false;
 			started = false;
@@ -312,42 +310,42 @@ int Game::getHeight()
 }
 
 
-void Game::autoOpen(int x, int y, System::Windows::Forms::Form ^f) {
+void Game::autoOpen(int x, int y, Graphics ^g) {
 	if (x >= 0 && y >= 0 && x < width && y < height) {
 		if (field[x][y].getNearbyMines() == 0 && field[x][y].getExtraState() != extraState::flagged && field[x][y].getExtraState() != extraState::opened && field[x][y].getExtraState() != extraState::undefined) {
 			field[x][y].setExtraState(extraState::opened);
-			field[x][y].redrawCell(f);
+			field[x][y].redrawCell(g);
 			closedCells--;
 			if (x + 1 < width) {
-				autoOpen(x + 1, y, f);
+				autoOpen(x + 1, y, g);
 			}
 			if (x + 1 < width && y - 1 >= 0) {
-				autoOpen(x + 1, y - 1, f);
+				autoOpen(x + 1, y - 1, g);
 			}
 			if (y - 1 >= 0) {
-				autoOpen(x, y - 1, f);
+				autoOpen(x, y - 1, g);
 			}
 			if (x - 1 >= 0 && y - 1 >= 0) {
-				autoOpen(x - 1, y - 1, f);
+				autoOpen(x - 1, y - 1, g);
 			}
 			if (x - 1 >= 0) {
-				autoOpen(x - 1, y, f);
+				autoOpen(x - 1, y, g);
 			}
 			if (x - 1 >= 0 && y + 1 < height) {
-				autoOpen(x - 1, y + 1, f);
+				autoOpen(x - 1, y + 1, g);
 			}
 			if (y + 1 < height) {
-				autoOpen(x, y + 1, f);
+				autoOpen(x, y + 1, g);
 			}
 			if (x + 1 < width && y + 1 < height) {
-				autoOpen(x + 1, y + 1, f);
+				autoOpen(x + 1, y + 1, g);
 			}
 			return;
 		}
 		else {
 			if (field[x][y].getNearbyMines() != 0 && field[x][y].getExtraState() != extraState::opened) {
 				field[x][y].setExtraState(extraState::opened);
-				field[x][y].redrawCell(f);
+				field[x][y].redrawCell(g);
 				closedCells--;
 			}
 		}
@@ -359,12 +357,18 @@ int Game::getLifes() {
 	return this->lifes;
 }
 
-/*void Game::redrawField(Graphics ^ g)
+void Game::redrawField(Graphics ^ g)
 {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			field[i][j].redrawCell()
+			field[i][j].redrawCell(g);
 		}
 	}
-}*/
+}
+
+void Game::removeGraphics(Graphics ^g, Color &color) {
+	g->FillRectangle(gcnew SolidBrush(Color::FromArgb(180, 180, 180)), xStart, yStart, xEnd-xStart, yEnd-yStart);
+	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, xEnd - xStart, yEnd - yStart);
+}
+
 

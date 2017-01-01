@@ -1,10 +1,10 @@
 #pragma once
-#include "Game.h"
 #include <fstream>
+#include "Game.h"
+
 
 using namespace System::Drawing;
 static Game *game = NULL;
-//extern Cell **field;
 
 static int time,
 		   quantity_of_mines = 0,
@@ -29,6 +29,7 @@ namespace MineSweeperGame {
 		GameForm(void)
 		{
 			InitializeComponent();
+			this->DoubleBuffered = true;
 		}
 
 	protected:
@@ -119,6 +120,7 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 	private: System::Windows::Forms::Button^  WinExitB;
 private: System::Windows::Forms::ToolStripLabel^  TSLifesInfo;
 private: System::Windows::Forms::ToolStripLabel^  TSLifes;
+	private: System::Windows::Forms::Label^  WinL;
 
 
 
@@ -199,6 +201,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			this->NovicesSFD = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->AmateursSFD = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->MastersSFD = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->WinL = (gcnew System::Windows::Forms::Label());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -224,7 +227,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			});
 			this->ToolsTS->Location = System::Drawing::Point(0, 0);
 			this->ToolsTS->Name = L"ToolsTS";
-			this->ToolsTS->Size = System::Drawing::Size(784, 25);
+			this->ToolsTS->Size = System::Drawing::Size(797, 25);
 			this->ToolsTS->TabIndex = 1;
 			this->ToolsTS->Text = L"toolStrip1";
 			// 
@@ -637,8 +640,8 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			// OptionsGB
 			// 
 			this->OptionsGB->Controls->Add(this->OptionsMenuFLP);
-			this->OptionsGB->Controls->Add(this->ControlP);
 			this->OptionsGB->Controls->Add(this->PresetsP);
+			this->OptionsGB->Controls->Add(this->ControlP);
 			this->OptionsGB->Location = System::Drawing::Point(0, 28);
 			this->OptionsGB->Name = L"OptionsGB";
 			this->OptionsGB->Size = System::Drawing::Size(784, 535);
@@ -767,6 +770,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			// 
 			// WinGB
 			// 
+			this->WinGB->Controls->Add(this->WinL);
 			this->WinGB->Controls->Add(this->WinExitB);
 			this->WinGB->Controls->Add(this->WinTB);
 			this->WinGB->Controls->Add(this->WinB);
@@ -822,17 +826,28 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			// 
 			this->MastersSFD->FileName = L"RecordsMaster.rec";
 			// 
+			// WinL
+			// 
+			this->WinL->AutoSize = true;
+			this->WinL->Font = (gcnew System::Drawing::Font(L"Playbill", 60, static_cast<System::Drawing::FontStyle>(((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Italic)
+				| System::Drawing::FontStyle::Underline))));
+			this->WinL->Location = System::Drawing::Point(162, 23);
+			this->WinL->Name = L"WinL";
+			this->WinL->Size = System::Drawing::Size(256, 81);
+			this->WinL->TabIndex = 5;
+			this->WinL->Text = L"You won!!!";
+			// 
 			// GameForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(784, 587);
+			this->ClientSize = System::Drawing::Size(797, 594);
 			this->Controls->Add(this->ToolsTS);
-			this->Controls->Add(this->OptionsGB);
 			this->Controls->Add(this->WinGB);
 			this->Controls->Add(this->RecordsGB);
+			this->Controls->Add(this->OptionsGB);
 			this->Name = L"GameForm";
-			this->Text = L"GameForm";
+			this->Text = L"Mine Sweper Game";
 			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &GameForm::GameForm_FormClosed);
 			this->Shown += gcnew System::EventHandler(this, &GameForm::GameForm_Shown);
 			this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &GameForm::GameForm_Paint);
@@ -912,7 +927,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 		file.open("Save.sav", std::ios::in);
 		if (file.is_open()) {
 			file.close();
-			game = new Game(this);
+			game = new Game(this->CreateGraphics());
 			GWidthTB->Text = game->getWidth().ToString();
 			GHeightTB->Text = game->getHeight().ToString();
 			if (game->getLifes() == 0) {
@@ -931,6 +946,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			if (game->getShownMines() == true) {
 				GMinesTB->Text = game->Player::getMines().ToString();
 				GUnknownCB->Checked = false;
+				TSTBMinesCounter->Text = game->Player::getMines().ToString();
 			}
 			else {
 				GUnknownCB->Checked = true;
@@ -988,13 +1004,14 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 		try {
 			WinGB->Visible = false;
 			if (game != NULL) {
+				game->removeGraphics(this->CreateGraphics(), this->BackColor);
 				game->~Game();
 				game = NULL;
 			}
 
 			if (GRandomRB->Checked == true) {
 				quantity_of_cells_width = rand() % 25 + 9;
-				quantity_of_cells_height = rand() % 22 + 9;
+				quantity_of_cells_height = rand() % 25 + 9;
 				quantity_of_mines = rand() % 10 + (int)(quantity_of_cells_width*quantity_of_cells_height / 2);
 			}
 			else {
@@ -1030,7 +1047,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 					throw 1;
 				}
 				quantity_of_cells_height = System::Int32::Parse(GHeightTB->Text);
-				if (quantity_of_cells_width < 5 || quantity_of_cells_width > 22) {
+				if (quantity_of_cells_height < 5 || quantity_of_cells_height > 25) {
 					throw 2;
 				}
 				if (GUnknownCB->Checked == true) {
@@ -1051,7 +1068,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 		}
 		catch (int e) {
 			if (e == 0) {
-				game = new Game(quantity_of_cells_width, quantity_of_cells_height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this);
+				game = new Game(quantity_of_cells_width, quantity_of_cells_height, (float)this->Width, (float)this->Height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this->CreateGraphics());
 				if (GUnknownCB->Checked == false) {
 					TSTBMinesCounter->Text = game->getMines().ToString();
 				}
@@ -1068,24 +1085,28 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 				MessageBox::Show("Too few or many width cells (must be more than 5 & less than 25)");
 				OptionsGB->Visible = true;
 				PresetsP->Visible = true;
+				ControlP->Visible = false;
 			}
 			if (e == 2) {
 				MessageBox::Show("Too few or many height cells (must be more than 5 & less than 22)");
 				OptionsGB->Visible = true;
 				PresetsP->Visible = true;
+				ControlP->Visible = false;
 			}
 			if (e == 3) {
 				MessageBox::Show("Too few or many mines (must be more than 10 & less than half of cells quantity)");
 				OptionsGB->Visible = true;
 				PresetsP->Visible = true;
+				ControlP->Visible = false;
 			}
 			if (e == 4) {
 				MessageBox::Show("Too few or many lifes (must be more than 0 & less than half of mines quantity)");
 				OptionsGB->Visible = true;
 				PresetsP->Visible = true;
+				ControlP->Visible = false;
 			}
 		}
-		catch (System::FormatException ^fe) {
+		catch (System::FormatException ^) {
 			MessageBox::Show("Incorrect data!");
 			OptionsGB->Visible = true;
 			PresetsP->Visible = true;
@@ -1334,7 +1355,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 		}
 		if (game != NULL) {
 			bool win;
-			win = game->openCell(e->X, e->Y, mb, this);
+			win = game->openCell(e->X, e->Y, mb, this->CreateGraphics());
 			if (game->getTimerEnabled() == false) {
 				Timer->Enabled = false;
 			}
@@ -1343,7 +1364,29 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			}
 			else {
 				WinGB->Visible = true;
+				if (quantity_of_cells_width == 9 && quantity_of_cells_height == 9 && quantity_of_mines == 10) {
+					WinTB->Visible = true;
+					WinL->Visible = false;
+				}
+				else {
+					if (quantity_of_cells_width == 16 && quantity_of_cells_height == 16 && quantity_of_mines == 40) {
+						WinTB->Visible = true;
+						WinL->Visible = false;
+					}
+					else {
+						if (quantity_of_cells_width == 9 && quantity_of_cells_height == 9 && quantity_of_mines == 10) {
+							WinTB->Visible = true;
+							WinL->Visible = false;
+						}
+						else {
+							WinTB->Visible = false;
+							WinL->Visible = true;
+							WinB->Visible = false;
+						}
+					}
+				}
 			}
+			
 			TSLifes->Text = game->Game::getLifes().ToString();
 		}
 
@@ -1438,6 +1481,7 @@ private: System::Void GRandomRB_CheckedChanged(System::Object^  sender, System::
 	GPreset1RB->Checked = false;
 	GPreset2RB->Checked = false;
 	GPreset3RB->Checked = false;
+	GUnknownCB->Checked = false;
 	GWidthTB->Text = "";
 	GHeightTB->Text = "";
 	GMinesTB->Text = "";
@@ -1544,8 +1588,11 @@ private: System::Void GCOpenCellB_MouseDown_1(System::Object^  sender, System::W
 }
 
 private: System::Void GameForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
-	e->Graphics->DrawRectangle(gcnew Pen(Color::Black, 1), 10, 40, 100, 300);
+	if (game != NULL) {
+		game->redrawField(e->Graphics);
+	}
 }
+
 };
 
 }

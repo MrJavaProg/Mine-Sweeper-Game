@@ -6,7 +6,6 @@ int GameCell::mb_open = 1,
 
 GameCell::GameCell()
 {
-	CellDrawing();
 	state = 0;
 	nearbyMines = 0;
 	extraState = 0;
@@ -47,24 +46,24 @@ void GameCell::addNearbyMines()
 }
 
 
-void GameCell::redrawCell(System::Windows::Forms::Form ^ form)
+void GameCell::redrawCell(System::Drawing::Graphics ^g)
 {
 	if (extraState == extraState::unchecked) {
-		drawEmptyCell(form);
+		drawEmptyCell(g);
 	}
 	if (extraState == opened) {
 		if (state == state::empty) {
-			drawOpenedCell(form, nearbyMines);
+			drawOpenedCell(g, nearbyMines);
 		}
 		else {
-			drawExplodedCell(form);
+			drawExplodedCell(g);
 		}
 	}
 	if (extraState == extraState::flagged) {
-		drawFlaggedCell(form);
+		drawFlaggedCell(g);
 	}
 	if (extraState == extraState::undefined) {
-		drawUndefinedCell(form);
+		drawUndefinedCell(g);
 	}
 
 	

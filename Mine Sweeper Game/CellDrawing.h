@@ -1,17 +1,16 @@
-#pragma once
 #include "Cell.h"
+#pragma once
 
 class CellDrawing : public Cell
 {
 public:
 	CellDrawing();
 	~CellDrawing();
-	void drawExplodedCell(System::Windows::Forms::Form ^form);
-
-protected:
-	void drawEmptyCell(System::Windows::Forms::Form ^form);
-	void drawOpenedCell(System::Windows::Forms::Form ^form, int nearbyMines);
-	void drawUndefinedCell(System::Windows::Forms::Form ^form);
-	void drawFlaggedCell(System::Windows::Forms::Form ^form);
+	void drawExplodedCell(System::Drawing::Graphics ^g);
+	void drawUndefinedCell(System::Drawing::Graphics ^g);
+	void drawFlaggedCell(System::Drawing::Graphics ^g);
+	void drawEmptyCell(System::Drawing::Graphics ^g);
+	void drawOpenedCell(System::Drawing::Graphics ^g, int nearbyMines);
+	
 };
 

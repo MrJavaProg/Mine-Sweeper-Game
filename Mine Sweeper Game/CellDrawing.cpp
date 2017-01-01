@@ -1,62 +1,47 @@
 #include "CellDrawing.h"
 
-using namespace System::Drawing;
-
 CellDrawing::CellDrawing()
 {
-	Cell();
 }
 
 CellDrawing::~CellDrawing()
 {
 }
 
-void CellDrawing::drawEmptyCell(System::Windows::Forms::Form ^form)
+void CellDrawing::drawEmptyCell(System::Drawing::Graphics ^g)
 {
-	Graphics ^g = form->CreateGraphics();
-
-	form->g->FillRectangle(gcnew SolidBrush(Color::FromArgb(180, 180, 180)), xStart, yStart, edge, edge);
-	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, edge, edge);
+	g->FillRectangle(gcnew System::Drawing::SolidBrush(System::Drawing::Color::FromArgb(180, 180, 180)), xStart, yStart, edge, edge);
+	g->DrawRectangle(gcnew System::Drawing::Pen(System::Drawing::Color::Black, 1), xStart, yStart, edge, edge);
 }
 
-void CellDrawing::drawOpenedCell(System::Windows::Forms::Form ^form, int nearbyMines)
+void CellDrawing::drawOpenedCell(System::Drawing::Graphics ^g, int nearbyMines)
 {
-	Graphics ^g = form->CreateGraphics();
-
-	g->FillRectangle(gcnew SolidBrush(Color::FromArgb(255, 255, 255)), xStart, yStart, edge, edge);
-	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, edge, edge);
+	g->FillRectangle(gcnew System::Drawing::SolidBrush(System::Drawing::Color::FromArgb(255, 255, 255)), xStart, yStart, edge, edge);
+	g->DrawRectangle(gcnew System::Drawing::Pen(System::Drawing::Color::Black, 1), xStart, yStart, edge, edge);
 	if (nearbyMines != 0) {
-		g->DrawString(nearbyMines.ToString(), gcnew Font(FontFamily::GenericSansSerif, 14, FontStyle::Bold), gcnew SolidBrush(Color::FromArgb(84, 4, 4)), xStart, yStart);
+		g->DrawString(nearbyMines.ToString(), gcnew System::Drawing::Font(System::Drawing::FontFamily::GenericSansSerif, 14, System::Drawing::FontStyle::Bold), gcnew System::Drawing::SolidBrush(System::Drawing::Color::FromArgb(84, 4, 4)), xStart, yStart);
 	}
 }
 
-void CellDrawing::drawUndefinedCell(System::Windows::Forms::Form ^ form)
+void CellDrawing::drawUndefinedCell(System::Drawing::Graphics ^g)
 {
-	Graphics ^g = form->CreateGraphics();
-	drawEmptyCell(form);
-	g->DrawString("?", gcnew Font(FontFamily::GenericSansSerif, 18, FontStyle::Bold), gcnew SolidBrush(Color::FromArgb(84, 4, 4)), xStart, yStart - 4);
+	g->DrawString("?", gcnew System::Drawing::Font(System::Drawing::FontFamily::GenericSansSerif, 18, System::Drawing::FontStyle::Bold), gcnew System::Drawing::SolidBrush(System::Drawing::Color::FromArgb(3, 14, 97)), xStart, yStart - 4);
 }
 
-void CellDrawing::drawFlaggedCell(System::Windows::Forms::Form ^ form)
+void CellDrawing::drawFlaggedCell(System::Drawing::Graphics ^g)
 {
-	Graphics ^g = form->CreateGraphics();
-	Pen ^pen = gcnew Pen(Color::Black, 2);
-
-
-	array <PointF> ^flag = { PointF(xStart + 3, yStart + edge - 1),
-		PointF(xStart + 3, yStart + 3),
-		PointF(xStart + edge - 3, yStart + 7),
-		PointF(xStart + 3, yStart + 13) };
-	drawEmptyCell(form);
+	System::Drawing::Pen ^pen = gcnew System::Drawing::Pen(System::Drawing::Color::Black, 2);
+	array <System::Drawing::PointF> ^flag = { System::Drawing::PointF(xStart + 3, yStart + edge - 1),
+		System::Drawing::PointF(xStart + 3, yStart + 3),
+		System::Drawing::PointF(xStart + edge - 3, yStart + 7),
+		System::Drawing::PointF(xStart + 3, yStart + 13) };
 	g->DrawPolygon(pen, flag);
-	g->FillPolygon(gcnew SolidBrush(Color::Red), flag);
+	g->FillPolygon(gcnew System::Drawing::SolidBrush(System::Drawing::Color::DarkRed), flag);
 }
 
-void CellDrawing::drawExplodedCell(System::Windows::Forms::Form ^ form)
+void CellDrawing::drawExplodedCell(System::Drawing::Graphics ^g)
 {
-	Graphics ^g = form->CreateGraphics();
-
-	g->FillRectangle(gcnew SolidBrush(Color::Red), xStart, yStart, edge, edge);
-	g->DrawRectangle(gcnew Pen(Color::Black, 1), xStart, yStart, edge, edge);
+	g->FillRectangle(gcnew System::Drawing::SolidBrush(System::Drawing::Color::Red), xStart, yStart, edge, edge);
+	g->DrawRectangle(gcnew System::Drawing::Pen(System::Drawing::Color::Black, 1), xStart, yStart, edge, edge);
 }
 

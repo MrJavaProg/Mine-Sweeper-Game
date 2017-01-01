@@ -2,10 +2,9 @@
 #include "GameCell.h"
 #include "Player.h"
 
-
+using namespace System::Drawing;
 class Game : public Player
 {
-	//Player player;
 	GameCell **field;
 
 	int	width,
@@ -23,25 +22,26 @@ class Game : public Player
 		timerEnabled,
 		shownMines;
 
-
 public:
-	Game(int width, int height, int mines, int lifes, bool shownMines, System::Windows::Forms::Form ^f);
-	Game(System::Windows::Forms::Form ^f);
+	Game(int width, int height, float formWidth, float formHeight, int mines, int lifes, bool shownMines, Graphics ^g);
+	Game(Graphics ^g);
 	~Game();
 	void saveGame();
-	void loadGame(System::Windows::Forms::Form ^ f);
-	void spawnMines(int &curPosX, int &curPosY);
-	void createField(System::Windows::Forms::Form ^f);
-	void setShownMines(bool shownMines);
 	bool getShownMines();
-	void showMines(System::Windows::Forms::Form ^f);
-	bool openCell(int x, int y, int &mb, System::Windows::Forms::Form ^f);
+	void showMines(Graphics ^g);
 	bool getTimerEnabled();
 	int getWidth();
 	int getHeight();
 	int getLifes();
-	//void redrawField(Graphics ^g);
+	void redrawField(Graphics ^g);
+	void removeGraphics(Graphics ^g, Color &color);
+	bool openCell(int x, int y, int &mb, Graphics ^g);
+
 private:
-	void autoOpen(int x, int y, System::Windows::Forms::Form ^f);
+	void autoOpen(int x, int y, Graphics ^g);
+	void loadGame(Graphics ^g);
+	void spawnMines(int &curPosX, int &curPosY);
+	void createField(Graphics ^g, float x, float y);
+
 };
 
