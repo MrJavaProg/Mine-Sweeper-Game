@@ -121,6 +121,10 @@ private: System::Windows::Forms::ToolStripLabel^  toolStripLabel1;
 private: System::Windows::Forms::ToolStripLabel^  TSLifesInfo;
 private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 	private: System::Windows::Forms::Label^  WinL;
+	private: System::Windows::Forms::Panel^  BotPlayingP;
+	private: System::Windows::Forms::RadioButton^  BotOnTimerRB;
+	private: System::Windows::Forms::RadioButton^  BotOnMouseRB;
+	private: System::Windows::Forms::CheckBox^  BotPlayingCB;
 
 
 
@@ -195,13 +199,17 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			this->CloseRecordsB = (gcnew System::Windows::Forms::Button());
 			this->Timer = (gcnew System::Windows::Forms::Timer(this->components));
 			this->WinGB = (gcnew System::Windows::Forms::GroupBox());
+			this->WinL = (gcnew System::Windows::Forms::Label());
 			this->WinExitB = (gcnew System::Windows::Forms::Button());
 			this->WinTB = (gcnew System::Windows::Forms::TextBox());
 			this->WinB = (gcnew System::Windows::Forms::Button());
 			this->NovicesSFD = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->AmateursSFD = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->MastersSFD = (gcnew System::Windows::Forms::SaveFileDialog());
-			this->WinL = (gcnew System::Windows::Forms::Label());
+			this->BotPlayingP = (gcnew System::Windows::Forms::Panel());
+			this->BotPlayingCB = (gcnew System::Windows::Forms::CheckBox());
+			this->BotOnMouseRB = (gcnew System::Windows::Forms::RadioButton());
+			this->BotOnTimerRB = (gcnew System::Windows::Forms::RadioButton());
 			this->ToolsTS->SuspendLayout();
 			this->OptionsMenuFLP->SuspendLayout();
 			this->PresetsP->SuspendLayout();
@@ -216,6 +224,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			this->AmateursTP->SuspendLayout();
 			this->MastersTP->SuspendLayout();
 			this->WinGB->SuspendLayout();
+			this->BotPlayingP->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// ToolsTS
@@ -362,6 +371,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			// PresetsP
 			// 
 			this->PresetsP->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->PresetsP->Controls->Add(this->BotPlayingP);
 			this->PresetsP->Controls->Add(this->panel1);
 			this->PresetsP->Controls->Add(this->DefaultPresetsFLP);
 			this->PresetsP->Location = System::Drawing::Point(243, 19);
@@ -376,7 +386,7 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			this->panel1->Controls->Add(this->GWrongCB);
 			this->panel1->Controls->Add(this->GUnknownCB);
 			this->panel1->Controls->Add(this->GLifesTB);
-			this->panel1->Location = System::Drawing::Point(35, 267);
+			this->panel1->Location = System::Drawing::Point(35, 257);
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(290, 140);
 			this->panel1->TabIndex = 1;
@@ -384,11 +394,12 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			// GWrongCB
 			// 
 			this->GWrongCB->AutoSize = true;
+			this->GWrongCB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->GWrongCB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->GWrongCB->Location = System::Drawing::Point(3, 56);
 			this->GWrongCB->Name = L"GWrongCB";
-			this->GWrongCB->Size = System::Drawing::Size(177, 28);
+			this->GWrongCB->Size = System::Drawing::Size(174, 28);
 			this->GWrongCB->TabIndex = 30;
 			this->GWrongCB->Text = L"Right to be wrong";
 			this->GWrongCB->UseVisualStyleBackColor = true;
@@ -397,11 +408,12 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			// GUnknownCB
 			// 
 			this->GUnknownCB->AutoSize = true;
+			this->GUnknownCB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->GUnknownCB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->GUnknownCB->Location = System::Drawing::Point(3, 18);
 			this->GUnknownCB->Name = L"GUnknownCB";
-			this->GUnknownCB->Size = System::Drawing::Size(254, 28);
+			this->GUnknownCB->Size = System::Drawing::Size(251, 28);
 			this->GUnknownCB->TabIndex = 29;
 			this->GUnknownCB->Text = L"Unknown quantity of mines";
 			this->GUnknownCB->UseVisualStyleBackColor = true;
@@ -784,6 +796,17 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			this->WinGB->Text = L"Who is that hero\?";
 			this->WinGB->Visible = false;
 			// 
+			// WinL
+			// 
+			this->WinL->AutoSize = true;
+			this->WinL->Font = (gcnew System::Drawing::Font(L"Playbill", 60, static_cast<System::Drawing::FontStyle>(((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Italic)
+				| System::Drawing::FontStyle::Underline))));
+			this->WinL->Location = System::Drawing::Point(162, 23);
+			this->WinL->Name = L"WinL";
+			this->WinL->Size = System::Drawing::Size(256, 81);
+			this->WinL->TabIndex = 5;
+			this->WinL->Text = L"You won!!!";
+			// 
 			// WinExitB
 			// 
 			this->WinExitB->Location = System::Drawing::Point(540, 7);
@@ -826,16 +849,54 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			// 
 			this->MastersSFD->FileName = L"RecordsMaster.rec";
 			// 
-			// WinL
+			// BotPlayingP
 			// 
-			this->WinL->AutoSize = true;
-			this->WinL->Font = (gcnew System::Drawing::Font(L"Playbill", 60, static_cast<System::Drawing::FontStyle>(((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Italic)
-				| System::Drawing::FontStyle::Underline))));
-			this->WinL->Location = System::Drawing::Point(162, 23);
-			this->WinL->Name = L"WinL";
-			this->WinL->Size = System::Drawing::Size(256, 81);
-			this->WinL->TabIndex = 5;
-			this->WinL->Text = L"You won!!!";
+			this->BotPlayingP->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->BotPlayingP->Controls->Add(this->BotOnTimerRB);
+			this->BotPlayingP->Controls->Add(this->BotOnMouseRB);
+			this->BotPlayingP->Controls->Add(this->BotPlayingCB);
+			this->BotPlayingP->Location = System::Drawing::Point(35, 413);
+			this->BotPlayingP->Name = L"BotPlayingP";
+			this->BotPlayingP->Size = System::Drawing::Size(290, 73);
+			this->BotPlayingP->TabIndex = 3;
+			// 
+			// BotPlayingCB
+			// 
+			this->BotPlayingCB->AutoSize = true;
+			this->BotPlayingCB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->BotPlayingCB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14));
+			this->BotPlayingCB->Location = System::Drawing::Point(3, 2);
+			this->BotPlayingCB->Name = L"BotPlayingCB";
+			this->BotPlayingCB->Size = System::Drawing::Size(118, 28);
+			this->BotPlayingCB->TabIndex = 0;
+			this->BotPlayingCB->Text = L"Bot playing";
+			this->BotPlayingCB->UseVisualStyleBackColor = true;
+			// 
+			// BotOnMouseRB
+			// 
+			this->BotOnMouseRB->AutoSize = true;
+			this->BotOnMouseRB->Enabled = false;
+			this->BotOnMouseRB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->BotOnMouseRB->Location = System::Drawing::Point(4, 45);
+			this->BotOnMouseRB->Name = L"BotOnMouseRB";
+			this->BotOnMouseRB->Size = System::Drawing::Size(97, 17);
+			this->BotOnMouseRB->TabIndex = 2;
+			this->BotOnMouseRB->TabStop = true;
+			this->BotOnMouseRB->Text = L"On mouse click";
+			this->BotOnMouseRB->UseVisualStyleBackColor = true;
+			// 
+			// BotOnTimerRB
+			// 
+			this->BotOnTimerRB->AutoSize = true;
+			this->BotOnTimerRB->Enabled = false;
+			this->BotOnTimerRB->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->BotOnTimerRB->Location = System::Drawing::Point(165, 45);
+			this->BotOnTimerRB->Name = L"BotOnTimerRB";
+			this->BotOnTimerRB->Size = System::Drawing::Size(63, 17);
+			this->BotOnTimerRB->TabIndex = 3;
+			this->BotOnTimerRB->TabStop = true;
+			this->BotOnTimerRB->Text = L"On timer";
+			this->BotOnTimerRB->UseVisualStyleBackColor = true;
 			// 
 			// GameForm
 			// 
@@ -843,9 +904,9 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(797, 594);
 			this->Controls->Add(this->ToolsTS);
-			this->Controls->Add(this->WinGB);
-			this->Controls->Add(this->RecordsGB);
 			this->Controls->Add(this->OptionsGB);
+			this->Controls->Add(this->RecordsGB);
+			this->Controls->Add(this->WinGB);
 			this->Name = L"GameForm";
 			this->Text = L"Mine Sweper Game";
 			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &GameForm::GameForm_FormClosed);
@@ -871,6 +932,8 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			this->MastersTP->ResumeLayout(false);
 			this->WinGB->ResumeLayout(false);
 			this->WinGB->PerformLayout();
+			this->BotPlayingP->ResumeLayout(false);
+			this->BotPlayingP->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -1364,17 +1427,17 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			}
 			else {
 				WinGB->Visible = true;
-				if (quantity_of_cells_width == 9 && quantity_of_cells_height == 9 && quantity_of_mines == 10) {
+				if (game->getWidth() == 9 && game->getHeight() == 9 && game->getMines() == 10) {
 					WinTB->Visible = true;
 					WinL->Visible = false;
 				}
 				else {
-					if (quantity_of_cells_width == 16 && quantity_of_cells_height == 16 && quantity_of_mines == 40) {
+					if (game->getWidth() == 16 && game->getHeight() == 16 && game->getMines() == 40) {
 						WinTB->Visible = true;
 						WinL->Visible = false;
 					}
 					else {
-						if (quantity_of_cells_width == 9 && quantity_of_cells_height == 9 && quantity_of_mines == 10) {
+						if (game->getWidth() == 9 && game->getHeight() == 9 && game->getMines() == 10) {
 							WinTB->Visible = true;
 							WinL->Visible = false;
 						}
@@ -1386,7 +1449,6 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 					}
 				}
 			}
-			
 			TSLifes->Text = game->Game::getLifes().ToString();
 		}
 

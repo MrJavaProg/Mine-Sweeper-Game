@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="CellAI.h" />
     <ClInclude Include="CellDrawing.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCell.h" />
@@ -157,14 +158,17 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerAI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="CellAI.cpp" />
     <ClCompile Include="CellDrawing.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCell.cpp" />
     <ClCompile Include="GameForm.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerAI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Object Include="Debug\CellDrawing.obj" />
