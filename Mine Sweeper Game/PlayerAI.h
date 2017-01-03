@@ -4,7 +4,7 @@
 
 class PlayerAI
 {
-	Game *game;
+	
 
 	CellAI **field;
 	int width,
@@ -12,6 +12,7 @@ class PlayerAI
 		mines;
 
 public:
+	Game *game;
 	PlayerAI(int width, int height, float formWidth, float formHeight, int mines, int lifes, bool shownMines, Graphics ^g);
 	PlayerAI();
 	~PlayerAI();

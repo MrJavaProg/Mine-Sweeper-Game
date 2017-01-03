@@ -1,11 +1,11 @@
 #pragma once
 #include <fstream>
 #include "Game.h"
-
+#include "PlayerAI.h"
 
 using namespace System::Drawing;
 static Game *game = NULL;
-
+static PlayerAI *gameAI = NULL;
 static int time,
 		   quantity_of_mines = 0,
 		   quantity_of_cells_width = 0,
@@ -1131,18 +1131,34 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 		}
 		catch (int e) {
 			if (e == 0) {
-				game = new Game(quantity_of_cells_width, quantity_of_cells_height, (float)this->Width, (float)this->Height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this->CreateGraphics());
-				if (GUnknownCB->Checked == false) {
-					TSTBMinesCounter->Text = game->getMines().ToString();
+				if (BotPlayingCB->Checked == false) {
+					game = new Game(quantity_of_cells_width, quantity_of_cells_height, (float)this->Width, (float)this->Height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this->CreateGraphics());
+					if (GUnknownCB->Checked == false) {
+						TSTBMinesCounter->Text = game->getMines().ToString();
+					}
+					else {
+						TSTBMinesCounter->Text = "???";
+					}
+					Timer->Enabled = false;
+					time = 0;
+					Timer->Enabled = true;
+					TSLTime->Text = time.ToString();
+					TSLifes->Text = game->Game::getLifes().ToString();
 				}
 				else {
-					TSTBMinesCounter->Text = "???";
+					gameAI = new PlayerAI(quantity_of_cells_width, quantity_of_cells_height, (float)this->Width, (float)this->Height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this->CreateGraphics());
+					if (GUnknownCB->Checked == false) {
+						TSTBMinesCounter->Text = gameAI->game->getMines().ToString();
+					}
+					else {
+						TSTBMinesCounter->Text = "???";
+					}
+					Timer->Enabled = false;
+					time = 0;
+					Timer->Enabled = true;
+					TSLTime->Text = time.ToString();
+					TSLifes->Text = gameAI->game->Game::getLifes().ToString();
 				}
-				Timer->Enabled = false;
-				time = 0;
-				Timer->Enabled = true;
-				TSLTime->Text = time.ToString();
-				TSLifes->Text = game->Game::getLifes().ToString();
 			}
 			if (e == 1) {
 				MessageBox::Show("Too few or many width cells (must be more than 5 & less than 25)");

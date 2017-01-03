@@ -5,6 +5,7 @@
 using namespace System::Drawing;
 class Game : public Player
 {
+	
 	GameCell **field;
 
 	int	width,
