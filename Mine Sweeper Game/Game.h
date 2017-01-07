@@ -5,7 +5,6 @@
 using namespace System::Drawing;
 class Game : public Player
 {
-	
 	GameCell **field;
 
 	int	width,
@@ -37,12 +36,17 @@ public:
 	void redrawField(Graphics ^g);
 	void removeGraphics(Graphics ^g, Color &color);
 	bool openCell(int x, int y, int &mb, Graphics ^g);
+	float getYStart();
+	float getXStart();
+	int getNearbyMines(int x, int y);
+	int getExtraState(int x, int y);
+	void drawPossibility(int x, int y, float possibility, Graphics ^g);
 
 private:
 	void autoOpen(int x, int y, Graphics ^g);
 	void loadGame(Graphics ^g);
 	void spawnMines(int &curPosX, int &curPosY);
 	void createField(Graphics ^g, float x, float y);
-
+	
 };
 

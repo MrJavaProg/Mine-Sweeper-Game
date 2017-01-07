@@ -5,11 +5,11 @@
 class PlayerAI
 {
 	
-
-	CellAI **field;
+	CellAI **fieldAI;
 	int width,
 		height,
 		mines;
+	bool wasFirstClickAI;
 
 public:
 	Game *game;
@@ -17,6 +17,11 @@ public:
 	PlayerAI();
 	~PlayerAI();
 
-	void openCellAI();
+	//bool openCellAI(Graphics ^g);
+	int getSurroundedCells(int x, int y);
+	void resyncAIField(int x, int y, Graphics ^g);
+	void doAction(bool &win, Graphics ^g);
+	void setPossibilities(Graphics ^g);
+	void checkPossibilities(Graphics ^g);
 };
 

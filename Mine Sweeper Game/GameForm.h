@@ -1132,6 +1132,10 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 		catch (int e) {
 			if (e == 0) {
 				if (BotPlayingCB->Checked == false) {
+					if (gameAI != NULL) {
+						gameAI->~PlayerAI();
+						gameAI = NULL;
+					}
 					game = new Game(quantity_of_cells_width, quantity_of_cells_height, (float)this->Width, (float)this->Height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this->CreateGraphics());
 					if (GUnknownCB->Checked == false) {
 						TSTBMinesCounter->Text = game->getMines().ToString();
@@ -1146,6 +1150,10 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 					TSLifes->Text = game->Game::getLifes().ToString();
 				}
 				else {
+					if (game != NULL) {
+						game->~Game();
+						game = NULL;
+					}
 					gameAI = new PlayerAI(quantity_of_cells_width, quantity_of_cells_height, (float)this->Width, (float)this->Height, quantity_of_mines, lifes, !this->GUnknownCB->Checked, this->CreateGraphics());
 					if (GUnknownCB->Checked == false) {
 						TSTBMinesCounter->Text = gameAI->game->getMines().ToString();
@@ -1467,6 +1475,43 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			}
 			TSLifes->Text = game->Game::getLifes().ToString();
 		}
+		else {
+			if (gameAI != NULL) {
+				bool win;
+				gameAI->doAction(win, this->CreateGraphics());
+				if (gameAI->game->getTimerEnabled() == false) {
+					Timer->Enabled = false;
+				}
+				if (win == false) {
+					WinGB->Visible = false;
+				}
+				/*else {
+					WinGB->Visible = true;
+					if (gameAI->game->getWidth() == 9 && gameAI->game->getHeight() == 9 && gameAI->game->getMines() == 10) {
+						WinTB->Visible = true;
+						WinL->Visible = false;
+					}
+					else {
+						if (gameAI->game->getWidth() == 16 && gameAI->game->getHeight() == 16 && gameAI->game->getMines() == 40) {
+							WinTB->Visible = true;
+							WinL->Visible = false;
+						}
+						else {
+							if (gameAI->game->getWidth() == 9 && gameAI->game->getHeight() == 9 && gameAI->game->getMines() == 10) {
+								WinTB->Visible = true;
+								WinL->Visible = false;
+							}
+							else {
+								WinTB->Visible = false;
+								WinL->Visible = true;
+								WinB->Visible = false;
+							}
+						}
+					}
+				}
+				TSLifes->Text = gameAI->game->Game::getLifes().ToString();*/
+			}
+		}
 
 	}
 
@@ -1512,6 +1557,12 @@ private: System::Windows::Forms::ToolStripLabel^  TSLifes;
 			game->setTime(time);
 			game->saveGame();
 			game->~Game();
+		}
+		else {
+			if (gameAI != NULL) {
+				gameAI->~PlayerAI();
+				gameAI = NULL;
+			}
 		}
 	}
 

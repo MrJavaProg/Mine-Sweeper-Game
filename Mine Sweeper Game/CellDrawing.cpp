@@ -23,6 +23,11 @@ void CellDrawing::drawOpenedCell(System::Drawing::Graphics ^g, int nearbyMines)
 	}
 }
 
+void CellDrawing::drawPossibility(float possibility, System::Drawing::Graphics ^g)
+{
+	g->DrawString(possibility.ToString(), gcnew System::Drawing::Font(System::Drawing::FontFamily::GenericSansSerif, 8, System::Drawing::FontStyle::Bold), gcnew System::Drawing::SolidBrush(System::Drawing::Color::FromArgb(100, 40, 40)), xStart, yStart);
+}
+
 void CellDrawing::drawUndefinedCell(System::Drawing::Graphics ^g)
 {
 	g->DrawString("?", gcnew System::Drawing::Font(System::Drawing::FontFamily::GenericSansSerif, 18, System::Drawing::FontStyle::Bold), gcnew System::Drawing::SolidBrush(System::Drawing::Color::FromArgb(3, 14, 97)), xStart, yStart - 4);

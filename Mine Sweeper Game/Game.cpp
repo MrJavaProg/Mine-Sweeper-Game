@@ -294,6 +294,31 @@ bool Game::openCell(int x, int y, int &mb, Graphics ^g) {
 		}
 }
 
+float Game::getYStart()
+{
+	return yStart;
+}
+
+float Game::getXStart()
+{
+	return xStart;
+}
+
+int Game::getNearbyMines(int x, int y)
+{
+	return field[x][y].getNearbyMines();
+}
+
+int Game::getExtraState(int x, int y)
+{
+	return field[x][y].getExtraState();
+}
+
+void Game::drawPossibility(int x, int y, float possibility, Graphics ^g)
+{
+	field[x][y].drawPossibility(possibility, g);
+}
+
 bool Game::getTimerEnabled()
 {
 	return timerEnabled;
