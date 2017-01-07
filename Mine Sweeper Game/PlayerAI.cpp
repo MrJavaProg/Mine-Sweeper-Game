@@ -88,7 +88,7 @@ int PlayerAI::getSurroundedCells(int x, int y)
 		}
 	}
 
-	if (x + 1 >= 0 && y+1<height) {
+	if (x + 1 <width && y+1<height) {
 		if (fieldAI[x+1][y+1].getIsOpened() == false) {
 			surroundedCells++;
 		}
@@ -114,6 +114,9 @@ void PlayerAI::resyncAIField(int x, int y, Graphics ^g)
 		for (int j = 0; j < height; j++) {
 			if (game->getExtraState(i, j) == extraState::opened) {
 				fieldAI[i][j].setIsOpened(true);
+				if (game->getNearbyMines(i, j) == 0) {
+					fieldAI[i][j].setIsChecked(true);
+				}
 			}
 		}
 	}
@@ -168,7 +171,7 @@ void PlayerAI::setPossibilities(Graphics ^g) {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
 			if (fieldAI[i][j].getIsOpened() == true && fieldAI[i][j].getIsChecked() == false && game->getNearbyMines(i, j) != 0) {
-				float minePossibility = (float)game->getNearbyMines(i, j) / (float)this->getSurroundedCells(i, j);
+				float minePossibility = (float)game->getNearbyMines(i, j) / (float)getSurroundedCells(i, j);
 				if (i - 1 >= 0) {
 					if (fieldAI[i - 1][j].getIsOpened() == false) {
 						fieldAI[i - 1][j].addMinePossibility(minePossibility);
@@ -177,55 +180,53 @@ void PlayerAI::setPossibilities(Graphics ^g) {
 				}
 
 				if (i - 1 >= 0 && j - 1 >= 0) {
-					if (fieldAI[i - 1][j - 1].getIsOpened() != true) {
+					if (fieldAI[i - 1][j - 1].getIsOpened() == false) {
 						fieldAI[i - 1][j - 1].addMinePossibility(minePossibility);
 						//game->drawPossibility(i - 1, j - 1, fieldAI[i - 1][j - 1].getMinePossibility(), g);
 					}
 				}
 
 				if (j - 1 >= 0) {
-					if (fieldAI[i][j - 1].getIsOpened() != true) {
+					if (fieldAI[i][j - 1].getIsOpened() == false) {
 						fieldAI[i][j - 1].addMinePossibility(minePossibility);
 						//game->drawPossibility(i, j - 1, fieldAI[i][j - 1].getMinePossibility(), g);
 					}
 				}
 
 				if (i + 1 < width && j - 1 >= 0) {
-					if (fieldAI[i + 1][j - 1].getIsOpened() != true) {
+					if (fieldAI[i + 1][j - 1].getIsOpened() == false) {
 						fieldAI[i + 1][j - 1].addMinePossibility(minePossibility);
 						//game->drawPossibility(i + 1, j - 1, fieldAI[i + 1][j - 1].getMinePossibility(), g);
 					}
 				}
 
 				if (i + 1 < width) {
-					if (fieldAI[i + 1][j].getIsOpened() != true) {
+					if (fieldAI[i + 1][j].getIsOpened() == false) {
 						fieldAI[i + 1][j].addMinePossibility(minePossibility);
 						//game->drawPossibility(i + 1, j, fieldAI[i + 1][j].getMinePossibility(), g);
 					}
 				}
 
 				if (i + 1 < width && j + 1 < height) {
-					if (fieldAI[i + 1][j + 1].getIsOpened() != true) {
+					if (fieldAI[i + 1][j + 1].getIsOpened() == false) {
 						fieldAI[i + 1][j + 1].addMinePossibility(minePossibility);
 						//game->drawPossibility(i + 1, j + 1, fieldAI[i + 1][j + 1].getMinePossibility(), g);
 					}
 				}
 
 				if (j + 1 < height) {
-					if (fieldAI[i][j + 1].getIsOpened() != true) {
+					if (fieldAI[i][j + 1].getIsOpened() == false) {
 						fieldAI[i][j + 1].addMinePossibility(minePossibility);
 						//game->drawPossibility(i, j + 1, fieldAI[i][j + 1].getMinePossibility(), g);
 					}
 				}
 
 				if (i - 1 >= 0 && j + 1 < height) {
-					if (fieldAI[i - 1][j + 1].getIsOpened() != true) {
+					if (fieldAI[i - 1][j + 1].getIsOpened() == false) {
 						fieldAI[i - 1][j + 1].addMinePossibility(minePossibility);
 						//game->drawPossibility(i - 1, j + 1, fieldAI[i - 1][j + 1].getMinePossibility(), g);
 					}
 				}
-
-				
 				//}
 				fieldAI[i][j].setIsChecked(true);
 			}
@@ -237,7 +238,7 @@ void PlayerAI::setPossibilities(Graphics ^g) {
 void PlayerAI::checkPossibilities(Graphics ^g) {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			game->drawPossibility(i, j, fieldAI[i][j].getMinePossibility(), g);
+			game->drawPossibility(i, j, fieldAI[i][j].getIsOpened(), g);
 		}
 	}
 }

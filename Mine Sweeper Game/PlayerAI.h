@@ -22,6 +22,6 @@ public:
 	void resyncAIField(int x, int y, Graphics ^g);
 	void doAction(bool &win, Graphics ^g);
 	void setPossibilities(Graphics ^g);
-	void checkPossibilities(Graphics ^g);
+	void checkPossibilities(Graphics ^g);//удалить!!!
 };
 

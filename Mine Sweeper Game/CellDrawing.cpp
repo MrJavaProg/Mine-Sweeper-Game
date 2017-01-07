@@ -23,7 +23,7 @@ void CellDrawing::drawOpenedCell(System::Drawing::Graphics ^g, int nearbyMines)
 	}
 }
 
-void CellDrawing::drawPossibility(float possibility, System::Drawing::Graphics ^g)
+void CellDrawing::drawPossibility(bool possibility, System::Drawing::Graphics ^g)
 {
 	g->DrawString(possibility.ToString(), gcnew System::Drawing::Font(System::Drawing::FontFamily::GenericSansSerif, 8, System::Drawing::FontStyle::Bold), gcnew System::Drawing::SolidBrush(System::Drawing::Color::FromArgb(100, 40, 40)), xStart, yStart);
 }
